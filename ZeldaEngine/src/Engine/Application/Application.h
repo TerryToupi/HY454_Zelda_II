@@ -1,14 +1,22 @@
 #pragma once 
 
-#include "Engine/Core.h"
-#include "LayerStack.h"
+#include "LayerStack.h" 
+#include <string>
 
-namespace Engine {
- 
+int main(int argc, char** argv);
+
+namespace Engine 
+{
+	struct ApplicationConfig
+	{
+		std::string appName;
+		std::string WorkingDir;
+	};
+
 	class Application
 	{
 	public:
-		Application();
+		Application(const ApplicationConfig& config);
 		virtual ~Application(); 
 
 		void pushLayer(Layer *layer);  
@@ -16,8 +24,13 @@ namespace Engine {
 
 		void Run();
 
-	private:
-		LayerStack m_Layers;
+	private: 
+		ApplicationConfig m_AppConfig;
+		LayerStack m_Layers; 
+
+	private: 
+		static Application* s_Instance; 
+		friend int ::main(int agc, char** argv);
 	};
 
 	Application* CreateApplication();

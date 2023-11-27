@@ -1,5 +1,4 @@
 #include "skoupidi.h"
-#include "EngineApp.h"
 
 using namespace Engine;
 

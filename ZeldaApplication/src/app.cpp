@@ -1,6 +1,11 @@
-#include <EngineApp.h>
-#include "skoupidi.h" 
-#include "Engine/DLLEntryPoint.h"
+// Engine API/HOOK
+#include <Engine.h>
+#include <Engine/EngineHook.h>
+
+// Game application include 
+#include "skoupidi.h"  
+
+// STD::LIB include
 #include <string>
 
 using namespace Engine;
@@ -9,7 +14,8 @@ class Zelda : public Engine::Application
 { 
 public: 
 	 
-	Zelda() 
+	Zelda(const Engine::ApplicationConfig& config)
+		: Engine::Application(config)
 	{
 		pushLayer(new skoupidi());
 	} 
@@ -22,8 +28,12 @@ public:
 }; 
 
 Engine::Application* Engine::CreateApplication() 
-{
-	Zelda* game = new Zelda; 
+{ 
+	// config
+	Engine::ApplicationConfig appConfig;
+	appConfig.appName	 = "Zelda_II";
+	appConfig.WorkingDir = "Dialou mana";
+	Zelda* game = new Zelda(appConfig); 
 	//initializations
 	return (Application*)game;
 } 

@@ -1,8 +1,6 @@
 #pragma once 
 
 #include "Engine/UUID/UUID.h" 
-#include "entt.hpp" 
-
 #include <unordered_map> 
 
 namespace Engine 
@@ -29,7 +27,6 @@ namespace Engine
 
 	public:
 		ID m_RootIndex;
-		entt::registry m_EntityReg;
 		std::unordered_map<ID, Entity> m_EntityMap; 
 
 	private: 

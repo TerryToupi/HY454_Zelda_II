@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine/Core.h" 
 #include "Engine/UUID/UUID.h"
 
 namespace Engine {  

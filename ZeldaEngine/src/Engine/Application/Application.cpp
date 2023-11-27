@@ -1,13 +1,18 @@
 #include "Application.h" 
-#include "Layer.h"
+#include "Layer.h"  
+#include "Engine/Assert/Assert.h"
 
-#include "Engine/Systems/Render.h"
+#include "Engine/Systems/Render.h" 
 
 namespace Engine {
+	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
-	{
-	}
+	Application::Application(const ApplicationConfig& config) 
+		:m_AppConfig(config)
+	{  
+		ENGINE_CORE_ASSERT(!s_Instance); 
+		s_Instance = this;
+	} 
 
 	Application::~Application()
 	{

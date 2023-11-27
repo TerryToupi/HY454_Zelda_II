@@ -1,6 +1,5 @@
 #pragma once 
 
-#include "Engine/Core.h"
 #include "Engine/Assert/Assert.h"
 #include <string> 
 #include <cstring>  

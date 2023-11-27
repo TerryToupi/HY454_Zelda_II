@@ -1,8 +1,6 @@
 #pragma once 
 
-#include "Engine/Core.h"  
 #include "Engine/Logging/log.h"  
-
 #include <filesystem> 
 
 //-------------------------------- don't use these macros outside this file ------------------------------------------------------------

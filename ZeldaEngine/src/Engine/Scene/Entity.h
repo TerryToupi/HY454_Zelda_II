@@ -1,10 +1,8 @@
 #pragma once 
 
-#include "Engine/Core.h"
 #include "Engine/UUID/UUID.h"   
 #include "Engine/Assert/Assert.h"   
 #include "Component.h"  
-#include "entt.hpp" 
 
 #include <vector>
 

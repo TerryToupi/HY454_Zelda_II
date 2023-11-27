@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Engine/Core.h"  
-
 #include <string>
 
 namespace Engine {  

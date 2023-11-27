@@ -1,6 +1,7 @@
 #pragma once 
 
-// For engine application use 
+// For engine application use  
+#include "Engine/Application/Core.h"
 #include "Engine/Application/Application.h"   
 #include "Engine/Application/Layer.h" 
 #include "Engine/Application/LayerStack.h"
@@ -22,7 +23,3 @@
 #include "Engine/Systems/DFS.h" 
 #include "Engine/Systems/Render.h"
 
-
-// ------ DLL entry point in client application ------ 
-//#include "Engine/DLLEntryPoint.h"
-// ------ ------------------------------------- ------
