@@ -91,6 +91,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Application\Application.h" />
     <ClInclude Include="src\Engine\Application\Core.h" />
     <ClInclude Include="src\Engine\Application\Layer.h" />
@@ -98,27 +99,15 @@
     <ClInclude Include="src\Engine\Assert\Assert.h" />
     <ClInclude Include="src\Engine\EngineHook.h" />
     <ClInclude Include="src\Engine\Logging\Log.h" />
-    <ClInclude Include="src\Engine\MemoryController\MemoryTanks.h" />
-    <ClInclude Include="src\Engine\Scene\Component.h" />
-    <ClInclude Include="src\Engine\Scene\Entity.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
-    <ClInclude Include="src\Engine\Scene\SceneGraph.h" />
-    <ClInclude Include="src\Engine\Systems\DFS.h" />
-    <ClInclude Include="src\Engine\Systems\Render.h" />
-    <ClInclude Include="src\Engine\Systems\Visitor.h" />
     <ClInclude Include="src\Engine\UUID\UUID.h" />
-    <ClInclude Include="src\Engine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp" />
     <ClCompile Include="src\Engine\Application\Layer.cpp" />
     <ClCompile Include="src\Engine\Application\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Logging\Log.cpp" />
-    <ClCompile Include="src\Engine\Scene\Entity.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
-    <ClCompile Include="src\Engine\Scene\SceneGraph.cpp" />
-    <ClCompile Include="src\Engine\Systems\DFS.cpp" />
-    <ClCompile Include="src\Engine\Systems\Render.cpp" />
     <ClCompile Include="src\Engine\UUID\UUID.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -13,21 +13,19 @@
     <Filter Include="Engine\Logging">
       <UniqueIdentifier>{7153EE7A-5D21-E280-46B5-52A73222BEE5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\MemoryController">
-      <UniqueIdentifier>{47B7FB41-B3EE-43D9-BCF8-A7FC28AF6AD2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Scene">
       <UniqueIdentifier>{386D1796-24D0-A63A-CD55-DFF0B99772BD}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Systems">
-      <UniqueIdentifier>{E2C8F9AD-CE96-EDB3-B72A-5EDAA397C918}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\UUID">
       <UniqueIdentifier>{E177A461-4D2D-1D57-D621-172E42D6135B}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Application\Application.h">
+      <Filter>Engine\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Application\Core.h">
       <Filter>Engine\Application</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Application\Layer.h">
@@ -45,35 +43,12 @@
     <ClInclude Include="src\Engine\Logging\Log.h">
       <Filter>Engine\Logging</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\MemoryController\MemoryTanks.h">
-      <Filter>Engine\MemoryController</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Scene\Component.h">
-      <Filter>Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Scene\Entity.h">
-      <Filter>Engine\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Scene\Scene.h">
       <Filter>Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Scene\SceneGraph.h">
-      <Filter>Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Systems\DFS.h">
-      <Filter>Engine\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Systems\Render.h">
-      <Filter>Engine\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Systems\Visitor.h">
-      <Filter>Engine\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\UUID\UUID.h">
       <Filter>Engine\UUID</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Engine\Application\Core.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -88,20 +63,8 @@
     <ClCompile Include="src\Engine\Logging\Log.cpp">
       <Filter>Engine\Logging</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Scene\Entity.cpp">
-      <Filter>Engine\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Scene\Scene.cpp">
       <Filter>Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\Scene\SceneGraph.cpp">
-      <Filter>Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\Systems\DFS.cpp">
-      <Filter>Engine\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\Systems\Render.cpp">
-      <Filter>Engine\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\UUID\UUID.cpp">
       <Filter>Engine\UUID</Filter>
