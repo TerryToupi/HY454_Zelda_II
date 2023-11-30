@@ -1,6 +1,4 @@
 project "ZeldaApplication" 
-
-	location	"ZeldaApplication" 
 	kind		"ConsoleApp" 
 	cppdialect	"C++17" 
 	language	"C++"   
@@ -18,7 +16,10 @@ project "ZeldaApplication"
 	{ 
 		"%{wks.location}/ZeldaEngine/vendor/spdlog/include",
 		"%{wks.location}/ZeldaEngine/src",
-		"%{wks.location}/ZeldaEngine/vendor",
+
+		"%{IncludeDir.SDL2}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.Glad}"
 	}  
 
 	links 
