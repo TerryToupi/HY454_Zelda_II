@@ -4,15 +4,15 @@ project "ZeldaEngine"
 	cppdialect "C++17"
 	staticruntime "off" 
 
-	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}") 
+	targetdir ("%{wks.location}/bin/" .. outputDir .. "/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputDir .. "/%{prj.name}") 
 
 	files
 	{ 
-		"src/**.h" 
-		"src/**.cpp"
+		"src/**.h",
+		"src/**.cpp",
 		"vendor/glm/glm/**.hpp",
-		"vendor/glm/glm/**.inl",
+		"vendor/glm/glm/**.inl"
 	} 
 	
 	includedirs
@@ -21,7 +21,7 @@ project "ZeldaEngine"
 		"vendor/spdlog/include",
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.Glad}",
+		"%{IncludeDir.Glad}"
 	} 
 
 	links
