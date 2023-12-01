@@ -20,9 +20,16 @@ int main(int argc, char** argv)
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	SDL_Window* window = SDL_CreateWindow("First Instance of a window", 150, 150, 1600, 900, SDL_WINDOW_OPENGL);
+	SDL_Window* window;
+	SDL_Renderer* renderer; 
 
-	SDL_Delay(5000);
+	SDL_CreateWindowAndRenderer(1600, 900, SDL_WINDOW_OPENGL, &window, &renderer); 
+	SDL_SetWindowTitle(window, "Zelda II");
+
+	while (true)
+	{
+		SDL_RenderPresent(renderer);
+	}
 
 	SDL_DestroyWindow(window);
 	SDL_Quit();

@@ -1329,6 +1329,7 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Window\WindowAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1352,5 +1353,6 @@
     <ClCompile Include="src\Engine\Window\Window.cpp">
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Window\WindowAPI.cpp" />
   </ItemGroup>
 </Project>

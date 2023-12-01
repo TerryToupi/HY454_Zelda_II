@@ -533,6 +533,7 @@
     <ClInclude Include="vendor\glm\glm\vec3.hpp" />
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
+    <ClInclude Include="src\Engine\Window\WindowAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp" />
@@ -542,6 +543,7 @@
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\UUID\UUID.cpp" />
     <ClCompile Include="src\Engine\Window\Window.cpp" />
+    <ClCompile Include="src\Engine\Window\WindowAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\SDL2\Intermediate\ProjectFiles\vs2022\SDL2.vcxproj">
