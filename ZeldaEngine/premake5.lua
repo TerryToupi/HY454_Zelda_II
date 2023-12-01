@@ -29,6 +29,11 @@ project "ZeldaEngine"
 		 "SDL2",
 		 "Glad",
 		 "opengl32.lib"
+	}  
+
+	postbuildcommands 
+	{
+	  "{COPY} %{DLLbuildDir.SDL2}/" .. outputDir .. "/SDL2.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaApplication"
 	} 
 
 	flags { "NoPCH" }
@@ -52,4 +57,5 @@ project "ZeldaEngine"
 	filter "configurations:Release" 
 		defines "ENGINE_RELEASE" 
 		runtime "Release"
-		optimize "on" 
+		optimize "on"   
+

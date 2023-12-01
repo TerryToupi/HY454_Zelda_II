@@ -27,7 +27,10 @@ outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["SDL2"] = "%{wks.location}/ZeldaEngine/vendor/SDL2/include"
 IncludeDir["Glad"] = "%{wks.location}/ZeldaEngine/vendor/Glad/include"
-IncludeDir["glm"] = "%{wks.location}/ZeldaEngine/vendor/glm"
+IncludeDir["glm"] = "%{wks.location}/ZeldaEngine/vendor/glm" 
+
+DLLbuildDir = {} 
+DLLbuildDir["SDL2"] = "%{wks.location}/ZeldaEngine/vendor/SDL2/Binaries"
 
 group "Dependencies"
 	include "vendor/premake5"
@@ -42,4 +45,9 @@ group ""
 
 group "Application"
 	include  "ZeldaApplication"
-group ""
+group "" 
+
+postbuildcommands 
+{
+  "{COPY} %{DLLbuildDir.SDL2}/Binaries/" .. outputDir .. "/SDL2.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaApplication"
+}
