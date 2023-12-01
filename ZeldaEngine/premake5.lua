@@ -31,11 +31,6 @@ project "ZeldaEngine"
 		 "opengl32.lib"
 	}  
 
-	postbuildcommands 
-	{
-	  "{COPY} %{DLLbuildDir.SDL2}/" .. outputDir .. "/SDL2.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaApplication"
-	} 
-
 	flags { "NoPCH" }
 
 	filter "system:windows"  
@@ -47,6 +42,11 @@ project "ZeldaEngine"
 		{
 			"ENGINE_PLATFORM_WINDOWS"
 		} 
+
+		postbuildcommands 
+		{
+		  "{COPY} %{DLLbuildDir.SDL2}/Debug-windows-x86_64/SDL2.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaApplication"
+		}
 
 	filter "configurations:Debug" 
 		defines "ENGINE_DEBUG"

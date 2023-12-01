@@ -94,9 +94,6 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
-    <PostBuildEvent>
-      <Command>IF EXIST $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Binaries\Release-windows-x86_64\SDL2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Binaries\Release-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Release-windows-x86_64\ZeldaApplication &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Binaries\Release-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Release-windows-x86_64\ZeldaApplication &gt; nul)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\skoupidi.h" />

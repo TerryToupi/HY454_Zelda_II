@@ -46,8 +46,3 @@ group ""
 group "Application"
 	include  "ZeldaApplication"
 group "" 
-
-postbuildcommands 
-{
-  "{COPY} %{DLLbuildDir.SDL2}/Binaries/" .. outputDir .. "/SDL2.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaApplication"
-}

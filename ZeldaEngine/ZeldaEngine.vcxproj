@@ -102,7 +102,7 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Release-windows-x86_64\SDL2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Release-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Release-windows-x86_64\ZeldaApplication &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Release-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Release-windows-x86_64\ZeldaApplication &gt; nul)</Command>
+      <Command>IF EXIST $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Release-windows-x86_64\ZeldaApplication &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Release-windows-x86_64\ZeldaApplication &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -116,6 +116,7 @@
     <ClInclude Include="src\Engine\Logging\Log.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\UUID\UUID.h" />
+    <ClInclude Include="src\Engine\Window\Window.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -540,6 +541,7 @@
     <ClCompile Include="src\Engine\Logging\Log.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\UUID\UUID.cpp" />
+    <ClCompile Include="src\Engine\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\SDL2\Intermediate\ProjectFiles\vs2022\SDL2.vcxproj">
