@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	SDL_Window* window = SDL_CreateWindow("First Instance of a window", 150, 150, 1600, 900, SDL_WINDOW_SHOWN);
+	SDL_Window* window = SDL_CreateWindow("First Instance of a window", 150, 150, 1600, 900, SDL_WINDOW_OPENGL);
 
 	SDL_Delay(5000);
 
