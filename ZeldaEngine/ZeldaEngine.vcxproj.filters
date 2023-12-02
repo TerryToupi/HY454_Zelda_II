@@ -1331,6 +1331,7 @@
     </ClInclude>
     <ClInclude Include="src\Engine\Window\WindowAPI.h" />
     <ClInclude Include="src\Engine\Events\Event.h" />
+    <ClInclude Include="src\Engine\Events\ApplicationEvents.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">

@@ -19,7 +19,10 @@ namespace Engine
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	} 
-}  
+}   
+
+#define BIT_SHIFT(x)			(1 << x)
+#define EVENT_FUNCTION_BIND(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 #include <Engine/Logging/Log.h>
-#include <Engine/Assert/Assert.h>
+#include <Engine/Assert/Assert.h> 

@@ -1,5 +1,7 @@
 #include "WindowAPI.h"
 
+#include <Engine/Events/ApplicationEvents.h>
+
 namespace Engine 
 {
 	WindowAPI::WindowAPI(const WindowConfig& config)
@@ -20,9 +22,10 @@ namespace Engine
 			switch (event.type)
 			{
 			case SDL_QUIT: 
-				ENGINE_CORE_TRACE("Event SDL_QUIT traced");
-				Event e;
-				m_EventCallBack(e);
+				ENGINE_CORE_TRACE("Event SDL_QUIT traced"); 
+				WindowCloseEvent event;
+				m_EventCallBack(event);
+				break; 
 
 			defaut: 
 				break;
@@ -60,8 +63,12 @@ namespace Engine
 
 	void WindowAPI::ShutDown()
 	{  
-		SDL_DestroyWindow(m_Window);
-		SDL_DestroyRenderer(m_Renderer);
+		SDL_DestroyRenderer(m_Renderer); 
+		ENGINE_CORE_WARN("Shutting down SDL_Renderer"); 
+		SDL_Delay(10);
+		SDL_DestroyWindow(m_Window); 
+		ENGINE_CORE_WARN("Shutting down SDL_Window"); 
+		SDL_Delay(10); 
 		SDL_Quit();
 	}
 }

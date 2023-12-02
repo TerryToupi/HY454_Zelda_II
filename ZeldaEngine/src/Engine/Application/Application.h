@@ -1,7 +1,8 @@
 #pragma once 
 
 #include <Engine/Application/LayerStack.h>
-#include <Engine/Window/Window.h>
+#include <Engine/Window/Window.h> 
+#include <Engine/Events/ApplicationEvents.h>
 #include <string>
 
 int main(int argc, char** argv);
@@ -29,7 +30,9 @@ namespace Engine
 		void pushLayer(Layer *layer);  
 		void pushOverLay(Layer *Overlay);
 
+	private: 
 		void Run();
+		bool OnWindowClose(WindowCloseEvent& e);
 
 	private: 
 		ApplicationConfig m_AppConfig;

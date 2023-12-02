@@ -20,11 +20,13 @@ namespace Engine {
 
 	Application::~Application()
 	{
+		ENGINE_CORE_WARN("Shutting down Application");
 	}
 
 	void Application::onEvent(Event& e)
 	{ 
-
+		EventDispatcher dispatcher(e); 
+		dispatcher.Dispatch < WindowCloseEvent > (EVENT_FUNCTION_BIND(Application::OnWindowClose));
 	}
 
 	void Application::pushLayer(Layer* layer)
@@ -48,5 +50,11 @@ namespace Engine {
 				(*layer)->onUpdate();   
 			}
 		}
+	} 
+
+	bool Application::OnWindowClose(WindowCloseEvent& e)
+	{ 
+		m_Running = false; 
+		return true;
 	}
 }
