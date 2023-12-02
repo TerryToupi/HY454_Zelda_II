@@ -18,8 +18,8 @@ namespace Engine
 	constexpr Scope<T> MakeReference(Args&& ... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
-	}
-} 
+	} 
+}  
 
 #include <Engine/Logging/Log.h>
 #include <Engine/Assert/Assert.h>

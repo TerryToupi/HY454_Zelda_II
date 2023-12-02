@@ -113,6 +113,7 @@
     <ClInclude Include="src\Engine\Application\LayerStack.h" />
     <ClInclude Include="src\Engine\Assert\Assert.h" />
     <ClInclude Include="src\Engine\EngineHook.h" />
+    <ClInclude Include="src\Engine\Events\Event.h" />
     <ClInclude Include="src\Engine\Logging\Log.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\UUID\UUID.h" />

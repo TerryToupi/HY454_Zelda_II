@@ -10,7 +10,7 @@ namespace Engine
 		std::string TitleBar;
 		uint32_t Width;
 		uint32_t Height; 
-		bool VSync;
+		bool VSync; 
 	};  
 
 	class WindowAPI : public Window
@@ -22,7 +22,12 @@ namespace Engine
 		unsigned int GetWidth() const override { return m_Data.Width; }
 		unsigned int GetHeight() const override { return m_Data.Height; } 
 
+		virtual void EventPolling();
+		virtual void SetEventCallBack(const EventCallBackFunciton& EventCallBack) override { m_EventCallBack = EventCallBack; }
+
 		virtual void* GetNativeWindow() const override { return m_Window; }
+		virtual void* GetNativeRenderer() const override { return m_Renderer; }
+
 	private:
 		void Init(const WindowConfig& config); 
 		void ShutDown();
@@ -30,6 +35,7 @@ namespace Engine
 		SDL_Window* m_Window;  
 		SDL_Renderer* m_Renderer;
 		WindowData m_Data;
+		EventCallBackFunciton m_EventCallBack;
 	};
 }
 

@@ -1,6 +1,7 @@
 #pragma once 
 
 #include <Engine/Application/Core.h>  
+#include <Engine/Events/Event.h>
 #include <string>
 
 namespace Engine { 
@@ -20,15 +21,21 @@ namespace Engine {
 
 	class Window
 	{ 
-	public:
+	public: 
+		using EventCallBackFunciton = std::function<void(Event&)>;
+
 		virtual ~Window() = default;   
 
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0; 
 
-		virtual void* GetNativeWindow() const = 0;
+		virtual void* GetNativeWindow() const = 0; 
+		virtual void* GetNativeRenderer() const = 0;  
 
-		static Scope<Window> create(const WindowConfig& config = WindowConfig());
+		virtual void EventPolling() = 0;
+		virtual void SetEventCallBack(const EventCallBackFunciton& EventCallBack) = 0;
+
+		static Scope<Window> Create(const WindowConfig& config);
 	};
 }
 

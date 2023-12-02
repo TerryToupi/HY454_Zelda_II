@@ -1,6 +1,7 @@
 #pragma once 
 
-#include "LayerStack.h" 
+#include <Engine/Application/LayerStack.h>
+#include <Engine/Window/Window.h>
 #include <string>
 
 int main(int argc, char** argv);
@@ -19,6 +20,12 @@ namespace Engine
 		Application(const ApplicationConfig& config);
 		virtual ~Application(); 
 
+		void onEvent(Event& e);
+
+		Window& GetWindow() { return *m_Window; }
+
+		static Application& Instance() { return *s_Instance; }
+
 		void pushLayer(Layer *layer);  
 		void pushOverLay(Layer *Overlay);
 
@@ -26,7 +33,9 @@ namespace Engine
 
 	private: 
 		ApplicationConfig m_AppConfig;
-		LayerStack m_Layers; 
+		LayerStack m_Layers;  
+		Scope<Window> m_Window; 
+		bool m_Running;
 
 	private: 
 		static Application* s_Instance; 
