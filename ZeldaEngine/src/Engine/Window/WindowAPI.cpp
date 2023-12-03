@@ -1,6 +1,7 @@
 #include "WindowAPI.h"
 
-#include <Engine/Events/ApplicationEvents.h>
+#include <Engine/Events/ApplicationEvents.h> 
+#include <Engine/Events/KeyBoardEvents.h>
 
 namespace Engine 
 {
@@ -16,20 +17,46 @@ namespace Engine
 
 	void WindowAPI::EventPolling()
 	{ 
-		SDL_Event event;
-		if (SDL_PollEvent(&event))
+		SDL_Event sdlEvent; 
+		
+		if (SDL_PollEvent(&sdlEvent))
 		{
-			switch (event.type)
+			if (sdlEvent.type == SDL_QUIT)
 			{
-			case SDL_QUIT: 
-				ENGINE_CORE_TRACE("Event SDL_QUIT traced"); 
-				WindowCloseEvent event;
+				WindowCloseEvent event;  
 				m_EventCallBack(event);
-				break; 
+			} 
 
-			defaut: 
-				break;
-			}
+			else if (sdlEvent.type == SDL_WINDOWEVENT)
+			{
+				if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED)
+				{
+					ENGINE_CORE_TRACE("Window resized!");
+				}
+			} 
+
+			else if (sdlEvent.type == SDL_KEYDOWN)
+			{
+				if (sdlEvent.key.repeat)
+				{
+					KeyRepeatEvent event(sdlEvent.key.repeat);   
+					ENGINE_CORE_TRACE("SDL key pressed Event with keycode {0}", sdlEvent.key.keysym.sym);
+					m_EventCallBack(event);
+				} 
+				else
+				{
+					KeyTapEvent event; 
+					ENGINE_CORE_TRACE("SDL key tapped Event with keycode {0}", sdlEvent.key.keysym.sym);
+					m_EventCallBack(event);
+				}
+			} 
+
+			else if (sdlEvent.type == SDL_KEYUP)
+			{ 
+				KeyReleaseEvent event;
+				ENGINE_CORE_TRACE("SDL key released Event with keycode {0}", sdlEvent.key.keysym.sym);
+				m_EventCallBack(event);
+			} 
 		}
 	}
 
@@ -41,13 +68,15 @@ namespace Engine
 
 		int status = SDL_Init(SDL_INIT_VIDEO);
 		ENGINE_CORE_ASSERT(!status); 
-		
+	
+		Uint32 WindowFalgs = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS;
+
 		m_Window = SDL_CreateWindow(
 			m_Data.TitleBar.c_str(),
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
 			m_Data.Width, m_Data.Height,
-			0
+			WindowFalgs
 		); 
 		ENGINE_CORE_ASSERT(m_Window != nullptr); 
 		ENGINE_CORE_INFO("Window created succesfully!");
@@ -58,7 +87,7 @@ namespace Engine
 			SDL_RENDERER_PRESENTVSYNC
 		); 
 		ENGINE_CORE_ASSERT(m_Renderer != nullptr);
-		ENGINE_CORE_INFO("Renderer created succesfully!");
+		ENGINE_CORE_INFO("Renderer created succesfully!"); 
 	}
 
 	void WindowAPI::ShutDown()

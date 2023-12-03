@@ -1332,6 +1332,7 @@
     <ClInclude Include="src\Engine\Window\WindowAPI.h" />
     <ClInclude Include="src\Engine\Events\Event.h" />
     <ClInclude Include="src\Engine\Events\ApplicationEvents.h" />
+    <ClInclude Include="src\Engine\Events\KeyBoardEvents.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
