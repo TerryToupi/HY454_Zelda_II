@@ -57,7 +57,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\SDL2\include;vendor\glm;vendor\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\SDL2\include;vendor\glm;vendor\Glad\include;vendor\json\single_include\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -82,7 +82,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ENGINE_PLATFORM_WINDOWS;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\SDL2\include;vendor\glm;vendor\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\SDL2\include;vendor\glm;vendor\Glad\include;vendor\json\single_include\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -115,14 +115,17 @@
     <ClInclude Include="src\Engine\EngineHook.h" />
     <ClInclude Include="src\Engine\Events\ApplicationEvents.h" />
     <ClInclude Include="src\Engine\Events\Event.h" />
-    <ClInclude Include="src\Engine\Events\MouseEvents.h" />
     <ClInclude Include="src\Engine\Events\KeyBoardEvents.h" />
+    <ClInclude Include="src\Engine\Events\MouseEvents.h" />
     <ClInclude Include="src\Engine\Input\KeyBoardCodes.h" />
     <ClInclude Include="src\Engine\Input\MouseCodes.h" />
     <ClInclude Include="src\Engine\Logging\Log.h" />
+    <ClInclude Include="src\Engine\Renderer\Bitmap.h" />
+    <ClInclude Include="src\Engine\Render\Bitmap.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\UUID\UUID.h" />
     <ClInclude Include="src\Engine\Window\Window.h" />
+    <ClInclude Include="src\Engine\Window\WindowAPI.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -539,13 +542,13 @@
     <ClInclude Include="vendor\glm\glm\vec3.hpp" />
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
-    <ClInclude Include="src\Engine\Window\WindowAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp" />
     <ClCompile Include="src\Engine\Application\Layer.cpp" />
     <ClCompile Include="src\Engine\Application\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Logging\Log.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\UUID\UUID.cpp" />
     <ClCompile Include="src\Engine\Window\Window.cpp" />

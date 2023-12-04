@@ -7,3 +7,6 @@
 [submodule "ZeldaEngine/vendor/SDL2"]
 	path = ZeldaEngine/vendor/SDL2
 	url = https://github.com/SpookyScaryDev/SDL2.git
+[submodule "ZeldaEngine/vendor/json"]
+	path = ZeldaEngine/vendor/json
+	url = https://github.com/nlohmann/json

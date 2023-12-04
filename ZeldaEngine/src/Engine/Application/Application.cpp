@@ -1,6 +1,7 @@
 #include "Application.h" 
 #include "Layer.h"  
-#include "Engine/Assert/Assert.h"
+#include <Engine/Assert/Assert.h>
+#include <Engine/Renderer/Bitmap.h>
 
 namespace Engine {
 	Application* Application::s_Instance = nullptr;
@@ -13,7 +14,7 @@ namespace Engine {
 		
 		m_Window = Window::Create(WindowConfig(m_AppConfig.appName));  
 		m_Window->SetEventCallBack(EVENT_FUNCTION_BIND(Application::onEvent));
-
+		
 		m_Running = true;
 		ENGINE_CORE_INFO("Application successfully initialized!");
 	} 
@@ -49,15 +50,21 @@ namespace Engine {
 	}
 
 	void Application::Run()
-	{
+	{  
+		auto* window = (SDL_Window*)m_Window->GetNativeWindow();
+		Bitmap b("Assets/Overworld.bmp", 100, 100);
+		Bitmap backbuffer;
+		backbuffer.SetSurfice(SDL_GetWindowSurface(window));
+		Bitmap::Blit(b, NULL, backbuffer, NULL); 
+
 		while (m_Running) 
 		{  
-			Application::Instance().GetWindow().EventPolling(); 
+			Application::Instance().GetWindow().EventPolling();   
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 
 				(*layer)->onUpdate();   
-			}
+			} 
 		}
 	} 
 

@@ -10,7 +10,8 @@ project "ZeldaEngine"
 	files
 	{ 
 		"src/**.h",
-		"src/**.cpp",
+		"src/**.cpp", 
+		"src/**.hpp",
 		"vendor/glm/glm/**.hpp",
 		"vendor/glm/glm/**.inl"
 	} 
@@ -21,7 +22,8 @@ project "ZeldaEngine"
 		"vendor/spdlog/include",
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.Glad}"
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.json}"
 	} 
 
 	links

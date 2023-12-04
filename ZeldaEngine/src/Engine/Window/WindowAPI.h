@@ -26,14 +26,12 @@ namespace Engine
 		virtual void SetEventCallBack(const EventCallBackFunciton& EventCallBack) override { m_EventCallBack = EventCallBack; }
 
 		virtual void* GetNativeWindow() const override { return m_Window; }
-		virtual void* GetNativeRenderer() const override { return m_Renderer; }
 
 	private:
 		void Init(const WindowConfig& config); 
 		void ShutDown();
 	private: 
 		SDL_Window* m_Window;  
-		SDL_Renderer* m_Renderer;
 		WindowData m_Data;
 		EventCallBackFunciton m_EventCallBack;
 	};

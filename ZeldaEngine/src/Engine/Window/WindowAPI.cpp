@@ -4,6 +4,8 @@
 #include <Engine/Events/KeyBoardEvents.h> 
 #include <Engine/Events/MouseEvents.h> 
 
+#include <iostream>
+
 namespace Engine 
 {
 	WindowAPI::WindowAPI(const WindowConfig& config)
@@ -101,7 +103,7 @@ namespace Engine
 		int status = SDL_Init(SDL_INIT_VIDEO);
 		ENGINE_CORE_ASSERT(!status); 
 	
-		Uint32 WindowFalgs = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS;
+		Uint32 WindowFalgs = SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS;
 
 		m_Window = SDL_CreateWindow(
 			m_Data.TitleBar.c_str(),
@@ -109,24 +111,14 @@ namespace Engine
 			SDL_WINDOWPOS_CENTERED,
 			m_Data.Width, m_Data.Height,
 			WindowFalgs
-		); 
-		ENGINE_CORE_ASSERT(m_Window != nullptr); 
-		ENGINE_CORE_INFO("Window created succesfully!");
+		);  
 
-		m_Renderer = SDL_CreateRenderer(
-			m_Window, 
-			-1, 
-			SDL_RENDERER_PRESENTVSYNC
-		); 
-		ENGINE_CORE_ASSERT(m_Renderer != nullptr);
-		ENGINE_CORE_INFO("Renderer created succesfully!"); 
+		ENGINE_CORE_ASSERT(m_Window != nullptr); 
+		ENGINE_CORE_INFO("Window created succesfully!"); 
 	}
 
 	void WindowAPI::ShutDown()
 	{  
-		SDL_DestroyRenderer(m_Renderer); 
-		ENGINE_CORE_WARN("Shutting down SDL_Renderer"); 
-		SDL_Delay(10);
 		SDL_DestroyWindow(m_Window); 
 		ENGINE_CORE_WARN("Shutting down SDL_Window"); 
 		SDL_Delay(10); 

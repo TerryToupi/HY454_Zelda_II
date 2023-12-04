@@ -13,6 +13,15 @@
     <Filter Include="src\Engine\Assert">
       <UniqueIdentifier>{73BF66A7-DFD5-643D-284D-F05E94A235C5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Engine\Events">
+      <UniqueIdentifier>{B624EAB0-223B-E846-6BB2-7368D707B9CE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Engine\Input">
+      <UniqueIdentifier>{915689A8-7D4F-A8FA-A681-8D7F92D98706}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Engine\Loader">
+      <UniqueIdentifier>{9837BDC0-044E-BB56-4DC5-4678B91A8CDE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Engine\Logging">
       <UniqueIdentifier>{A873D2D8-9457-932E-FDB7-8D81E9BA7DB0}</UniqueIdentifier>
     </Filter>
@@ -69,6 +78,24 @@
     <ClInclude Include="src\Engine\EngineHook.h">
       <Filter>src\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Events\ApplicationEvents.h">
+      <Filter>src\Engine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Events\Event.h">
+      <Filter>src\Engine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Events\KeyBoardEvents.h">
+      <Filter>src\Engine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Events\MouseEvents.h">
+      <Filter>src\Engine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Input\KeyBoardCodes.h">
+      <Filter>src\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Input\MouseCodes.h">
+      <Filter>src\Engine\Input</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Logging\Log.h">
       <Filter>src\Engine\Logging</Filter>
     </ClInclude>
@@ -79,6 +106,9 @@
       <Filter>src\Engine\UUID</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Window\Window.h">
+      <Filter>src\Engine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Window\WindowAPI.h">
       <Filter>src\Engine\Window</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\common.hpp">
@@ -1329,13 +1359,8 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Window\WindowAPI.h" />
-    <ClInclude Include="src\Engine\Events\Event.h" />
-    <ClInclude Include="src\Engine\Events\ApplicationEvents.h" />
-    <ClInclude Include="src\Engine\Events\KeyBoardEvents.h" />
-    <ClInclude Include="src\Engine\Events\MouseEvents.h" />
-    <ClInclude Include="src\Engine\Input\KeyBoardCodes.h" />
-    <ClInclude Include="src\Engine\Input\MouseCodes.h" />
+    <ClInclude Include="src\Engine\Render\Bitmap.h" />
+    <ClInclude Include="src\Engine\Renderer\Bitmap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1359,6 +1384,9 @@
     <ClCompile Include="src\Engine\Window\Window.cpp">
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Window\WindowAPI.cpp" />
+    <ClCompile Include="src\Engine\Window\WindowAPI.cpp">
+      <Filter>src\Engine\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
   </ItemGroup>
 </Project>
