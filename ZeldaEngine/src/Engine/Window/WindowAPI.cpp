@@ -66,6 +66,29 @@ namespace Engine
 				MouseMotionEvent event(x, y);  
 				ENGINE_CORE_TRACE("SDL mouse movement cupture pos: x:{0}, y:{1}", x, y);
 				m_EventCallBack(event);
+			} 
+
+			else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
+			{ 
+				MouseClickPressEvent event;
+				ENGINE_CORE_TRACE("SDL mouse button press cupture: {0}", sdlEvent.button.button);
+				m_EventCallBack(event);
+			} 
+
+			else if (sdlEvent.type == SDL_MOUSEBUTTONUP)
+			{ 
+				MouseClickReleaseEvent event;
+				ENGINE_CORE_TRACE("SDL mouse button release cupture: {0}", sdlEvent.button.button);
+				m_EventCallBack(event);
+			} 
+
+			else if (sdlEvent.type == SDL_MOUSEWHEEL)
+			{ 
+				int32_t x = sdlEvent.wheel.x;
+				int32_t y = sdlEvent.wheel.y;
+				MouseScrollEvent event(x, y);
+				ENGINE_CORE_TRACE("SDL mouse wheel cupture: x:{0}, y:{1}", x, y);
+				m_EventCallBack(event);
 			}
 		}
 	}
