@@ -2,7 +2,7 @@
 
 #include <Engine/Events/ApplicationEvents.h> 
 #include <Engine/Events/KeyBoardEvents.h> 
-#include <Engine/Events/MouseEvents.h>
+#include <Engine/Events/MouseEvents.h> 
 
 namespace Engine 
 {
@@ -40,22 +40,23 @@ namespace Engine
 			{
 				if (sdlEvent.key.repeat)
 				{
-					KeyRepeatEvent event(sdlEvent.key.repeat);   
-					ENGINE_CORE_TRACE("SDL key pressed Event with keycode {0}", sdlEvent.key.keysym.sym);
+					InputKey key = (InputKey)sdlEvent.key.keysym.sym; 
+					bool repeat = sdlEvent.key.repeat;
+					KeyRepeatEvent event(key, repeat);   
 					m_EventCallBack(event);
 				} 
 				else
-				{
-					KeyTapEvent event; 
-					ENGINE_CORE_TRACE("SDL key tapped Event with keycode {0}", sdlEvent.key.keysym.sym);
+				{ 
+					InputKey key = (InputKey)sdlEvent.key.keysym.sym;
+					KeyTapEvent event(key); 
 					m_EventCallBack(event);
 				}
 			} 
 
 			else if (sdlEvent.type == SDL_KEYUP)
 			{ 
-				KeyReleaseEvent event;
-				ENGINE_CORE_TRACE("SDL key released Event with keycode {0}", sdlEvent.key.keysym.sym);
+				InputKey key = (InputKey)sdlEvent.key.keysym.sym;
+				KeyReleaseEvent event(key);
 				m_EventCallBack(event);
 			}
 
@@ -64,21 +65,20 @@ namespace Engine
 				int x, y;
 				SDL_GetMouseState(&x, &y); 
 				MouseMotionEvent event(x, y);  
-				ENGINE_CORE_TRACE("SDL mouse movement cupture pos: x:{0}, y:{1}", x, y);
 				m_EventCallBack(event);
 			} 
 
 			else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
-			{ 
-				MouseClickPressEvent event;
-				ENGINE_CORE_TRACE("SDL mouse button press cupture: {0}", sdlEvent.button.button);
+			{
+				MButton button = (MButton)sdlEvent.button.button;
+				MouseClickPressEvent event(button);
 				m_EventCallBack(event);
 			} 
 
 			else if (sdlEvent.type == SDL_MOUSEBUTTONUP)
 			{ 
-				MouseClickReleaseEvent event;
-				ENGINE_CORE_TRACE("SDL mouse button release cupture: {0}", sdlEvent.button.button);
+				MButton button = (MButton)sdlEvent.button.button;
+				MouseClickReleaseEvent event(button);
 				m_EventCallBack(event);
 			} 
 
@@ -87,7 +87,6 @@ namespace Engine
 				int32_t x = sdlEvent.wheel.x;
 				int32_t y = sdlEvent.wheel.y;
 				MouseScrollEvent event(x, y);
-				ENGINE_CORE_TRACE("SDL mouse wheel cupture: x:{0}, y:{1}", x, y);
 				m_EventCallBack(event);
 			}
 		}

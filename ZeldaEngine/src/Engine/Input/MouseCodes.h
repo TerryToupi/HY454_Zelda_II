@@ -1,0 +1,20 @@
+#pragma once 
+
+#include <SDL_mouse.h>
+
+namespace Engine
+{
+	enum MButton
+	{
+		BUTTON_LEFT     = 1,
+		BUTTON_MIDDLE   = 2,
+		BUTTON_RIGHT    = 3,
+		BUTTON_X1       = 4,
+		BUTTON_X2       = 5,
+		BUTTON_LMASK    = SDL_BUTTON(SDL_BUTTON_LEFT),
+		BUTTON_MMASK    = SDL_BUTTON(SDL_BUTTON_MIDDLE),
+		BUTTON_RMASK    = SDL_BUTTON(SDL_BUTTON_RIGHT),
+		BUTTON_X1MASK   = SDL_BUTTON(SDL_BUTTON_X1),
+		BUTTON_X2MASK   = SDL_BUTTON(SDL_BUTTON_X2),
+	};
+}

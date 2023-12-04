@@ -1334,6 +1334,8 @@
     <ClInclude Include="src\Engine\Events\ApplicationEvents.h" />
     <ClInclude Include="src\Engine\Events\KeyBoardEvents.h" />
     <ClInclude Include="src\Engine\Events\MouseEvents.h" />
+    <ClInclude Include="src\Engine\Input\KeyBoardCodes.h" />
+    <ClInclude Include="src\Engine\Input\MouseCodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">

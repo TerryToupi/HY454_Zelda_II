@@ -1,42 +1,57 @@
 #pragma once 
 
-#include <Engine/Events/Event.h>
+#include <Engine/Events/Event.h> 
+#include <Engine/Input/KeyBoardCodes.h>
 
 namespace Engine
 {
 	class KeyTapEvent : public Event
 	{ 
 	public:
-		KeyTapEvent() = default;
+		KeyTapEvent(InputKey key) 
+			: m_Key(key)
+		{ 
+			ENGINE_CORE_TRACE("key tap cuptured: {0}", m_Key);
+		}
 
 		static EventType GetEventTypeStatic() { return EventType::KeyTyped; }
 		virtual	EventType GetEventType() const override { return GetEventTypeStatic(); }
 		virtual int GetCategoryFlags() const override { return (KeyBoardEvents | InputEvents); }
-	private:
+	private: 
+		InputKey m_Key;
 	}; 
 
 	class KeyRepeatEvent : public Event
 	{  
 	public:
-		KeyRepeatEvent(bool active) 
-			: m_Active(active)
+		KeyRepeatEvent(InputKey key, bool active) 
+			: m_Key(key), m_Active(active)
 		{
+			ENGINE_CORE_TRACE("key press cuptured: {0}", m_Key);
 		}
 	
 		static EventType GetEventTypeStatic() { return EventType::KeyPressed; }
 		virtual	EventType GetEventType() const override { return GetEventTypeStatic(); }
 		virtual int GetCategoryFlags() const override { return (KeyBoardEvents | InputEvents); }
-	private: 
+	private:  
+		InputKey m_Key;
 		bool m_Active;
 	}; 
 
 	class KeyReleaseEvent : public Event
 	{ 
 	public:
-		KeyReleaseEvent() = default; 
+		KeyReleaseEvent(InputKey key) 
+			: m_Key(key)
+		{
+			ENGINE_CORE_TRACE("key release cuptured: {0}", m_Key);
+		}
 
 		static EventType GetEventTypeStatic() { return EventType::KeyReleased; }
 		virtual	EventType GetEventType() const override { return GetEventTypeStatic(); }
-		virtual int GetCategoryFlags() const override { return (KeyBoardEvents | InputEvents); }
+		virtual int GetCategoryFlags() const override { return (KeyBoardEvents | InputEvents); } 
+
+	private:
+		InputKey m_Key;
 	};
 }
