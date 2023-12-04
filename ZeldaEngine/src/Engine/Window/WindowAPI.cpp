@@ -1,7 +1,8 @@
 #include "WindowAPI.h"
 
 #include <Engine/Events/ApplicationEvents.h> 
-#include <Engine/Events/KeyBoardEvents.h>
+#include <Engine/Events/KeyBoardEvents.h> 
+#include <Engine/Events/MouseEvents.h>
 
 namespace Engine 
 {
@@ -56,7 +57,16 @@ namespace Engine
 				KeyReleaseEvent event;
 				ENGINE_CORE_TRACE("SDL key released Event with keycode {0}", sdlEvent.key.keysym.sym);
 				m_EventCallBack(event);
-			} 
+			}
+
+			else if (sdlEvent.type == SDL_MOUSEMOTION)
+			{
+				int x, y;
+				SDL_GetMouseState(&x, &y); 
+				MouseMotionEvent event(x, y);  
+				ENGINE_CORE_TRACE("SDL mouse movement cupture pos: x:{0}, y:{1}", x, y);
+				m_EventCallBack(event);
+			}
 		}
 	}
 
