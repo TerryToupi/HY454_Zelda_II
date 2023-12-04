@@ -26,7 +26,16 @@ namespace Engine {
 	void Application::onEvent(Event& e)
 	{ 
 		EventDispatcher dispatcher(e); 
-		dispatcher.Dispatch < WindowCloseEvent > (EVENT_FUNCTION_BIND(Application::OnWindowClose));
+		dispatcher.Dispatch < WindowCloseEvent > (EVENT_FUNCTION_BIND(Application::OnWindowClose)); 
+
+		for (auto overlay = m_Layers.rOverlaysFront(); overlay != m_Layers.rOverLaysBack(); overlay++)
+		{
+			(*overlay)->onEvent(e);
+		}
+		for (auto layer = m_Layers.rLayersFront(); layer != m_Layers.rLayersBack(); layer++)
+		{
+			(*layer)->onEvent(e);
+		}
 	}
 
 	void Application::pushLayer(Layer* layer)
@@ -45,7 +54,7 @@ namespace Engine {
 		{  
 			Application::Instance().GetWindow().EventPolling(); 
 
-			for (auto layer = m_Layers.stackFront(); layer != m_Layers.stackBack(); layer++)
+			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 
 				(*layer)->onUpdate();   
 			}

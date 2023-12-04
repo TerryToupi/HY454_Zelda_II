@@ -9,7 +9,7 @@ skoupidi::skoupidi()
 
 void skoupidi::onAttach()
 {
-	m_Scene = new Scene();
+
 
 }
 
@@ -18,5 +18,9 @@ void skoupidi::onDettach()
 }
 
 void skoupidi::onUpdate()
+{
+}
+
+void skoupidi::onEvent(Event& e)
 {
 }

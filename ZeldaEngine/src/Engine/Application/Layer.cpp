@@ -1,9 +1,8 @@
 #include "Layer.h"
 
 namespace Engine {
-	Layer::Layer(std::string name)
+	Layer::Layer(std::string name) 
+		: m_Name(name)
 	{ 
-		this->m_Name = name; 
-		this->m_Scene = nullptr;
 	}
 }

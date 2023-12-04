@@ -1,22 +1,21 @@
 #pragma once
 
-#include <string>
+#include <Engine/Application/Core.h> 
+#include <Engine/Events/Event.h>
+
+#include <string> 
 
 namespace Engine {  
-	class Scene;
-
 	class Layer
 	{  
 	public: 
 		Layer(std::string name);
 		virtual ~Layer() = default;
 
-		void virtual onAttach() {}
-		void virtual onDettach() {}
-		void virtual onUpdate() {}  
-
-	public: 
-		Scene* m_Scene; 
+		virtual void onAttach() {}
+		virtual void onDettach() {}
+		virtual void onUpdate() {}    
+		virtual void onEvent(Event& e) {}
 
 	private: 
 		std::string m_Name;

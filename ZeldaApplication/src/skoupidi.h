@@ -14,5 +14,7 @@ public:
 
 	void onDettach();
 
-	void onUpdate();
+	void onUpdate(); 
+
+	void onEvent(Event& e);
 };
