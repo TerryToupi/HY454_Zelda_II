@@ -109,6 +109,7 @@
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Application\Application.h" />
     <ClInclude Include="src\Engine\Application\Core.h" />
+    <ClInclude Include="src\Engine\Application\GameTime.h" />
     <ClInclude Include="src\Engine\Application\Layer.h" />
     <ClInclude Include="src\Engine\Application\LayerStack.h" />
     <ClInclude Include="src\Engine\Assert\Assert.h" />
@@ -120,8 +121,10 @@
     <ClInclude Include="src\Engine\Input\KeyBoardCodes.h" />
     <ClInclude Include="src\Engine\Input\MouseCodes.h" />
     <ClInclude Include="src\Engine\Logging\Log.h" />
+    <ClInclude Include="src\Engine\Math\Math.h" />
     <ClInclude Include="src\Engine\Renderer\Bitmap.h" />
-    <ClInclude Include="src\Engine\Render\Bitmap.h" />
+    <ClInclude Include="src\Engine\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Engine\Renderer\Render.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\UUID\UUID.h" />
     <ClInclude Include="src\Engine\Window\Window.h" />
@@ -547,8 +550,11 @@
     <ClCompile Include="src\Engine\Application\Application.cpp" />
     <ClCompile Include="src\Engine\Application\Layer.cpp" />
     <ClCompile Include="src\Engine\Application\LayerStack.cpp" />
+    <ClCompile Include="src\Engine\Application\GameTime.cpp" />
     <ClCompile Include="src\Engine\Logging\Log.cpp" />
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Render.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\UUID\UUID.cpp" />
     <ClCompile Include="src\Engine\Window\Window.cpp" />

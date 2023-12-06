@@ -1,5 +1,5 @@
 #include "Bitmap.h"
-#include <Engine/Application/Application.h>
+#include <Engine/Application/Application.h> 
 
 namespace Engine
 {
@@ -16,7 +16,7 @@ namespace Engine
 	
 	Bitmap::~Bitmap()
 	{  
-		clear();
+		//clear();
 	} 
 	
 	void Bitmap::clear() 

@@ -9,7 +9,8 @@ project "ZeldaApplication"
 	files 
 	{
 		"src/**.h",
-		"src/**.cpp",
+		"src/**.cpp", 
+		"src/**.hpp"
 	}
 
 	includedirs 
@@ -19,7 +20,8 @@ project "ZeldaApplication"
 
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.Glad}"
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.json}"
 	}  
 
 	links 

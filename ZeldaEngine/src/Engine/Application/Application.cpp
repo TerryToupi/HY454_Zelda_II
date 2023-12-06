@@ -1,7 +1,8 @@
 #include "Application.h" 
 #include "Layer.h"  
 #include <Engine/Assert/Assert.h>
-#include <Engine/Renderer/Bitmap.h>
+#include <Engine/Renderer/Bitmap.h> 
+#include <Engine/Renderer/Render.h>
 
 namespace Engine {
 	Application* Application::s_Instance = nullptr;
@@ -12,22 +13,38 @@ namespace Engine {
 		ENGINE_CORE_ASSERT(!s_Instance); 
 		s_Instance = this; 
 		
-		m_Window = Window::Create(WindowConfig(m_AppConfig.appName));  
+		uint64_t default_w = 1024;
+		uint64_t default_h = 720;
+		m_Window = Window::Create(WindowConfig(m_AppConfig.appName, default_w, default_h));  
 		m_Window->SetEventCallBack(EVENT_FUNCTION_BIND(Application::onEvent));
 		
-		m_Running = true;
-		ENGINE_CORE_INFO("Application successfully initialized!");
+		m_Running = true; 
+		m_LastFrameTime = 0;
+		ENGINE_CORE_INFO("Application successfully initialized!"); 
+	
+		SystemClock::Init();
+		RendererConfig rConfig; 
+		rConfig.fb_height = default_h ;
+		rConfig.fb_width = default_w; 
+		Renderer::Init(rConfig);
+		
 	} 
 
 	Application::~Application()
-	{
-		ENGINE_CORE_WARN("Shutting down Application");
+	{ 
+		SystemClock::Shutdown(); 
+		ENGINE_CORE_WARN("Shutting down SystemTimer"); 
+		Renderer::Shutdown(); 
+		ENGINE_CORE_WARN("Shutting down Renderer"); 
+
+		ENGINE_CORE_WARN("Shutting down Application"); 
 	}
 
 	void Application::onEvent(Event& e)
 	{ 
 		EventDispatcher dispatcher(e); 
-		dispatcher.Dispatch < WindowCloseEvent > (EVENT_FUNCTION_BIND(Application::OnWindowClose)); 
+		dispatcher.Dispatch<WindowCloseEvent>(EVENT_FUNCTION_BIND(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(EVENT_FUNCTION_BIND(Application::OnWindowResize));
 
 		for (auto overlay = m_Layers.rOverlaysFront(); overlay != m_Layers.rOverLaysBack(); overlay++)
 		{
@@ -50,16 +67,14 @@ namespace Engine {
 	}
 
 	void Application::Run()
-	{  
-		auto* window = (SDL_Window*)m_Window->GetNativeWindow();
-		Bitmap b("Assets/Overworld.bmp", 100, 100);
-		Bitmap backbuffer;
-		backbuffer.SetSurfice(SDL_GetWindowSurface(window));
-		Bitmap::Blit(b, NULL, backbuffer, NULL); 
+	{   
+		Time time = SystemClock::Get().GetTime();  
+		Time timeStep = time - m_LastFrameTime;
+		m_LastFrameTime = timeStep;
 
 		while (m_Running) 
 		{  
-			Application::Instance().GetWindow().EventPolling();   
+			Application::Instance().GetWindow().EventPolling();    
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 
@@ -71,6 +86,12 @@ namespace Engine {
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{ 
 		m_Running = false; 
+		return true;
+	} 
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{ 
+		Renderer::ResizeFrameBuffer(e.GetWidth(), e.GetHeight());
 		return true;
 	}
 }

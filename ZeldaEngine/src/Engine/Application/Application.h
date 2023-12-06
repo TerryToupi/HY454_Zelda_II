@@ -3,6 +3,8 @@
 #include <Engine/Application/LayerStack.h>
 #include <Engine/Window/Window.h> 
 #include <Engine/Events/ApplicationEvents.h>
+#include <Engine/Application/GameTime.h>
+
 #include <string>
 
 int main(int argc, char** argv);
@@ -32,12 +34,14 @@ namespace Engine
 
 	private: 
 		void Run();
-		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowClose(WindowCloseEvent& e); 
+		bool OnWindowResize(WindowResizeEvent& e);
 
 	private: 
 		ApplicationConfig m_AppConfig;
 		LayerStack m_Layers;  
-		Scope<Window> m_Window; 
+		Scope<Window> m_Window;  
+		Time m_LastFrameTime;
 		bool m_Running;
 
 	private: 

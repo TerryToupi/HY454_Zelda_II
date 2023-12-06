@@ -9,7 +9,7 @@ namespace Engine
 		Scene(const Scene& other) = default;
 
 	public:
-
+		
 	private:
 	};
 };

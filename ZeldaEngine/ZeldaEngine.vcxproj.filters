@@ -19,11 +19,11 @@
     <Filter Include="src\Engine\Input">
       <UniqueIdentifier>{915689A8-7D4F-A8FA-A681-8D7F92D98706}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Engine\Loader">
-      <UniqueIdentifier>{9837BDC0-044E-BB56-4DC5-4678B91A8CDE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Engine\Logging">
       <UniqueIdentifier>{A873D2D8-9457-932E-FDB7-8D81E9BA7DB0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Engine\Renderer">
+      <UniqueIdentifier>{F838018B-649A-DE98-ED07-254B59681558}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Engine\Scene">
       <UniqueIdentifier>{AF1338A9-9B0C-57FB-C43E-3C80B0963607}</UniqueIdentifier>
@@ -98,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="src\Engine\Logging\Log.h">
       <Filter>src\Engine\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Bitmap.h">
+      <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene\Scene.h">
       <Filter>src\Engine\Scene</Filter>
@@ -1359,8 +1362,10 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Render\Bitmap.h" />
-    <ClInclude Include="src\Engine\Renderer\Bitmap.h" />
+    <ClInclude Include="src\Engine\Math\Math.h" />
+    <ClInclude Include="src\Engine\Renderer\Render.h" />
+    <ClInclude Include="src\Engine\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Engine\Application\GameTime.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1375,6 +1380,9 @@
     <ClCompile Include="src\Engine\Logging\Log.cpp">
       <Filter>src\Engine\Logging</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Bitmap.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Scene\Scene.cpp">
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
@@ -1387,6 +1395,8 @@
     <ClCompile Include="src\Engine\Window\WindowAPI.cpp">
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Render.cpp" />
+    <ClCompile Include="src\Engine\Application\GameTime.cpp" />
   </ItemGroup>
 </Project>

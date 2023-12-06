@@ -33,8 +33,11 @@ namespace Engine
 			else if (sdlEvent.type == SDL_WINDOWEVENT)
 			{
 				if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED)
-				{
-					ENGINE_CORE_TRACE("Window resized!");
+				{  
+					uint64_t Width = sdlEvent.window.data1;
+					uint64_t Height = sdlEvent.window.data2;
+					WindowResizeEvent event(Width, Height); 
+					m_EventCallBack(event);
 				}
 			} 
 
@@ -111,7 +114,9 @@ namespace Engine
 			SDL_WINDOWPOS_CENTERED,
 			m_Data.Width, m_Data.Height,
 			WindowFalgs
-		);  
+		);   
+
+		SDL_SetWindowMinimumSize(m_Window, m_Data.Width, m_Data.Height);
 
 		ENGINE_CORE_ASSERT(m_Window != nullptr); 
 		ENGINE_CORE_INFO("Window created succesfully!"); 
