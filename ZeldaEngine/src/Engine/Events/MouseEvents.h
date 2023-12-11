@@ -66,7 +66,7 @@ namespace Engine
 		MouseScrollEvent(int32_t Xoffset, int32_t Yoffset) 
 			: m_Xoffset(Xoffset), m_Yoffset(Yoffset)
 		{ 
-			ENGINE_CORE_TRACE("Mouse Screll event cupture: x:{0}, y:{1}", m_Xoffset, m_Yoffset);
+			ENGINE_CORE_TRACE("Mouse Scroll event cupture: x:{0}, y:{1}", m_Xoffset, m_Yoffset);
 		}  
 
 		uint32_t GetX() { return m_Xoffset; }

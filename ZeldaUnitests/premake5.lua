@@ -1,4 +1,4 @@
-project "ZeldaApplication" 
+project "ZeldaUnitests" 
 	kind		"ConsoleApp" 
 	cppdialect	"C++17" 
 	language	"C++"   
@@ -41,7 +41,7 @@ project "ZeldaApplication"
 
 	postbuildcommands 
 	{
-	  "{COPY} %{DLLbuildDir.SDL2}/Debug-windows-x86_64/SDL2.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaApplication"
+	  "{COPY} %{DLLbuildDir.SDL2}/Debug-windows-x86_64/SDL2.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaUnitests"
 	}
 		
 	filter "configurations:Debug" 

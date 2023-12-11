@@ -60,6 +60,7 @@
     <None Include="..\ZeldaEngine\premake5.lua" />
     <None Include="..\ZeldaEngine\vendor\Glad\premake5.lua" />
     <None Include="..\ZeldaEngine\vendor\SDL2\premake5.lua" />
+    <None Include="..\ZeldaUnitests\premake5.lua" />
     <None Include="..\premake5.lua" />
     <None Include="premake5.lua" />
   </ItemGroup>

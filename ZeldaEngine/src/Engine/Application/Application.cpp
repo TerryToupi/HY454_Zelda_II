@@ -24,7 +24,7 @@ namespace Engine {
 	
 		SystemClock::Init();
 		RendererConfig rConfig; 
-		rConfig.fb_height = default_h ;
+		rConfig.fb_height = default_h;
 		rConfig.fb_width = default_w; 
 		Renderer::Init(rConfig);
 		

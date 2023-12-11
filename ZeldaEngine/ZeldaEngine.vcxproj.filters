@@ -22,6 +22,9 @@
     <Filter Include="src\Engine\Logging">
       <UniqueIdentifier>{A873D2D8-9457-932E-FDB7-8D81E9BA7DB0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Engine\Math">
+      <UniqueIdentifier>{2B817A79-970C-E83D-A01D-6B320C28443E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Engine\Renderer">
       <UniqueIdentifier>{F838018B-649A-DE98-ED07-254B59681558}</UniqueIdentifier>
     </Filter>
@@ -66,6 +69,9 @@
     <ClInclude Include="src\Engine\Application\Core.h">
       <Filter>src\Engine\Application</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Application\GameTime.h">
+      <Filter>src\Engine\Application</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Application\Layer.h">
       <Filter>src\Engine\Application</Filter>
     </ClInclude>
@@ -99,7 +105,16 @@
     <ClInclude Include="src\Engine\Logging\Log.h">
       <Filter>src\Engine\Logging</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Math\Math.h">
+      <Filter>src\Engine\Math</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Bitmap.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Framebuffer.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Render.h">
       <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene\Scene.h">
@@ -1362,13 +1377,12 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Math\Math.h" />
-    <ClInclude Include="src\Engine\Renderer\Render.h" />
-    <ClInclude Include="src\Engine\Renderer\Framebuffer.h" />
-    <ClInclude Include="src\Engine\Application\GameTime.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
+      <Filter>src\Engine\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Application\GameTime.cpp">
       <Filter>src\Engine\Application</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Application\Layer.cpp">
@@ -1383,6 +1397,12 @@
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp">
       <Filter>src\Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Framebuffer.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Render.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Scene\Scene.cpp">
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
@@ -1395,8 +1415,5 @@
     <ClCompile Include="src\Engine\Window\WindowAPI.cpp">
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Renderer\Framebuffer.cpp" />
-    <ClCompile Include="src\Engine\Renderer\Render.cpp" />
-    <ClCompile Include="src\Engine\Application\GameTime.cpp" />
   </ItemGroup>
 </Project>

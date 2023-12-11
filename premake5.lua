@@ -27,7 +27,7 @@ outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["SDL2"] = "%{wks.location}/ZeldaEngine/vendor/SDL2/include"
 IncludeDir["Glad"] = "%{wks.location}/ZeldaEngine/vendor/Glad/include"
-IncludeDir["glm"] = "%{wks.location}/ZeldaEngine/vendor/glm"
+IncludeDir["glm"]  = "%{wks.location}/ZeldaEngine/vendor/glm"
 IncludeDir["json"] = "%{wks.location}/ZeldaEngine/vendor/json/single_include/nlohmann"
 
 DLLbuildDir = {} 
@@ -45,5 +45,6 @@ group "Engine"
 group "" 
 
 group "Application"
-	include  "ZeldaApplication"
+	include  "ZeldaApplication" 
+	include	 "ZeldaUnitests"
 group "" 

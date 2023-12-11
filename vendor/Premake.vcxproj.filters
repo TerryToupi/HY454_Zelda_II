@@ -19,6 +19,9 @@
     <Filter Include="..\ZeldaEngine\vendor\SDL2">
       <UniqueIdentifier>{F7DD2706-E3ED-D3D6-4CA7-38F538D6C26F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="..\ZeldaUnitests">
+      <UniqueIdentifier>{FFAB85DB-EBA4-A42D-14D7-89B2002F8439}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\ZeldaApplication\premake5.lua">
@@ -32,6 +35,9 @@
     </None>
     <None Include="..\ZeldaEngine\vendor\SDL2\premake5.lua">
       <Filter>..\ZeldaEngine\vendor\SDL2</Filter>
+    </None>
+    <None Include="..\ZeldaUnitests\premake5.lua">
+      <Filter>..\ZeldaUnitests</Filter>
     </None>
     <None Include="..\premake5.lua">
       <Filter>..</Filter>

@@ -73,9 +73,6 @@
     <Lib>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
-    <PostBuildEvent>
-      <Command>IF EXIST $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Debug-windows-x86_64\ZeldaApplication &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Debug-windows-x86_64\ZeldaApplication &gt; nul)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -101,9 +98,6 @@
     <Lib>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
-    <PostBuildEvent>
-      <Command>IF EXIST $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Release-windows-x86_64\ZeldaApplication &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)\ZeldaEngine\vendor\SDL2\Binaries\Debug-windows-x86_64\SDL2.dll $(SolutionDir)\bin\Release-windows-x86_64\ZeldaApplication &gt; nul)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
@@ -548,9 +542,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp" />
+    <ClCompile Include="src\Engine\Application\GameTime.cpp" />
     <ClCompile Include="src\Engine\Application\Layer.cpp" />
     <ClCompile Include="src\Engine\Application\LayerStack.cpp" />
-    <ClCompile Include="src\Engine\Application\GameTime.cpp" />
     <ClCompile Include="src\Engine\Logging\Log.cpp" />
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
     <ClCompile Include="src\Engine\Renderer\Framebuffer.cpp" />
