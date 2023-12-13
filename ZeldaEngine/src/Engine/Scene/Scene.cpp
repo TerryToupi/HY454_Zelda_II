@@ -1,8 +1,18 @@
-#include "Scene.h"
+#include "Scene.h" 
 
-namespace Engine { 
+#include <Engine/Scene/Sprite.h> 
+#include <Engine/Scene/SpriteData.h>
 
-	Scene::Scene()
+namespace Engine {  
+
+	Sprite Scene::CreateSprite(std::string tag)
 	{ 
+		m_SpritesMap.emplace(tag, SpriteData(tag)); 
+		return { tag, this };
 	} 
+
+	Sprite Scene::GetSprite(std::string tag)
+	{
+		return { tag, this };
+	}
 }

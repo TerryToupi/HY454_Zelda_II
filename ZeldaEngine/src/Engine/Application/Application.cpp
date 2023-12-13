@@ -27,7 +27,6 @@ namespace Engine {
 		rConfig.fb_height = default_h;
 		rConfig.fb_width = default_w; 
 		Renderer::Init(rConfig);
-		
 	} 
 
 	Application::~Application()
@@ -57,24 +56,42 @@ namespace Engine {
 	}
 
 	void Application::pushLayer(Layer* layer)
-	{ 
-		m_Layers.pushBackLayer(layer);
+	{  
+		layer->onAttach();
+		m_Layers.pushBackLayer(layer); 
 	}
 
 	void Application::pushOverLay(Layer* Overlay)
-	{ 
+	{  
+		Overlay->onAttach();
 		m_Layers.pushBackOverLay(Overlay);
+	}
+
+	void Application::popLayer()
+	{  
+		m_Layers.popBackLayer();
+	}
+
+	void Application::popOverLay()
+	{ 
+		m_Layers.popBackOverLay();
 	}
 
 	void Application::Run()
 	{   
 		Time time = SystemClock::Get().GetTime();  
 		Time timeStep = time - m_LastFrameTime;
-		m_LastFrameTime = timeStep;
+		m_LastFrameTime = timeStep;  
 
-		while (m_Running) 
-		{  
-			Application::Instance().GetWindow().EventPolling();    
+		auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
+		Bitmap b = Bitmap("Assets/Overworld.bmp", 200, 200); 
+		Bitmap b1 = Bitmap("Assets/9k.bmp", 200, 200);
+		Bitmap::Blit(b, NULL, fb, NULL);
+		Bitmap::Blit(b1, NULL, fb, NULL);
+
+		while (m_Running)
+		{
+			Application::Instance().GetWindow().EventPolling(); 
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 

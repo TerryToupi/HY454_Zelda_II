@@ -7,7 +7,7 @@ namespace Engine
 {
 	FrameBuffer::FrameBuffer(const uint64_t width, const uint64_t height)
 	{ 
-		Init(width, height);
+		Init(width, height);  
 	} 
 	
 	void FrameBuffer::Init(const uint64_t width, const uint64_t height)

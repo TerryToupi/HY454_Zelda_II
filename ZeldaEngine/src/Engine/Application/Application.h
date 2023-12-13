@@ -32,6 +32,9 @@ namespace Engine
 		void pushLayer(Layer *layer);  
 		void pushOverLay(Layer *Overlay);
 
+		void popLayer();  
+		void popOverLay(); 
+
 	private: 
 		void Run();
 		bool OnWindowClose(WindowCloseEvent& e); 

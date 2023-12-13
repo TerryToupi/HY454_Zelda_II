@@ -1377,6 +1377,8 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Scene\SpriteData.h" />
+    <ClInclude Include="src\Engine\Scene\Sprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1415,5 +1417,7 @@
     <ClCompile Include="src\Engine\Window\WindowAPI.cpp">
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Scene\SpriteData.cpp" />
+    <ClCompile Include="src\Engine\Scene\Sprite.cpp" />
   </ItemGroup>
 </Project>

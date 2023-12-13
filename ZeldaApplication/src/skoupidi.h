@@ -16,5 +16,8 @@ public:
 
 	void onUpdate(); 
 
-	void onEvent(Event& e);
+	void onEvent(Event& e);  
+
+private:
+	Reference<Scene> m_Scene;
 };

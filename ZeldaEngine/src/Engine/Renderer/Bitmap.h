@@ -28,20 +28,21 @@ namespace Engine
 		uint64_t GetWidth() { return m_Width; }
 		uint64_t GetHeight() { return m_Height; }
 
-		void clear();   
+		static void Blit(Bitmap& src, const Rect* from,
+						  Bitmap& dest, Rect* to);  
 
-		static void Blit(Bitmap src, const Rect* from,
-						  Bitmap dest, Rect* to);  
-
-		static void ScaledBlit(Bitmap src, const Rect* from, 
-								Bitmap dest, Rect* to); 
+		static void ScaledBlit(Bitmap& src, const Rect* from, 
+								Bitmap& dest, Rect* to); 
 	protected: 
-		friend FrameBuffer;
-		void SetSurfice(SDL_Surface* surface) { m_Surface = surface; }
-	private: 
+		void SetSurfice(SDL_Surface* surface) { m_Surface = surface; }   
+
+	protected:
+		friend class FrameBuffer;
+
+	private:
 		SDL_Surface* m_Surface; 
 
 		uint64_t m_Width; 
-		uint64_t m_Height;
+		uint64_t m_Height;   
 	};
 }

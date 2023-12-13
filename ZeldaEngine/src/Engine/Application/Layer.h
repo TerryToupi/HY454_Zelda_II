@@ -14,7 +14,7 @@ namespace Engine {
 
 		virtual void onAttach() {}
 		virtual void onDettach() {}
-		virtual void onUpdate() {}    
+		virtual void onUpdate() {}     
 		virtual void onEvent(Event& e) {}
 
 	private: 

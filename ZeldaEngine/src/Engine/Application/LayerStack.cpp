@@ -44,24 +44,26 @@ namespace Engine {
 	}
 
 	void LayerStack::pushBackLayer(Layer* layer)
-	{ 
-		layer->onAttach();
+	{  
 		m_LayerStack.emplace_back(layer);
 	} 
 
 	void LayerStack::pushBackOverLay(Layer* overLay)
 	{  
-		overLay->onAttach();
 		m_OverLayStack.emplace_back(overLay);
 	} 
 
 	void LayerStack::popBackLayer()
-	{ 
+	{  
+		ENGINE_CORE_ASSERT(!m_LayerStack.empty()); 
+		m_LayerStack.back()->onDettach();
 		m_LayerStack.pop_back();
 	} 
 
 	void LayerStack::popBackOverLay()
 	{ 
+		ENGINE_CORE_ASSERT(!m_OverLayStack.empty()); 
+		m_OverLayStack.back()->onDettach();
 		m_OverLayStack.pop_back();
 	}
 }

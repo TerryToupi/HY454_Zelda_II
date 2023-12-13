@@ -28,7 +28,7 @@ namespace Engine
 		return *Renderer::s_Instance;
 	}
 
-	FrameBuffer& Renderer::GetFrameBuffer()
+	FrameBuffer& Renderer::FrameBufferInstance()
 	{
 		return *s_Instance->m_Framebuff;
 	}
@@ -40,7 +40,7 @@ namespace Engine
 
 	void Renderer::ResizeFrameBuffer(const uint64_t width, const uint64_t height)
 	{ 
-		Renderer::s_Instance->GetFrameBuffer().resize(width, height); 
+		Renderer::s_Instance->FrameBufferInstance().resize(width, height); 
 	}
 
 }

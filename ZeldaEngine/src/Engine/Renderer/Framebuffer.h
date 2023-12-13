@@ -13,9 +13,8 @@ namespace Engine
 
 		uint64_t GetHeight() { return m_BackBuffer.GetHeight(); }
 		uint64_t GetWidth() { return m_BackBuffer.GetWidth(); }
-		
-		operator Bitmap() const { return m_BackBuffer; } 
-
+	
+		Bitmap& GetBackBuffer() { return m_BackBuffer; }
 	private:
 		void Init(const uint64_t width, const uint64_t height); 
 

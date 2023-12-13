@@ -24,7 +24,7 @@ namespace Engine
 		static void Init(const RendererConfig& config); 
 		static void Shutdown();
 
-		static FrameBuffer& GetFrameBuffer();
+		static FrameBuffer& FrameBufferInstance();
 		static Scope<FrameBuffer> CreateFrameBuffer(const uint64_t Width, const uint64_t Height);
 		static void ResizeFrameBuffer(const uint64_t width, const uint64_t height);
 	private:  

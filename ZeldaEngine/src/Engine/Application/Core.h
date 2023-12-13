@@ -15,10 +15,12 @@ namespace Engine
 	template<typename T>
 	using Reference = std::shared_ptr<T>;
 	template<typename T, typename ...Args> 
-	constexpr Scope<T> MakeReference(Args&& ... args)
+	constexpr Reference<T> MakeReference(Args&& ... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
-	} 
+	}  
+
+	typedef unsigned char byte;
 }   
 
 #define BIT_SHIFT(x)			(1 << x)
