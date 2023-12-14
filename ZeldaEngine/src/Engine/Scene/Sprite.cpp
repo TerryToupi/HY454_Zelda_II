@@ -1,7 +1,9 @@
 #include "Sprite.h" 
 
 #include <Engine/Scene/Scene.h> 
-#include <Engine/Scene/SpriteData.h>
+#include <Engine/Scene/SpriteData.h> 
+#include <Engine/Scene/MotionQuantizer.h> 
+#include <Engine/Scene/Clipper.h>
 
 namespace Engine
 {
@@ -11,8 +13,11 @@ namespace Engine
 	}
 
 	void Sprite::SetMover(const Mover& move)
-	{
-		//TODO
+	{ 
+		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName); 
+		spData->mover = move; 
+		spData->quantizer.SetMover(spData->mover); 
+		return;
 	}
 
 	const Rect Sprite::GetBox(void) const
@@ -28,8 +33,10 @@ namespace Engine
 	}
 
 	void Sprite::Move(int dx, int dy)
-	{ 
-		//TODO
+	{  
+		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);
+		spData->quantizer.Move(GetBox(), &dx, &dy); 
+		return;
 	}
 
 	void Sprite::SetPos(int _x, int _y)
@@ -89,6 +96,31 @@ namespace Engine
 		return spData->isVisible;
 	}
 
-	
+	void Sprite::Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const
+	{ 
+		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);    
+
+		Rect clippedBox; 
+		Rect dpyPos;
+
+		if (clipper.Clip(GetBox(), dpyArea, &dpyPos, &clippedBox))
+		{
+			Rect clippedFrame
+			{
+				spData->frameBox.x + clippedBox.x,
+				spData->frameBox.y + clippedBox.y, 
+				clippedBox.w, 
+				clippedBox.h
+			}; 
+
+			Bitmap::Blit( 
+				// INSERT FILM HERE
+				Bitmap(), 
+				&clippedFrame, 
+				dest, 
+				&dpyPos
+			);
+		}
+	}
 }
 

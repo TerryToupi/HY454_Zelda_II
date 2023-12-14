@@ -1,7 +1,8 @@
 #pragma once 
 #include<Engine/Application/Core.h> 
 #include<Engine/Math/Math.h> 
-#include<Engine/UUID/UUID.h>
+#include<Engine/UUID/UUID.h> 
+#include<Engine/Scene/MotionQuantizer.h>
 
 #include<functional>
 
@@ -12,19 +13,16 @@ namespace Engine
 	public:
 		using Mover = std::function<void(const Rect&, int* dx, int* dy)>;   
 	
-		byte	frameNo = 0;
-		Rect	frameBox;
-		int		x = 0, y = 0; 
-		bool	isVisible = false; 
+		byte			frameNo = 0;
+		Rect			frameBox;
+		int				x = 0, y = 0; 
+		bool			isVisible = false; 
 		// ANIMATION FILM
 		// BoundingArea
-		unsigned	zorder = 0; 
-		std::string	typeID, stateID; 
-		Mover	mover; 
-		// MotionQuantizer 
-		
-
-		std::string test = "Karagiozis";
+		unsigned		zorder = 0; 
+		std::string		typeID, stateID; 
+		Mover			mover;  
+		MotionQuantizer	quantizer;
 		
 		SpriteData(const std::string& name);
 		SpriteData(const std::string& name, ID uuid); 

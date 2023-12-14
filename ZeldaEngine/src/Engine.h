@@ -27,7 +27,9 @@
 
 #include "Engine/Scene/Scene.h" 
 #include "Engine/Scene/Sprite.h" 
-#include "Engine/Scene/SpriteData.h"
+#include "Engine/Scene/SpriteData.h" 
+#include "Engine/Scene/MotionQuantizer.h" 
+#include "Engine/Scene/Clipper.h"
  
 #include "Engine/UUID/UUID.h" 
 

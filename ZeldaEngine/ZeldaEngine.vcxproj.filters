@@ -120,6 +120,12 @@
     <ClInclude Include="src\Engine\Scene\Scene.h">
       <Filter>src\Engine\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Scene\Sprite.h">
+      <Filter>src\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\SpriteData.h">
+      <Filter>src\Engine\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\UUID\UUID.h">
       <Filter>src\Engine\UUID</Filter>
     </ClInclude>
@@ -1377,8 +1383,10 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Scene\SpriteData.h" />
-    <ClInclude Include="src\Engine\Scene\Sprite.h" />
+    <ClInclude Include="src\Engine\Scene\MotionQuantizer.h">
+      <Filter>src\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\Clipper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1408,6 +1416,12 @@
     <ClCompile Include="src\Engine\Scene\Scene.cpp">
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Scene\Sprite.cpp">
+      <Filter>src\Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene\SpriteData.cpp">
+      <Filter>src\Engine\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\UUID\UUID.cpp">
       <Filter>src\Engine\UUID</Filter>
     </ClCompile>
@@ -1417,7 +1431,9 @@
     <ClCompile Include="src\Engine\Window\WindowAPI.cpp">
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Scene\SpriteData.cpp" />
-    <ClCompile Include="src\Engine\Scene\Sprite.cpp" />
+    <ClCompile Include="src\Engine\Scene\MotionQuantizer.cpp">
+      <Filter>src\Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene\Clipper.cpp" />
   </ItemGroup>
 </Project>

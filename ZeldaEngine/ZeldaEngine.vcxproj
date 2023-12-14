@@ -100,6 +100,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\Scene\Clipper.h" />
+    <ClInclude Include="src\Engine\Scene\MotionQuantizer.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Application\Application.h" />
     <ClInclude Include="src\Engine\Application\Core.h" />
@@ -543,6 +545,8 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\Scene\Clipper.cpp" />
+    <ClCompile Include="src\Engine\Scene\MotionQuantizer.cpp" />
     <ClCompile Include="src\Engine\Application\Application.cpp" />
     <ClCompile Include="src\Engine\Application\GameTime.cpp" />
     <ClCompile Include="src\Engine\Application\Layer.cpp" />
