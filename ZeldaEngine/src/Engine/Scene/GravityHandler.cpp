@@ -3,7 +3,7 @@
 namespace Engine
 {
 	void GravityHandler::Check(const Rect& r)
-	{ 
+	{
 		if (gravityAddicted) 
 		{
 			if (onSolidGround(r)) 

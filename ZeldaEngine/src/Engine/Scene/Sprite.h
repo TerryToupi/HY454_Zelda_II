@@ -1,13 +1,13 @@
 #pragma once 
 
 #include<Engine/Application/Core.h> 
-#include<Engine/Renderer/Bitmap.h>  
+#include<Engine/Renderer/Bitmap.h>   
 #include<string>
 
 namespace Engine
 { 
 	class Clipper;
-	class Scene;  
+	class Scene;   
 	class GravityHandler;
 
 	class Sprite
@@ -30,16 +30,16 @@ namespace Engine
 		// void		SetBoundingArea()  
 		// auto		GetBoundingArea() const -> const BoundingArea* { return boundingArea; }
 		
-		const std::string& GetTypeId();
-		void		SetVisibility(bool v);
-		bool		IsVisible(void) const;  
-		bool		CollisionCheck(const Sprite* s) const;  
-		GravityHandler& GetGravityHandler(void); 
-		Sprite&		SetHasDirectMotion(bool v); 
-		bool		GetHasDirectMotion(void) const;
+		const std::string&	GetTypeId();
+		void				SetVisibility(bool v);
+		bool				IsVisible(void) const;  
+		bool				CollisionCheck(const Sprite* s) const;  
+		GravityHandler&		GetGravityHandler(void); 
+		Sprite&				SetHasDirectMotion(bool v); 
+		bool				GetHasDirectMotion(void) const;
 
 
-		void		Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const;
+		void Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const;
 
 	private:  
 		Scene* m_Scene; 

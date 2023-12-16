@@ -13,7 +13,7 @@ namespace Engine
 		using OnStopFalling = std::function<void(void)>;
 
 	public:
-		template <typename T> void SetOnStartFalling(const OnSolidGroundPred& f)
+		template <typename T> void SetOnStartFalling(const T& f)
 		{
 			onStartFalling = f;
 		} 
@@ -28,7 +28,8 @@ namespace Engine
 			onSolidGround = f;
 		} 
 
-		void Reset(void) { isFalling = false; }
+		void Reset(void) { isFalling = false; } 
+
 		void Check(const Rect& r); 
 
 	protected:

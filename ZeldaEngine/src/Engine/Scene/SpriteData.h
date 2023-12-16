@@ -3,7 +3,8 @@
 #include<Engine/Math/Math.h> 
 #include<Engine/UUID/UUID.h> 
 #include<Engine/Scene/MotionQuantizer.h> 
-#include<Engine/Scene/GravityHandler.h>
+#include<Engine/Scene/GravityHandler.h> 
+#include<Engine/Scene/Clipper.h>
 
 #include<functional>
 

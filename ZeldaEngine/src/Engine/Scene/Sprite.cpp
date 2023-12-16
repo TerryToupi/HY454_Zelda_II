@@ -2,9 +2,6 @@
 
 #include <Engine/Scene/Scene.h> 
 #include <Engine/Scene/SpriteData.h> 
-#include <Engine/Scene/MotionQuantizer.h>  
-#include <Engine/Scene/GravityHandler.h>
-#include <Engine/Scene/Clipper.h>
 
 namespace Engine
 {
