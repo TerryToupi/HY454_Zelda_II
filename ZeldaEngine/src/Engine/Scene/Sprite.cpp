@@ -2,7 +2,8 @@
 
 #include <Engine/Scene/Scene.h> 
 #include <Engine/Scene/SpriteData.h> 
-#include <Engine/Scene/MotionQuantizer.h> 
+#include <Engine/Scene/MotionQuantizer.h>  
+#include <Engine/Scene/GravityHandler.h>
 #include <Engine/Scene/Clipper.h>
 
 namespace Engine
@@ -32,11 +33,22 @@ namespace Engine
 		return r;
 	}
 
-	void Sprite::Move(int dx, int dy)
+	Sprite& Sprite::Move(int dx, int dy)
 	{  
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);
-		spData->quantizer.Move(GetBox(), &dx, &dy); 
-		return;
+		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName); 
+		
+		if (spData->directMotion)
+		{
+			spData->x += dx; 
+			spData->y += dy;
+		} 
+		else
+		{
+			spData->quantizer.Move(GetBox(), &dx, &dy);  
+			spData->gravity.Check(GetBox());
+		}
+
+		return *this;
 	}
 
 	void Sprite::SetPos(int _x, int _y)
@@ -96,6 +108,31 @@ namespace Engine
 		return spData->isVisible;
 	}
 
+	// TODO
+	bool Sprite::CollisionCheck(const Sprite* s) const
+	{
+		return false;
+	}
+
+	GravityHandler& Sprite::GetGravityHandler(void)
+	{ 
+		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
+		return spData->gravity; 
+	}
+
+	Sprite& Sprite::SetHasDirectMotion(bool v)
+	{ 
+		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
+		spData->directMotion = v; 
+		return *this;
+	}
+
+	bool Sprite::GetHasDirectMotion(void) const
+	{
+		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
+		return spData->directMotion;
+	}
+
 	void Sprite::Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const
 	{ 
 		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);    
@@ -114,7 +151,7 @@ namespace Engine
 			}; 
 
 			Bitmap::Blit( 
-				// INSERT FILM HERE
+				// TODO INSERT FILM HERE
 				Bitmap(), 
 				&clippedFrame, 
 				dest, 

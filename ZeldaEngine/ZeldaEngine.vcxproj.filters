@@ -1387,6 +1387,7 @@
       <Filter>src\Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene\Clipper.h" />
+    <ClInclude Include="src\Engine\Scene\CollisionChecker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1435,5 +1436,8 @@
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Scene\Clipper.cpp" />
+    <ClCompile Include="src\Engine\Scene\GravityHandler.h" />
+    <ClCompile Include="src\Engine\Scene\GravityHandler.cpp" />
+    <ClCompile Include="src\Engine\Scene\CollisionChecker.cpp" />
   </ItemGroup>
 </Project>

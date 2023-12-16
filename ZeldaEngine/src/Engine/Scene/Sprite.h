@@ -1,13 +1,14 @@
 #pragma once 
 
 #include<Engine/Application/Core.h> 
-#include<Engine/Renderer/Bitmap.h>
+#include<Engine/Renderer/Bitmap.h>  
 #include<string>
 
 namespace Engine
 { 
 	class Clipper;
-	class Scene; 
+	class Scene;  
+	class GravityHandler;
 
 	class Sprite
 	{ 
@@ -18,7 +19,7 @@ namespace Engine
 
 		void		SetMover(const Mover& move); 
 		const Rect	GetBox(void) const; 
-		void		Move(int dx, int dy);
+		Sprite&		Move(int dx, int dy);
 		void		SetPos(int _x, int _y); 
 		void		SetZorder(unsigned z); 
 		unsigned	GetZorder(void); 
@@ -32,7 +33,12 @@ namespace Engine
 		const std::string& GetTypeId();
 		void		SetVisibility(bool v);
 		bool		IsVisible(void) const;  
-		bool		CollisionCheck(const Sprite& s) const; 
+		bool		CollisionCheck(const Sprite* s) const;  
+		GravityHandler& GetGravityHandler(void); 
+		Sprite&		SetHasDirectMotion(bool v); 
+		bool		GetHasDirectMotion(void) const;
+
+
 		void		Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const;
 
 	private:  
