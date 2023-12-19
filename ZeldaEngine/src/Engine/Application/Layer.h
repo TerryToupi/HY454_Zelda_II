@@ -12,8 +12,8 @@ namespace Engine {
 		Layer(std::string name);
 		virtual ~Layer() = default;
 
-		virtual void onAttach() {}
-		virtual void onDettach() {}
+		virtual void onStart() {}
+		virtual void onDelete() {}
 		virtual void onUpdate() {}     
 		virtual void onEvent(Event& e) {}
 

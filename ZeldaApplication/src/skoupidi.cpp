@@ -15,7 +15,7 @@ void skoupidi::onAttach()
 	Sprite nai = m_Scene->CreateSprite(THE_GREATES_MPAMPIS);
 }
 
-void skoupidi::onDettach()
+void skoupidi::onDelete()
 { 
 	
 }

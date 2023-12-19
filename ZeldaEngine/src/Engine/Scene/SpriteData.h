@@ -1,16 +1,17 @@
-#pragma once 
+#pragma once  
+#include<Engine/Scene/LatelyDestroyable.h>
 #include<Engine/Application/Core.h> 
 #include<Engine/Math/Math.h> 
 #include<Engine/UUID/UUID.h> 
-#include<Engine/Scene/MotionQuantizer.h> 
-#include<Engine/Scene/GravityHandler.h> 
-#include<Engine/Scene/Clipper.h>
+#include<Engine/Renderer/MotionQuantizer.h> 
+#include<Engine/Renderer/GravityHandler.h> 
+#include<Engine/Renderer/Clipper.h>
 
 #include<functional>
 
 namespace Engine
 { 
-	class SpriteData
+	class SpriteData : public LatelyDestroyable
 	{
 	public:
 		using Mover = std::function<void(const Rect&, int* dx, int* dy)>;   

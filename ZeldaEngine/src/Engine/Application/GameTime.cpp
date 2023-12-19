@@ -36,6 +36,4 @@ namespace Engine
 	{
 		return SystemClock::milli_sec();
 	}
-
-	
 }

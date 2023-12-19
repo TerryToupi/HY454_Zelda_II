@@ -1,8 +1,5 @@
 #include "Sprite.h" 
 
-#include <Engine/Scene/Scene.h> 
-#include <Engine/Scene/SpriteData.h> 
-
 namespace Engine
 {
 	Sprite::Sprite(std::string name, Scene* scene) 

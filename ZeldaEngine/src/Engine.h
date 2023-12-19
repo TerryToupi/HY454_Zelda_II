@@ -24,12 +24,12 @@
 #include "Engine/Renderer/Render.h"
 #include "Engine/Renderer/Bitmap.h"
 #include "Engine/Renderer/Framebuffer.h"  
+#include "Engine/Renderer/MotionQuantizer.h" 
+#include "Engine/Renderer/Clipper.h"
 
 #include "Engine/Scene/Scene.h" 
 #include "Engine/Scene/Sprite.h" 
 #include "Engine/Scene/SpriteData.h" 
-#include "Engine/Scene/MotionQuantizer.h" 
-#include "Engine/Scene/Clipper.h"
  
 #include "Engine/UUID/UUID.h" 
 

@@ -57,18 +57,18 @@ namespace Engine {
 
 	void Application::pushLayer(Layer* layer)
 	{  
-		layer->onAttach();
+		layer->onStart();
 		m_Layers.pushBackLayer(layer); 
 	}
 
 	void Application::pushOverLay(Layer* Overlay)
 	{  
-		Overlay->onAttach();
+		Overlay->onStart();
 		m_Layers.pushBackOverLay(Overlay);
 	}
 
 	void Application::popLayer()
-	{  
+	{	 
 		m_Layers.popBackLayer();
 	}
 
@@ -96,7 +96,14 @@ namespace Engine {
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 
 				(*layer)->onUpdate();   
-			} 
+			}  
+
+			for (auto overlay = m_Layers.OverlaysFront(); overlay != m_Layers.OverLaysBack(); overlay++)
+			{ 
+				(*overlay)->onUpdate();   
+			}  
+
+
 		}
 	} 
 

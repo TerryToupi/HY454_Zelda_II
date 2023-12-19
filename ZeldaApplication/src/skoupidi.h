@@ -12,7 +12,7 @@ public:
 
 	void onAttach();
 
-	void onDettach();
+	void onDelete();
 
 	void onUpdate(); 
 

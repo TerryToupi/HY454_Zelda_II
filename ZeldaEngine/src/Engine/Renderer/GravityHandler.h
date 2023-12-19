@@ -12,7 +12,9 @@ namespace Engine
 		using OnStartFalling = std::function<void(void)>;
 		using OnStopFalling = std::function<void(void)>;
 
-	public:
+	public: 
+		GravityHandler() = default;
+
 		template <typename T> void SetOnStartFalling(const T& f)
 		{
 			onStartFalling = f;

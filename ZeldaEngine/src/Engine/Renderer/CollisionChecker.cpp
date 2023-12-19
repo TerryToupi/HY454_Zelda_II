@@ -1,4 +1,5 @@
 #include "CollisionChecker.h" 
+
 #include <Engine/Scene/Sprite.h>
 
 namespace Engine

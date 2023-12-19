@@ -55,15 +55,15 @@ namespace Engine {
 
 	void LayerStack::popBackLayer()
 	{  
-		ENGINE_CORE_ASSERT(!m_LayerStack.empty()); 
-		m_LayerStack.back()->onDettach();
+		ENGINE_CORE_ASSERT(!m_LayerStack.empty());  
+		m_LayerStack.back()->onDelete();
 		m_LayerStack.pop_back();
 	} 
 
 	void LayerStack::popBackOverLay()
 	{ 
 		ENGINE_CORE_ASSERT(!m_OverLayStack.empty()); 
-		m_OverLayStack.back()->onDettach();
+		m_OverLayStack.back()->onDelete();
 		m_OverLayStack.pop_back();
 	}
 }

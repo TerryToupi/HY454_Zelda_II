@@ -12,9 +12,11 @@ public:
 
 	void onAttach();
 
-	void onDettach();
+	void onDelete();
 
 	void onUpdate(); 
 
-	void onEvent(Event& e);
+	void onEvent(Event& e);  
+
+private: 
 };
