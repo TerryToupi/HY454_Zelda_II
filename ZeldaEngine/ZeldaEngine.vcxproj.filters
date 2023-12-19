@@ -1437,8 +1437,6 @@
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Clipper.cpp" />
-    <ClCompile Include="src\Engine\Renderer\GravityHandler.h" />
-    <ClCompile Include="src\Engine\Renderer\GravityHandler.cpp" />
     <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp" />
     <ClCompile Include="src\Engine\Scene\LatelyDestroyable.cpp" />
   </ItemGroup>

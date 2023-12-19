@@ -1,5 +1,7 @@
 #include "Sprite.h" 
 
+#include <Engine/Scene/Scene.h>
+
 namespace Engine
 {
 	Sprite::Sprite(std::string name, Scene* scene) 
@@ -39,7 +41,7 @@ namespace Engine
 		else
 		{
 			spData->quantizer.Move(GetBox(), &dx, &dy);  
-			spData->gravity.Check(GetBox());
+			//spData->gravity.Check(GetBox());
 		}
 
 		return *this;
@@ -108,11 +110,11 @@ namespace Engine
 		return false;
 	}
 
-	GravityHandler& Sprite::GetGravityHandler(void)
-	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
-		return spData->gravity; 
-	}
+	//GravityHandler& Sprite::GetGravityHandler(void)
+	//{ 
+	//	auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
+	//	return spData->gravity; 
+	//}
 
 	Sprite& Sprite::SetHasDirectMotion(bool v)
 	{ 

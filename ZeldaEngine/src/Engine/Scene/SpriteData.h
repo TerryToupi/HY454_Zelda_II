@@ -4,7 +4,7 @@
 #include<Engine/Math/Math.h> 
 #include<Engine/UUID/UUID.h> 
 #include<Engine/Renderer/MotionQuantizer.h> 
-#include<Engine/Renderer/GravityHandler.h> 
+//#include<Engine/Renderer/GravityHandler.h> 
 #include<Engine/Renderer/Clipper.h>
 
 #include<functional>
@@ -27,7 +27,7 @@ namespace Engine
 		std::string		typeID, stateID; 
 		Mover			mover;  
 		MotionQuantizer	quantizer; 
-		GravityHandler	gravity;
+		//GravityHandler	gravity;
 		
 		SpriteData(const std::string& name);
 		SpriteData(const std::string& name, ID uuid); 

@@ -34,7 +34,7 @@ namespace Engine
 		void				SetVisibility(bool v);
 		bool				IsVisible(void) const;  
 		bool				CollisionCheck(const Sprite* s) const;  
-		GravityHandler&		GetGravityHandler(void); 
+		//GravityHandler&		GetGravityHandler(void); 
 		Sprite&				SetHasDirectMotion(bool v); 
 		bool				GetHasDirectMotion(void) const;
 
