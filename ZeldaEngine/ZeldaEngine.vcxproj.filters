@@ -1389,6 +1389,7 @@
     <ClInclude Include="src\Engine\Renderer\Clipper.h" />
     <ClInclude Include="src\Engine\Renderer\CollisionChecker.h" />
     <ClInclude Include="src\Engine\Scene\LatelyDestroyable.h" />
+    <ClInclude Include="src\Engine\Scene\Tiles.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1439,5 +1440,6 @@
     <ClCompile Include="src\Engine\Renderer\Clipper.cpp" />
     <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp" />
     <ClCompile Include="src\Engine\Scene\LatelyDestroyable.cpp" />
+    <ClCompile Include="src\Engine\Scene\Tiles.cpp" />
   </ItemGroup>
 </Project>

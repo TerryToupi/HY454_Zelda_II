@@ -13,8 +13,8 @@ namespace Engine {
 		ENGINE_CORE_ASSERT(!s_Instance); 
 		s_Instance = this; 
 		
-		uint64_t default_w = 1024;
-		uint64_t default_h = 720;
+		uint64_t default_w = 640;
+		uint64_t default_h = 480;
 		m_Window = Window::Create(WindowConfig(m_AppConfig.appName, default_w, default_h));  
 		m_Window->SetEventCallBack(EVENT_FUNCTION_BIND(Application::onEvent));
 		
@@ -82,12 +82,6 @@ namespace Engine {
 		Time time = SystemClock::Get().GetTime();  
 		Time timeStep = time - m_LastFrameTime;
 		m_LastFrameTime = timeStep;  
-
-		auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
-		Bitmap b = Bitmap("Assets/Overworld.bmp", 200, 200); 
-		Bitmap b1 = Bitmap("Assets/9k.bmp", 200, 200);
-		Bitmap::Blit(b, NULL, fb, NULL);
-		Bitmap::Blit(b1, NULL, fb, NULL);
 
 		while (m_Running)
 		{

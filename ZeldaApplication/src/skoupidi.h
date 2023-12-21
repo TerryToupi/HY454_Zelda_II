@@ -10,7 +10,7 @@ public:
 	skoupidi(); 
 	~skoupidi() = default;
 
-	void onAttach();
+	void onStart();
 
 	void onDelete();
 
@@ -19,5 +19,6 @@ public:
 	void onEvent(Event& e);  
 
 private:
-	Reference<Scene> m_Scene;
+	Reference<Scene> m_Scene; 
+	Reference<TileLayer> m_Tiles;
 };
