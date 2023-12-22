@@ -10,13 +10,15 @@ public:
 	skoupidi(); 
 	~skoupidi() = default;
 
-	void onStart();
+	void onStart() override;
 
-	void onDelete();
+	void onDelete() override;
 
-	void onUpdate(); 
+	void onUpdate() override; 
 
-	void onEvent(Event& e);  
+	void onEvent(Event& e) override;   
+
+	bool function(KeyTapEvent& e);
 
 private:
 	Reference<Scene> m_Scene; 

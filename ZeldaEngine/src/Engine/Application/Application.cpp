@@ -4,6 +4,10 @@
 #include <Engine/Renderer/Bitmap.h> 
 #include <Engine/Renderer/Render.h>
 
+#include <Engine/Scene/Tiles.h> 
+
+#include <SDL.h>
+
 namespace Engine {
 	Application* Application::s_Instance = nullptr;
 
@@ -96,8 +100,6 @@ namespace Engine {
 			{ 
 				(*overlay)->onUpdate();   
 			}  
-
-
 		}
 	} 
 

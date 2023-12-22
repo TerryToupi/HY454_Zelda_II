@@ -25,6 +25,7 @@ namespace Engine
 
 #define BIT_SHIFT(x)			(1 << x)
 #define EVENT_FUNCTION_BIND(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+#define APP_EVENT_FUNTION(fn) [this](auto&&... args) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 #include <Engine/Logging/Log.h>
 #include <Engine/Assert/Assert.h> 

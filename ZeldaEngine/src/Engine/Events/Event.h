@@ -51,7 +51,7 @@ namespace Engine
 		{
 			if (m_Event.GetEventType() == T::GetEventTypeStatic())
 			{
-				m_Event.handled = m_Event.handled || function(static_cast<T&>(m_Event)); 
+				m_Event.handled |= function(static_cast<T&>(m_Event)); 
 				return true;
 			} 
 

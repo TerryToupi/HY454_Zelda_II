@@ -37,5 +37,13 @@ namespace Engine
 	void Bitmap::Load(std::string path)
 	{ 
 		m_Surface = SDL_LoadBMP(path.c_str()); 
+	} 
+
+	void Bitmap::Generate(uint32_t width, uint32_t height)
+	{ 
+		m_Surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+		SDL_SetSurfaceBlendMode(m_Surface, SDL_BLENDMODE_BLEND); 
+		SetHeight(height);
+		SetWidth(width);
 	}
 }

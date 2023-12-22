@@ -5,8 +5,8 @@
 
 namespace Engine
 { 
-	typedef unsigned short	Index; 
-	typedef uint32_t		Dim;
+	typedef uint16_t	Index; 
+	typedef uint16_t	Dim;
 
 	class TileLayer
 	{  
