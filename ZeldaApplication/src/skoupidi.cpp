@@ -14,10 +14,6 @@ void skoupidi::onStart()
 	m_Scene = MakeReference<Scene>();
 	m_Tiles = MakeReference<TileLayer>();
 	m_Tiles->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
-
-	auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
-	Rect disp{ 0, 0, fb.GetWidth(), fb.GetHeight() };
-	m_Tiles->Display(fb, disp);
 }
 
 void skoupidi::onDelete()
@@ -27,7 +23,9 @@ void skoupidi::onDelete()
 
 void skoupidi::onUpdate()
 {
-	
+	auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
+	Rect disp{ 0, 0, fb.GetWidth(), fb.GetHeight() };
+	m_Tiles->Display(fb, disp);
 }
 
 void skoupidi::onEvent(Event& e)
@@ -39,67 +37,83 @@ void skoupidi::onEvent(Event& e)
 
 bool skoupidi::mover(KeyTapEvent& e) 
 {   
-	float SPEED = 10; 
+	float SPEED = 5; 
 
 	if (e.GetKey() == InputKey::a)
 	{ 
-		if(m_Tiles->CanScrollHoriz(-SPEED))
+		if (m_Tiles->CanScrollHoriz(-SPEED))
+		{
 			wdx = -SPEED; 
+			wdy = 0;
+		}
 	}  
 	else if (e.GetKey() == InputKey::w)
 	{ 
-		if(m_Tiles->CanScrollVert(+SPEED))
-			wdy = -SPEED;  
+		if (m_Tiles->CanScrollVert(+SPEED))
+		{
+			wdy = -SPEED;   
+			wdx = 0;
+		}
 	}
 	else if (e.GetKey() == InputKey::d)
 	{ 
-		if(m_Tiles->CanScrollHoriz(+SPEED))
+		if (m_Tiles->CanScrollHoriz(+SPEED))
+		{
 			wdx = +SPEED;
+			wdy = 0;
+		}
 	}
 	else if (e.GetKey() == InputKey::s)
 	{ 
-		if(m_Tiles->CanScrollVert(-SPEED))
-			wdy = +SPEED;
+		if (m_Tiles->CanScrollVert(-SPEED))
+		{
+			wdy = +SPEED; 
+			wdx = 0;
+		}
 	}  
 
 	m_Tiles->Scroll(wdx, wdy);
-
-	auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
-	Rect disp{ 0, 0, fb.GetWidth(), fb.GetHeight() };
-	m_Tiles->Display(fb, disp);
 	return true;
 }
 
 bool skoupidi::mover(KeyRepeatEvent& e)
 {
-	float SPEED = 10;
+	float SPEED = 5;
 
 	if (e.GetKey() == InputKey::a)
 	{
-		if (m_Tiles->CanScrollHoriz(SPEED))
+		if (m_Tiles->CanScrollHoriz(-SPEED))
+		{
 			wdx = -SPEED;
+			wdy = 0;
+		}
 	}
 	else if (e.GetKey() == InputKey::w)
 	{
-		if (m_Tiles->CanScrollVert(SPEED))
+		if (m_Tiles->CanScrollVert(+SPEED))
+		{
 			wdy = -SPEED;
+			wdx = 0;
+		}
 	}
 	else if (e.GetKey() == InputKey::d)
 	{
-		if (m_Tiles->CanScrollHoriz(SPEED))
+		if (m_Tiles->CanScrollHoriz(+SPEED))
+		{
 			wdx = +SPEED;
+			wdy = 0;
+		}
 	}
 	else if (e.GetKey() == InputKey::s)
 	{
-		if (m_Tiles->CanScrollVert(SPEED))
+		if (m_Tiles->CanScrollVert(-SPEED))
+		{
 			wdy = +SPEED;
-	} 
+			wdx = 0;
+		}
+	}
 
 	m_Tiles->Scroll(wdx, wdy); 
-
-	auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
-	Rect disp{ 0, 0, fb.GetWidth(), fb.GetHeight() };
-	m_Tiles->Display(fb, disp);
 	return true;
 }
 

@@ -116,9 +116,9 @@ namespace Engine
 			); 
 
 		m_ViewWindow.x = 0; 
-		m_ViewWindow.y = 0;
-		m_ViewWindow.w = fb.GetWidth();
-		m_ViewWindow.h = fb.GetHeight();
+		m_ViewWindow.y = 2 * TILE_HEIGHT;
+		m_ViewWindow.w = 24 * TILE_WIDTH;
+		m_ViewWindow.h = 13 * TILE_HEIGHT;
 	} 
 
 	void TileLayer::SetTile(Dim col, Dim row, Index index)
@@ -185,8 +185,8 @@ namespace Engine
 		}
 
 		Rect dpySrc { m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h }; 
-		Rect dpyDest { displayArea.x, displayArea.y, m_ViewWindow.w, m_ViewWindow.h };
-		Bitmap::Blit(
+		Rect dpyDest { displayArea.x, displayArea.y, displayArea.w, displayArea.h };
+		Bitmap::ScaledBlit(
 			m_DpyBuffer, &dpySrc,
 			dest, &dpyDest
 		);
