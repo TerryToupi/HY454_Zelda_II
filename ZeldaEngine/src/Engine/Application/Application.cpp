@@ -90,6 +90,8 @@ namespace Engine {
 		while (m_Running)
 		{
 			Application::Instance().GetWindow().EventPolling(); 
+			Bitmap interBuff;
+			interBuff.Generate(640, 480);
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 

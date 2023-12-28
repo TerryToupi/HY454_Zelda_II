@@ -4,11 +4,11 @@
 
 using namespace Engine; 
 
-class skoupidi : public Layer 
+class layer0 : public Layer 
 { 
 public:
-	skoupidi(); 
-	~skoupidi() = default;
+	layer0(); 
+	~layer0() = default;
 
 	void onStart() override;
 

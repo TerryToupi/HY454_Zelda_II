@@ -5,8 +5,8 @@
 
 namespace Engine
 { 
-	typedef uint16_t	Index; 
-	typedef uint16_t	Dim;
+	typedef uint16_t Index; 
+	typedef uint16_t Dim;
 
 	class TileLayer
 	{  
@@ -39,14 +39,15 @@ namespace Engine
 
 		void LoadTiles(std::string path);
 
-		TileLayer() = default;
-		~TileLayer() = default; 
+		TileLayer(uint32_t id);
+		~TileLayer();
 
 	private:
 		void Allocate();
 			
-	private:
-		Index* m_Map = nullptr; 
+	private: 
+		uint32_t	m_Id = 0;
+		Index*		m_Map = nullptr; 
 		// GRID
 		Dim			m_Totalrows = 0, m_Totalcolumns = 0; 
 		Bitmap		m_Tileset;

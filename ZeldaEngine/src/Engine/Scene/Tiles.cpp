@@ -22,7 +22,7 @@
 #define		TILEX_MASK			0xFF00
 #define		TILEX_SHIFT			8
 #define		TILEY_MASK			0x00FF
-#define		EMTY_TILE			0x00
+#define		EMTY_TILE			0xFFFF
 
 using json = nlohmann::json;
 
@@ -32,15 +32,15 @@ namespace Engine
 
 	Index MakeIndex(byte row, byte col)
 	{
-		return (MUL_TILE_WIDTH(col) << TILEX_SHIFT) | MUL_TILE_HEIGHT(row);
+		return (MUL_TILE_WIDTH(col) << TILEX_SHIFT) | MUL_TILE_HEIGHT(row);  
 	} 
 
-	Dim TileY(Index index) 
-	{  
-		return MUL_TILE_HEIGHT(index >> TILEX_SHIFT);
+	Dim TileX(Index index) 
+	{   
+		return index >> TILEX_SHIFT;
 	} 
 
-	Dim TileX(Index index)
+	Dim TileY(Index index)
 	{
 		return index & TILEY_MASK;
 	} 
@@ -49,7 +49,7 @@ namespace Engine
 	{  
 		if (tile != EMTY_TILE)
 		{
-			Rect TileSetPos{ TileX(tile), TileY(tile), TILE_WIDTH, TILE_HEIGHT};
+			Rect TileSetPos{ TileX(tile), TileY(tile), TILE_WIDTH, TILE_HEIGHT };
 			Rect DpyPos{ x, y, TILE_WIDTH, TILE_HEIGHT };
 			Bitmap::Blit(
 				tiles,	&TileSetPos,
@@ -77,8 +77,8 @@ namespace Engine
 		json MapConfig = json::parse(file1);  
 		json SetConfig = json::parse(file2);  
 
-		Dim maxHeight	= MapConfig["layers"][0]["height"].get<Dim>();
-		Dim maxWidth	= MapConfig["layers"][0]["width"].get<Dim>();
+		Dim maxHeight	= MapConfig["layers"][m_Id]["height"].get<Dim>();
+		Dim maxWidth	= MapConfig["layers"][m_Id]["width"].get<Dim>();
 		m_Totalrows		= maxHeight;
 		m_Totalcolumns	= maxWidth; 
 		m_Tileset.Load(path);
@@ -90,35 +90,44 @@ namespace Engine
 		{
 			for (int col = 0; col < m_Totalcolumns; col++)
 			{ 
-				unsigned id = MapConfig["layers"][0]["data"][row * m_Totalcolumns + col].get<unsigned>(); 
+				unsigned id = MapConfig["layers"][m_Id]["data"][row * m_Totalcolumns + col].get<unsigned>(); 
 				if (id == 0)
 				{ 
-					m_Map[row * m_Totalcolumns + col] = EMTY_TILE;
+					SetTile(col, row, EMTY_TILE);
 				} 
 				else
 				{
-					byte r = SetConfig["tiles"][std::to_string(id)]["y"].get<byte>();
-					byte c = SetConfig["tiles"][std::to_string(id)]["x"].get<byte>(); 
-					m_Map[row * m_Totalcolumns + col] = MakeIndex(r, c);
+					Dim r = SetConfig["tiles"][std::to_string(id)]["y"].get<Dim>();
+					Dim c = SetConfig["tiles"][std::to_string(id)]["x"].get<Dim>(); 
+					SetTile(col, row, MakeIndex(r, c));
 				}
 			}
 		}
+	}
+
+	TileLayer::TileLayer(uint32_t id) 
+		: m_Id(id)
+	{
+		m_ViewWindow.x = 0;
+		m_ViewWindow.y = 2 * TILE_HEIGHT;
+		m_ViewWindow.w = 24 * TILE_WIDTH;
+		m_ViewWindow.h = 13 * TILE_HEIGHT;
+	}
+
+	TileLayer::~TileLayer()
+	{
+		free(m_Map);
 	}
 
 	void TileLayer::Allocate()
 	{ 
 		auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
 		ENGINE_CORE_ASSERT(m_Totalrows && m_Totalcolumns);
-		m_Map = new Index[m_Totalrows * m_Totalcolumns];  
+		m_Map = (Index*)malloc((m_Totalcolumns * m_Totalrows) * sizeof(Index));  
 		m_DpyBuffer.Generate(
-				fb.GetWidth() + 2 * TILE_HEIGHT,
+				fb.GetWidth() + 2 * TILE_WIDTH,
 				fb.GetHeight() + 2 * TILE_HEIGHT
 			); 
-
-		m_ViewWindow.x = 0; 
-		m_ViewWindow.y = 2 * TILE_HEIGHT;
-		m_ViewWindow.w = 24 * TILE_WIDTH;
-		m_ViewWindow.h = 13 * TILE_HEIGHT;
 	} 
 
 	void TileLayer::SetTile(Dim col, Dim row, Index index)
@@ -160,19 +169,17 @@ namespace Engine
 		{
 			auto startCol = DIV_TILE_WIDTH(m_ViewWindow.x);
 			auto startRow = DIV_TILE_HEIGHT(m_ViewWindow.y);
-			auto endCol	  = DIV_TILE_WIDTH(m_ViewWindow.x + m_ViewWindow.w - 1);
-			auto endRow	  = DIV_TILE_HEIGHT(m_ViewWindow.y + m_ViewWindow.h - 1);
-			m_DpyX		  = MOD_TILE_WIDTH(m_ViewWindow.x);
-			m_DpyY		  = MOD_TILE_WIDTH(m_ViewWindow.y);
-			m_ViewPosCached.x = m_ViewWindow.x; 
+			auto endCol = DIV_TILE_WIDTH(m_ViewWindow.x + m_ViewWindow.w - 1);
+			auto endRow = DIV_TILE_HEIGHT(m_ViewWindow.y + m_ViewWindow.h - 1);
+			m_DpyX = MOD_TILE_WIDTH(m_ViewWindow.x);
+			m_DpyY = MOD_TILE_WIDTH(m_ViewWindow.y);
+			m_ViewPosCached.x = m_ViewWindow.x;
 			m_ViewPosCached.y = m_ViewWindow.y;
-
-			Bitmap::Reset(m_DpyBuffer);
 
 			for (Dim row = startRow; row <= endRow; ++row)
 			{
 				for (Dim col = startCol; col <= endCol; ++col)
-				{ 
+				{
 					PutTile(
 						m_DpyBuffer,
 						MUL_TILE_WIDTH(col - startCol),
@@ -182,14 +189,15 @@ namespace Engine
 					);
 				}
 			}
+
+			Rect dpySrc{ m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h };
+			Rect dpyDest{ displayArea.x, displayArea.y, displayArea.w, displayArea.h };
+			Bitmap::ScaledBlit(
+				m_DpyBuffer, &dpySrc,
+				dest, &dpyDest
+			);
 		}
 
-		Rect dpySrc { m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h }; 
-		Rect dpyDest { displayArea.x, displayArea.y, displayArea.w, displayArea.h };
-		Bitmap::ScaledBlit(
-			m_DpyBuffer, &dpySrc,
-			dest, &dpyDest
-		);
 		return;
 	} 
 

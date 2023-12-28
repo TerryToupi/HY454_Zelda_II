@@ -102,11 +102,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\skoupidi.h" />
+    <ClInclude Include="src\layer1.h" />
+    <ClInclude Include="src\layer0.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
-    <ClCompile Include="src\skoupidi.cpp" />
+    <ClCompile Include="src\layer0.cpp" />
+    <ClCompile Include="src\layer1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZeldaEngine\ZeldaEngine.vcxproj">
