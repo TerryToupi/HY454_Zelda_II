@@ -54,6 +54,6 @@ namespace Engine
 		Bitmap		m_DpyBuffer;
 		bool		m_DpyChanged = 0; 
 		Dim			m_DpyX = 0, m_DpyY = 0;  
-		Point		m_ViewPosCached {-1, -1};
+		Point		m_ViewPosCached {-1, -1}; 
 	};
 }

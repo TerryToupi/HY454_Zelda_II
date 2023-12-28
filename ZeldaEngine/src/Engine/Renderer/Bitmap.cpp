@@ -19,10 +19,15 @@ namespace Engine
 		SDL_FreeSurface(m_Surface); 
 	} 
 	
+	void Bitmap::Reset(Bitmap& b)
+	{ 
+		SDL_FillRect(b.m_Surface, NULL, 0x000000);
+	}
+
 	void Bitmap::Blit(Bitmap& src, const Rect* from, Bitmap& dest, Rect* to)
 	{
-		auto* window = static_cast<SDL_Window*>(Application::Instance().GetWindow().GetNativeWindow());
-		SDL_BlitSurface(src.m_Surface, from, dest.m_Surface, to);   
+		auto* window = static_cast<SDL_Window*>(Application::Instance().GetWindow().GetNativeWindow()); 
+		SDL_BlitSurface(src.m_Surface, from, dest.m_Surface, to);    
 		SDL_UpdateWindowSurface(window);
 	}
 

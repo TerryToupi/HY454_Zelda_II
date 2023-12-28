@@ -27,7 +27,9 @@
 using json = nlohmann::json;
 
 namespace Engine
-{ 
+{  
+	Bitmap BlankTile; 
+
 	Index MakeIndex(byte row, byte col)
 	{
 		return (MUL_TILE_WIDTH(col) << TILEX_SHIFT) | MUL_TILE_HEIGHT(row);
@@ -47,18 +49,23 @@ namespace Engine
 	{  
 		if (tile != EMTY_TILE)
 		{
-			ENGINE_CORE_TRACE(
-				"x: {0}, y: {1}",
-				TileX(tile), TileY(tile)
-			); 
-
 			Rect TileSetPos{ TileX(tile), TileY(tile), TILE_WIDTH, TILE_HEIGHT};
 			Rect DpyPos{ x, y, TILE_WIDTH, TILE_HEIGHT };
-			Bitmap::ScaledBlit(
+			Bitmap::Blit(
 				tiles,	&TileSetPos,
 				dest,	&DpyPos
 			);
-		} 
+		}
+		else
+		{
+			Rect TileSetPos{ 0, 0, TILE_WIDTH, TILE_HEIGHT};
+			Rect DpyPos{ x, y, TILE_WIDTH, TILE_HEIGHT };
+			Bitmap::Blit(
+				BlankTile,	&TileSetPos,
+				dest,	&DpyPos
+			);
+
+		}
 
 		return;
 	}
@@ -77,6 +84,7 @@ namespace Engine
 		m_Tileset.Load(path);
 	
 		Allocate();   
+		BlankTile.Generate(TILE_WIDTH, TILE_HEIGHT);
 
 		for (int row = 0; row < m_Totalrows; row++) 
 		{
@@ -107,8 +115,8 @@ namespace Engine
 				fb.GetHeight() + 2 * TILE_HEIGHT
 			); 
 
-		m_ViewWindow.x = 100; 
-		m_ViewWindow.y = 200;
+		m_ViewWindow.x = 0; 
+		m_ViewWindow.y = 0;
 		m_ViewWindow.w = fb.GetWidth();
 		m_ViewWindow.h = fb.GetHeight();
 	} 
@@ -159,6 +167,8 @@ namespace Engine
 			m_ViewPosCached.x = m_ViewWindow.x; 
 			m_ViewPosCached.y = m_ViewWindow.y;
 
+			Bitmap::Reset(m_DpyBuffer);
+
 			for (Dim row = startRow; row <= endRow; ++row)
 			{
 				for (Dim col = startCol; col <= endCol; ++col)
@@ -176,7 +186,7 @@ namespace Engine
 
 		Rect dpySrc { m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h }; 
 		Rect dpyDest { displayArea.x, displayArea.y, m_ViewWindow.w, m_ViewWindow.h };
-		Bitmap::ScaledBlit(
+		Bitmap::Blit(
 			m_DpyBuffer, &dpySrc,
 			dest, &dpyDest
 		);
@@ -206,6 +216,22 @@ namespace Engine
 	unsigned TileLayer::GetTileHeight(void) const
 	{
 		return DIV_TILE_HEIGHT(m_ViewWindow.h);
+	}
+
+	void TileLayer::Scroll(float dx, float dy)
+	{ 
+		m_ViewWindow.x += dx;
+		m_ViewWindow.y += dy;
+	}
+
+	bool TileLayer::CanScrollHoriz(float dx) const
+	{
+		return (m_ViewWindow.x >= -dx) && (m_ViewWindow.x + m_ViewWindow.w + dx) <= (m_Totalcolumns * TILE_WIDTH);
+	}
+
+	bool TileLayer::CanScrollVert(float dy) const
+	{
+		return (m_ViewWindow.y >= -dy) && (m_ViewWindow.y + m_ViewWindow.h + dy) <= (m_Totalrows * TILE_HEIGHT);
 	}
 
 }

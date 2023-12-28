@@ -18,9 +18,13 @@ public:
 
 	void onEvent(Event& e) override;   
 
-	bool function(KeyTapEvent& e);
+	bool mover(KeyTapEvent& e); 
 
+	bool mover(KeyRepeatEvent& e);
 private:
 	Reference<Scene> m_Scene; 
-	Reference<TileLayer> m_Tiles;
+	Reference<TileLayer> m_Tiles;	
+
+	float wdx = 0;
+	float wdy = 0;
 };
