@@ -20,7 +20,7 @@ namespace Engine
 		Bitmap(const Bitmap& other) = default; 
 		virtual ~Bitmap(); 
 	
-		void Load(std::string path);  
+		void LoadBMP(std::string path);  
 
 		void Generate(uint32_t width, uint32_t height);
 

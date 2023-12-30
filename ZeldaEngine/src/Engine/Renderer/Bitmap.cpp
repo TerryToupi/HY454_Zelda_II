@@ -11,7 +11,7 @@ namespace Engine
 	Bitmap::Bitmap(const std::string path, uint64_t Width, uint64_t Height)
 		:	m_Width(Width), m_Height(Height)
 	{ 
-		Load(path);
+		LoadBMP(path);
 	} 
 	
 	Bitmap::~Bitmap()
@@ -39,7 +39,7 @@ namespace Engine
 	}
 
 
-	void Bitmap::Load(std::string path)
+	void Bitmap::LoadBMP(std::string path)
 	{ 
 		m_Surface = SDL_LoadBMP(path.c_str()); 
 	} 

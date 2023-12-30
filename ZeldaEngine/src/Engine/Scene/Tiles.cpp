@@ -81,7 +81,7 @@ namespace Engine
 		Dim maxWidth	= MapConfig["layers"][m_Id]["width"].get<Dim>();
 		m_Totalrows		= maxHeight;
 		m_Totalcolumns	= maxWidth; 
-		m_Tileset.Load(path);
+		m_Tileset.LoadBMP(path);
 	
 		Allocate();   
 		BlankTile.Generate(TILE_WIDTH, TILE_HEIGHT);
@@ -90,7 +90,7 @@ namespace Engine
 		{
 			for (int col = 0; col < m_Totalcolumns; col++)
 			{ 
-				unsigned id = MapConfig["layers"][m_Id]["data"][row * m_Totalcolumns + col].get<unsigned>(); 
+				unsigned id = MapConfig["layers"][m_Id]["data"][row * m_Totalcolumns + col].get<unsigned>();
 				if (id == 0)
 				{ 
 					SetTile(col, row, EMTY_TILE);
@@ -116,10 +116,10 @@ namespace Engine
 	TileLayer::TileLayer(uint32_t id) 
 		: m_Id(id)
 	{
-		m_ViewWindow.x = 40	* TILE_WIDTH;
-		m_ViewWindow.y = 10	* TILE_HEIGHT;
+		m_ViewWindow.x = 0	* TILE_WIDTH;
+		m_ViewWindow.y = 0	* TILE_HEIGHT;
 		m_ViewWindow.w = 24 * TILE_WIDTH;
-		m_ViewWindow.h = 13 * TILE_HEIGHT;
+		m_ViewWindow.h = 17 * TILE_HEIGHT;
 	}
 
 	TileLayer::~TileLayer()

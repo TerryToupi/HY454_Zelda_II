@@ -62,20 +62,35 @@ namespace Engine
 	}
 
 	void Renderer::DisplaySceneTiles()
-	{   
-		s_Instance->m_ActiveScene->GetTiles().Display( 
+	{
+		s_Instance->m_Threads.push_back(std::thread{ Renderer::DisplaySceneTilesThread, s_Instance->m_ActiveScene }); 
+	}
+	
+	void Renderer::DisplaySceneTilesThread(Reference<Scene> scene)
+	{  
+		scene->GetTiles()->Display(
 			s_Instance->InterBufferInstance(),
 			{ 0, 0, (int)s_Instance->InterBufferInstance().GetWidth(), (int)s_Instance->InterBufferInstance().GetHeight() }
 		);
 	}
 
 	void Renderer::EndScene()
-	{ 
-		s_Instance->m_ActiveScene.reset();
+	{  
+		if (!s_Instance->m_Threads.empty())
+		{
+			for (auto& thread : s_Instance->m_Threads)
+			{
+				if (thread.joinable())
+					thread.join();
+			}
+			s_Instance->m_Threads.clear();
+		}  
+
+		s_Instance->m_ActiveScene.reset(); 
 	} 
 
 	void Renderer::BufferFlip()
-	{ 
+	{  
 		auto& fb = s_Instance->m_Framebuff->GetBackBuffer();  
 		auto& ib = s_Instance->InterBufferInstance();
 

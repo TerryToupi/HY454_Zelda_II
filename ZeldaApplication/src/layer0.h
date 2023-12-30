@@ -18,9 +18,7 @@ public:
 
 	void onEvent(Event& e) override;   
 
-	bool mover(KeyTapEvent& e); 
-
-	bool mover(KeyRepeatEvent& e);
+	bool mover(KeyPressEvent& e); 
 private:
 	Reference<Scene> m_Scene; 	
 

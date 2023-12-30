@@ -12,7 +12,7 @@ layer0::layer0()
 void layer0::onStart()
 {
 	m_Scene = MakeReference<Scene>(0);
-	m_Scene->GetTiles().LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
+	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 }
 
 void layer0::onDelete()
@@ -34,61 +34,30 @@ void layer0::onEvent(Event& e)
 	dispatcher.Dispatch<KeyRepeatEvent>(APP_EVENT_FUNTION(layer0::mover));
 } 
 
-bool layer0::mover(KeyTapEvent& e) 
+bool layer0::mover(KeyPressEvent& e) 
 {   
 	float SPEED = 4; 
 
 	if (e.GetKey() == InputKey::a)
 	{ 
-		wdx = -SPEED; 
-		wdy = 0;
+		if (m_Scene->GetTiles()->CanScrollHoriz(-SPEED))
+			m_Scene->GetTiles()->Scroll(-SPEED, 0);
 	}  
 	else if (e.GetKey() == InputKey::w)
 	{ 
-		wdy = -SPEED;   
-		wdx = 0;
+		if (m_Scene->GetTiles()->CanScrollVert(-SPEED))
+			m_Scene->GetTiles()->Scroll(0, -SPEED);
 	}
 	else if (e.GetKey() == InputKey::d)
 	{ 
-		wdx = +SPEED;
-		wdy = 0;
+		if (m_Scene->GetTiles()->CanScrollHoriz(+SPEED))
+			m_Scene->GetTiles()->Scroll(+SPEED, 0);
 	}
 	else if (e.GetKey() == InputKey::s)
 	{ 
-		wdy = +SPEED; 
-		wdx = 0;
+		if (m_Scene->GetTiles()->CanScrollVert(+SPEED))
+			m_Scene->GetTiles()->Scroll(0, +SPEED);
 	}  
-
-	m_Scene->GetTiles().Scroll(wdx, wdy);
-	return true;
-}
-
-bool layer0::mover(KeyRepeatEvent& e)
-{
-	float SPEED = 4;
-
-	if (e.GetKey() == InputKey::a)
-	{
-		wdx = -SPEED;
-		wdy = 0;
-	}
-	else if (e.GetKey() == InputKey::w)
-	{
-		wdy = -SPEED;
-		wdx = 0;
-	}
-	else if (e.GetKey() == InputKey::d)
-	{
-		wdx = +SPEED;
-		wdy = 0;
-	}
-	else if (e.GetKey() == InputKey::s)
-	{
-		wdy = +SPEED;
-		wdx = 0;
-	}
-
-	m_Scene->GetTiles().Scroll(wdx, wdy);
 	return true;
 }
 

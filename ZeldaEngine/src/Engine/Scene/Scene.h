@@ -19,7 +19,7 @@ namespace Engine
 		Sprite CreateSprite(std::string tag);  
 		Sprite GetSprite(std::string tag);  
 
-		TileLayer& GetTiles() { return *m_Tiles; }
+		Reference<TileLayer> GetTiles() { return m_Tiles; }
 
 	private: 
 		friend class Sprite;
