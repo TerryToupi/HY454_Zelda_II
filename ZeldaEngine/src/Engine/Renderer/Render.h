@@ -2,8 +2,8 @@
 
 #include <Engine/Math/Math.h> 
 #include <Engine/Renderer/Bitmap.h> 
-#include <Engine/Renderer/Framebuffer.h> 
-
+#include <Engine/Renderer/Framebuffer.h>  
+#include <Engine/Scene/Scene.h>
 
 namespace Engine
 { 
@@ -24,12 +24,23 @@ namespace Engine
 		static void Init(const RendererConfig& config); 
 		static void Shutdown();
 
-		static FrameBuffer& FrameBufferInstance();
-		static Scope<FrameBuffer> CreateFrameBuffer(const uint64_t Width, const uint64_t Height);
-		static void ResizeFrameBuffer(const uint64_t width, const uint64_t height);
+		static FrameBuffer&			FrameBufferInstance(); 
+		static Scope<FrameBuffer>	CreateFrameBuffer(const uint64_t Width, const uint64_t Height); 
+		static Bitmap&				InterBufferInstance(); 
+		static Scope<Bitmap>		CreateInterBuffer();
+		static void					ResizeFrameBuffer(const uint64_t width, const uint64_t height);  
+
+		static void BeginScene(Reference<Scene> scene); 
+		static void DisplaySceneTiles();
+		static void	EndScene(); 
+
+		static void BufferFlip();
+
 	private:  
-		RendererConfig m_Config;
-		Scope<FrameBuffer> m_Framebuff; 
+		RendererConfig		m_Config;
+		Scope<FrameBuffer>	m_Framebuff;
+		Scope<Bitmap>		m_Interbuff; 
+		Reference<Scene>	m_ActiveScene;
 
 	private: 
 		static Renderer* s_Instance;

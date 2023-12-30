@@ -46,7 +46,7 @@ namespace Engine
 
 	void Bitmap::Generate(uint32_t width, uint32_t height)
 	{ 
-		m_Surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+		m_Surface = SDL_CreateRGBSurface(0, width, height, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
 		SDL_SetSurfaceBlendMode(m_Surface, SDL_BLENDMODE_BLEND); 
 		SetHeight(height);
 		SetWidth(width);

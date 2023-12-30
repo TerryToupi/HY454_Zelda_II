@@ -106,7 +106,7 @@ namespace Engine
 		int status = SDL_Init(SDL_INIT_VIDEO);
 		ENGINE_CORE_ASSERT(!status); 
 	
-		Uint32 WindowFalgs = SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS;
+		Uint32 WindowFalgs = SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | SDL_RENDERER_ACCELERATED;
 
 		m_Window = SDL_CreateWindow(
 			m_Data.TitleBar.c_str(),

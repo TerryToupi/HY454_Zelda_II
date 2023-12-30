@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Engine/Application/Core.h> 
-#include <Engine/Events/Event.h>
+#include <Engine/Events/Event.h>  
+
+#include <Engine/Renderer/Bitmap.h>
 
 #include <string> 
 

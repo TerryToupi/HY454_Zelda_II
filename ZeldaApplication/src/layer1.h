@@ -23,7 +23,6 @@ public:
 	bool mover(KeyRepeatEvent& e);
 private:
 	Reference<Scene> m_Scene;
-	Reference<TileLayer> m_Tiles;
 
 	float wdx = 0;
 	float wdy = 0;

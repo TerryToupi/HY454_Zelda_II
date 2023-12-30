@@ -3,7 +3,11 @@
 #include <Engine/Scene/Sprite.h> 
 #include <Engine/Scene/SpriteData.h>
 
-namespace Engine {  
+namespace Engine {
+	Scene::Scene(uint32_t layerid)
+	{ 
+		m_Tiles = MakeReference<TileLayer>(layerid);
+	}
 
 	Sprite Scene::CreateSprite(std::string tag)
 	{ 

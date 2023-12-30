@@ -11,9 +11,8 @@ layer0::layer0()
 
 void layer0::onStart()
 {
-	m_Scene = MakeReference<Scene>();
-	m_Tiles = MakeReference<TileLayer>(0);
-	m_Tiles->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
+	m_Scene = MakeReference<Scene>(0);
+	m_Scene->GetTiles().LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 }
 
 void layer0::onDelete()
@@ -23,9 +22,9 @@ void layer0::onDelete()
 
 void layer0::onUpdate()
 {
-	auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
-	Rect disp{ 0, 0, fb.GetWidth(), fb.GetHeight() };
-	m_Tiles->Display(fb, disp);
+	Renderer::BeginScene(m_Scene); 
+	Renderer::DisplaySceneTiles();
+	Renderer::EndScene();
 }
 
 void layer0::onEvent(Event& e)
@@ -41,38 +40,26 @@ bool layer0::mover(KeyTapEvent& e)
 
 	if (e.GetKey() == InputKey::a)
 	{ 
-		if (m_Tiles->CanScrollHoriz(-SPEED))
-		{
-			wdx = -SPEED; 
-			wdy = 0;
-		}
+		wdx = -SPEED; 
+		wdy = 0;
 	}  
 	else if (e.GetKey() == InputKey::w)
 	{ 
-		if (m_Tiles->CanScrollVert(+SPEED))
-		{
-			wdy = -SPEED;   
-			wdx = 0;
-		}
+		wdy = -SPEED;   
+		wdx = 0;
 	}
 	else if (e.GetKey() == InputKey::d)
 	{ 
-		if (m_Tiles->CanScrollHoriz(+SPEED))
-		{
-			wdx = +SPEED;
-			wdy = 0;
-		}
+		wdx = +SPEED;
+		wdy = 0;
 	}
 	else if (e.GetKey() == InputKey::s)
 	{ 
-		if (m_Tiles->CanScrollVert(-SPEED))
-		{
-			wdy = +SPEED; 
-			wdx = 0;
-		}
+		wdy = +SPEED; 
+		wdx = 0;
 	}  
 
-	m_Tiles->Scroll(wdx, wdy);
+	m_Scene->GetTiles().Scroll(wdx, wdy);
 	return true;
 }
 
@@ -82,38 +69,26 @@ bool layer0::mover(KeyRepeatEvent& e)
 
 	if (e.GetKey() == InputKey::a)
 	{
-		if (m_Tiles->CanScrollHoriz(-SPEED))
-		{
-			wdx = -SPEED;
-			wdy = 0;
-		}
+		wdx = -SPEED;
+		wdy = 0;
 	}
 	else if (e.GetKey() == InputKey::w)
 	{
-		if (m_Tiles->CanScrollVert(+SPEED))
-		{
-			wdy = -SPEED;
-			wdx = 0;
-		}
+		wdy = -SPEED;
+		wdx = 0;
 	}
 	else if (e.GetKey() == InputKey::d)
 	{
-		if (m_Tiles->CanScrollHoriz(+SPEED))
-		{
-			wdx = +SPEED;
-			wdy = 0;
-		}
+		wdx = +SPEED;
+		wdy = 0;
 	}
 	else if (e.GetKey() == InputKey::s)
 	{
-		if (m_Tiles->CanScrollVert(-SPEED))
-		{
-			wdy = +SPEED;
-			wdx = 0;
-		}
+		wdy = +SPEED;
+		wdx = 0;
 	}
 
-	m_Tiles->Scroll(wdx, wdy); 
+	m_Scene->GetTiles().Scroll(wdx, wdy);
 	return true;
 }
 

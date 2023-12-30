@@ -51,16 +51,16 @@ namespace Engine
 		{
 			Rect TileSetPos{ TileX(tile), TileY(tile), TILE_WIDTH, TILE_HEIGHT };
 			Rect DpyPos{ x, y, TILE_WIDTH, TILE_HEIGHT };
-			Bitmap::Blit(
+			Bitmap::Blit (
 				tiles,	&TileSetPos,
 				dest,	&DpyPos
 			);
 		}
 		else
 		{
-			Rect TileSetPos{ 0, 0, TILE_WIDTH, TILE_HEIGHT};
+			Rect TileSetPos{ 0, 0, TILE_WIDTH, TILE_HEIGHT };
 			Rect DpyPos{ x, y, TILE_WIDTH, TILE_HEIGHT };
-			Bitmap::Blit(
+			Bitmap::Blit (
 				BlankTile,	&TileSetPos,
 				dest,	&DpyPos
 			);
@@ -101,15 +101,23 @@ namespace Engine
 					Dim c = SetConfig["tiles"][std::to_string(id)]["x"].get<Dim>(); 
 					SetTile(col, row, MakeIndex(r, c));
 				}
+
+				PutTile(
+					m_DpyBuffer,
+					MUL_TILE_WIDTH(col),
+					MUL_TILE_HEIGHT(row),
+					m_Tileset,
+					GetTile(col, row)
+				);
 			}
-		}
+		} 
 	}
 
 	TileLayer::TileLayer(uint32_t id) 
 		: m_Id(id)
 	{
-		m_ViewWindow.x = 0;
-		m_ViewWindow.y = 2 * TILE_HEIGHT;
+		m_ViewWindow.x = 40	* TILE_WIDTH;
+		m_ViewWindow.y = 10	* TILE_HEIGHT;
 		m_ViewWindow.w = 24 * TILE_WIDTH;
 		m_ViewWindow.h = 13 * TILE_HEIGHT;
 	}
@@ -124,10 +132,11 @@ namespace Engine
 		auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
 		ENGINE_CORE_ASSERT(m_Totalrows && m_Totalcolumns);
 		m_Map = (Index*)malloc((m_Totalcolumns * m_Totalrows) * sizeof(Index));  
+
 		m_DpyBuffer.Generate(
-				fb.GetWidth() + 2 * TILE_WIDTH,
-				fb.GetHeight() + 2 * TILE_HEIGHT
-			); 
+				(m_Totalcolumns * TILE_WIDTH) + 2 * TILE_WIDTH,
+				(m_Totalrows * TILE_HEIGHT) + 2 * TILE_HEIGHT
+			);
 	} 
 
 	void TileLayer::SetTile(Dim col, Dim row, Index index)
@@ -167,32 +176,34 @@ namespace Engine
 	{ 
 		if (m_ViewPosCached.x != m_ViewWindow.x || m_ViewPosCached.y != m_ViewWindow.y)
 		{
-			auto startCol = DIV_TILE_WIDTH(m_ViewWindow.x);
-			auto startRow = DIV_TILE_HEIGHT(m_ViewWindow.y);
-			auto endCol = DIV_TILE_WIDTH(m_ViewWindow.x + m_ViewWindow.w - 1);
-			auto endRow = DIV_TILE_HEIGHT(m_ViewWindow.y + m_ViewWindow.h - 1);
-			m_DpyX = MOD_TILE_WIDTH(m_ViewWindow.x);
-			m_DpyY = MOD_TILE_WIDTH(m_ViewWindow.y);
+			//auto startCol = DIV_TILE_WIDTH(m_ViewWindow.x);
+			//auto startRow = DIV_TILE_HEIGHT(m_ViewWindow.y);
+			//auto endCol = DIV_TILE_WIDTH(m_ViewWindow.x + m_ViewWindow.w - 1);
+			//auto endRow = DIV_TILE_HEIGHT(m_ViewWindow.y + m_ViewWindow.h - 1);
+			//m_DpyX = MOD_TILE_WIDTH(m_ViewWindow.x); 
+			//m_DpyY = MOD_TILE_WIDTH(m_ViewWindow.y); 
+			m_DpyX = m_ViewWindow.x; 
+			m_DpyY = m_ViewWindow.y;
 			m_ViewPosCached.x = m_ViewWindow.x;
 			m_ViewPosCached.y = m_ViewWindow.y;
 
-			for (Dim row = startRow; row <= endRow; ++row)
-			{
-				for (Dim col = startCol; col <= endCol; ++col)
-				{
-					PutTile(
-						m_DpyBuffer,
-						MUL_TILE_WIDTH(col - startCol),
-						MUL_TILE_HEIGHT(row - startRow),
-						m_Tileset,
-						GetTile(col, row)
-					);
-				}
-			}
+			//for (Dim row = startRow; row <= endRow; ++row)
+			//{
+			//	for (Dim col = startCol; col <= endCol; ++col)
+			//	{
+			//		PutTile(
+			//			m_DpyBuffer,
+			//			MUL_TILE_WIDTH(col - startCol),
+			//			MUL_TILE_HEIGHT(row - startRow),
+			//			m_Tileset,
+			//			GetTile(col, row)
+			//		);
+			//	}
+			//}
 
 			Rect dpySrc{ m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h };
 			Rect dpyDest{ displayArea.x, displayArea.y, displayArea.w, displayArea.h };
-			Bitmap::ScaledBlit(
+			Bitmap::ScaledBlit (
 				m_DpyBuffer, &dpySrc,
 				dest, &dpyDest
 			);

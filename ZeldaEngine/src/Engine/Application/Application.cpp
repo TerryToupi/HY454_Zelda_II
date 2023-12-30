@@ -85,13 +85,11 @@ namespace Engine {
 	{   
 		Time time = SystemClock::Get().GetTime();  
 		Time timeStep = time - m_LastFrameTime;
-		m_LastFrameTime = timeStep;  
+	 	m_LastFrameTime = timeStep;   
 
 		while (m_Running)
-		{
-			Application::Instance().GetWindow().EventPolling(); 
-			Bitmap interBuff;
-			interBuff.Generate(640, 480);
+		{  
+			Application::Instance().GetWindow().EventPolling();
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 
@@ -101,7 +99,9 @@ namespace Engine {
 			for (auto overlay = m_Layers.OverlaysFront(); overlay != m_Layers.OverLaysBack(); overlay++)
 			{ 
 				(*overlay)->onUpdate();   
-			}  
+			}   
+
+			Renderer::BufferFlip();
 		}
 	} 
 
