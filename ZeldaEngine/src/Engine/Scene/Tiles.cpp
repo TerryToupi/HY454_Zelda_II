@@ -203,7 +203,7 @@ namespace Engine
 
 			Rect dpySrc{ m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h };
 			Rect dpyDest{ displayArea.x, displayArea.y, displayArea.w, displayArea.h };
-			Bitmap::ScaledBlit (
+			Bitmap::Blit (
 				m_DpyBuffer, &dpySrc,
 				dest, &dpyDest
 			);

@@ -29,7 +29,8 @@ namespace Engine {
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0; 
 
-		virtual void* GetNativeWindow() const = 0; 
+		virtual void* GetNativeWindow() const = 0;
+		virtual void* GetNativeRenderer() const = 0;
 
 		virtual void EventPolling() = 0;
 		virtual void SetEventCallBack(const EventCallBackFunciton& EventCallBack) = 0;

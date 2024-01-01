@@ -146,13 +146,13 @@ namespace Engine
 				clippedBox.h
 			}; 
 
-			Bitmap::Blit( 
-				// TODO INSERT FILM HERE
-				Bitmap(), 
-				&clippedFrame, 
-				dest, 
-				&dpyPos
-			);
+			//Bitmap::Blit( 
+			//	// TODO INSERT FILM HERE
+			//	Bitmap(), 
+			//	&clippedFrame, 
+			//	dest, 
+			//	&dpyPos
+			//);
 		}
 	}
 }

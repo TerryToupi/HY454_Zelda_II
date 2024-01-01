@@ -1,4 +1,5 @@
 #include "Render.h"
+#include <Engine/Application/Application.h> 
 
 namespace Engine
 { 
@@ -11,8 +12,8 @@ namespace Engine
 		ENGINE_CORE_ASSERT(!this->m_Framebuff);
 		this->m_Framebuff = this->CreateFrameBuffer(config.fb_width, config.fb_height); 
 		this->m_Interbuff = this->CreateInterBuffer(); 
-		this->m_Interbuff->Generate(m_Config.fb_width, m_Config.fb_height); 
-		this->m_ActiveScene = nullptr;
+		this->m_Interbuff->Generate(24 * 16, 17 * 16); 
+		this->m_ActiveScene = nullptr; 
 	} 
 
 	void Renderer::Init(const RendererConfig& config)
@@ -67,10 +68,12 @@ namespace Engine
 	}
 	
 	void Renderer::DisplaySceneTilesThread(Reference<Scene> scene)
-	{  
+	{ 
+		int width = (int)s_Instance->InterBufferInstance().GetWidth();   
+		int height = (int)s_Instance->InterBufferInstance().GetHeight();
 		scene->GetTiles()->Display(
 			s_Instance->InterBufferInstance(),
-			{ 0, 0, (int)s_Instance->InterBufferInstance().GetWidth(), (int)s_Instance->InterBufferInstance().GetHeight() }
+			{ 0, 0, width, height }
 		);
 	}
 
@@ -86,14 +89,19 @@ namespace Engine
 			s_Instance->m_Threads.clear();
 		}  
 
-		s_Instance->m_ActiveScene.reset(); 
-	} 
+		s_Instance->m_ActiveScene.reset();
+	}  
 
 	void Renderer::BufferFlip()
 	{  
-		auto& fb = s_Instance->m_Framebuff->GetBackBuffer();  
-		auto& ib = s_Instance->InterBufferInstance();
-
-		Bitmap::Blit(ib, NULL, fb, NULL);
+		auto& ib = s_Instance->InterBufferInstance(); 
+		auto renderer = static_cast<SDL_Renderer*>(Application::Instance().GetWindow().GetNativeRenderer()); 
+		SDL_Texture* fb = SDL_CreateTextureFromSurface(renderer, ib.GetSurfice());
+		
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, fb, NULL, NULL);  
+		SDL_RenderPresent(renderer);  
+		SDL_DestroyTexture(fb); 
 	}
-}
+}  
+

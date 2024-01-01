@@ -1,6 +1,6 @@
 project "ZeldaUnitests" 
 	kind		"ConsoleApp" 
-	cppdialect	"C++17" 
+	cppdialect	"C++20" 
 	language	"C++"   
 
 	targetdir ("%{wks.location}/bin/" .. outputDir .. "/%{prj.name}")

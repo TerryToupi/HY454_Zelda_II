@@ -106,7 +106,8 @@ namespace Engine
 		int status = SDL_Init(SDL_INIT_VIDEO);
 		ENGINE_CORE_ASSERT(!status); 
 	
-		Uint32 WindowFalgs =  SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | SDL_RENDERER_ACCELERATED;
+		Uint32 WindowFalgs =  SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | SDL_WINDOW_OPENGL; 
+		Uint32 RendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 
 		m_Window = SDL_CreateWindow(
 			m_Data.TitleBar.c_str(),
@@ -114,11 +115,19 @@ namespace Engine
 			SDL_WINDOWPOS_CENTERED,
 			m_Data.Width, m_Data.Height,
 			WindowFalgs
-		);   
+		);    
+		
+		m_Renderer = SDL_CreateRenderer(
+			m_Window, 
+			-1, 
+			RendererFlags	
+		);
 
-		SDL_SetWindowMinimumSize(m_Window, m_Data.Width, m_Data.Height);
+		SDL_SetWindowMinimumSize(m_Window, m_Data.Width, m_Data.Height); 
+		SDL_RenderSetLogicalSize(m_Renderer, m_Data.Width, m_Data.Height);
 
-		ENGINE_CORE_ASSERT(m_Window != nullptr); 
+		ENGINE_CORE_ASSERT(m_Window != nullptr);  
+		ENGINE_CORE_ASSERT(m_Renderer != nullptr);
 		ENGINE_CORE_INFO("Window created succesfully!"); 
 	}
 

@@ -36,7 +36,10 @@ namespace Engine
 						  Bitmap& dest, Rect* to);  
 
 		static void ScaledBlit(Bitmap& src, const Rect* from, 
-								Bitmap& dest, Rect* to); 
+								Bitmap& dest, Rect* to);  
+
+		SDL_Surface* GetSurfice() { return m_Surface; } 
+
 	protected: 
 		void SetSurfice(SDL_Surface* surface) { m_Surface = surface; }   
 

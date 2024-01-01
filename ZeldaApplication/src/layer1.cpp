@@ -31,7 +31,7 @@ void layer1::onEvent(Event& e)
 
 bool layer1::mover(KeyPressEvent& e)
 {
-	float SPEED = 4;
+	float SPEED = 2;
 
 	if (e.GetKey() == InputKey::a)
 	{

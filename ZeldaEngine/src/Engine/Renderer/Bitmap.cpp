@@ -26,18 +26,13 @@ namespace Engine
 
 	void Bitmap::Blit(Bitmap& src, const Rect* from, Bitmap& dest, Rect* to)
 	{
-		auto* window = static_cast<SDL_Window*>(Application::Instance().GetWindow().GetNativeWindow()); 
 		SDL_BlitSurface(src.m_Surface, from, dest.m_Surface, to);    
-		SDL_UpdateWindowSurface(window);
 	}
 
 	void Bitmap::ScaledBlit(Bitmap& src, const Rect* from, Bitmap& dest, Rect* to)
 	{ 
-		auto* window = static_cast<SDL_Window*>(Application::Instance().GetWindow().GetNativeWindow());
 		SDL_BlitScaled(src.m_Surface, from, dest.m_Surface, to);   
-		SDL_UpdateWindowSurface(window);
 	}
-
 
 	void Bitmap::LoadBMP(std::string path)
 	{ 

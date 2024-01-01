@@ -63,7 +63,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
@@ -87,7 +87,7 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
@@ -100,9 +100,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Engine\Renderer\Clipper.h" />
-    <ClInclude Include="src\Engine\Renderer\CollisionChecker.h" />
-    <ClInclude Include="src\Engine\Renderer\MotionQuantizer.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Application\Application.h" />
     <ClInclude Include="src\Engine\Application\Core.h" />
@@ -120,7 +117,10 @@
     <ClInclude Include="src\Engine\Logging\Log.h" />
     <ClInclude Include="src\Engine\Math\Math.h" />
     <ClInclude Include="src\Engine\Renderer\Bitmap.h" />
+    <ClInclude Include="src\Engine\Renderer\Clipper.h" />
+    <ClInclude Include="src\Engine\Renderer\CollisionChecker.h" />
     <ClInclude Include="src\Engine\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Engine\Renderer\MotionQuantizer.h" />
     <ClInclude Include="src\Engine\Renderer\Render.h" />
     <ClInclude Include="src\Engine\Scene\LatelyDestroyable.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
@@ -548,16 +548,16 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Engine\Renderer\Clipper.cpp" />
-    <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp" />
-    <ClCompile Include="src\Engine\Renderer\MotionQuantizer.cpp" />
     <ClCompile Include="src\Engine\Application\Application.cpp" />
     <ClCompile Include="src\Engine\Application\GameTime.cpp" />
     <ClCompile Include="src\Engine\Application\Layer.cpp" />
     <ClCompile Include="src\Engine\Application\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Logging\Log.cpp" />
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Clipper.cpp" />
+    <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp" />
     <ClCompile Include="src\Engine\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Engine\Renderer\MotionQuantizer.cpp" />
     <ClCompile Include="src\Engine\Renderer\Render.cpp" />
     <ClCompile Include="src\Engine\Scene\LatelyDestroyable.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />

@@ -3,9 +3,12 @@
 #include <Engine/Math/Math.h> 
 #include <Engine/Renderer/Bitmap.h> 
 #include <Engine/Renderer/Framebuffer.h>  
-#include <Engine/Scene/Scene.h> 
+#include <Engine/Scene/Scene.h>  
 
-#include <thread>
+#include <SDL.h>
+
+#include <thread> 
+#include <semaphore>
 
 namespace Engine
 { 
@@ -36,10 +39,16 @@ namespace Engine
 		static void DisplaySceneTiles();
 		static void	EndScene(); 
 
-		static void BufferFlip(); 
+		static void BufferFlip();  
+
+
+
+		static void bufferfill();
+		static void bufferPresent();
+		static void bufferSwap();
 
 	protected:
-		static void DisplaySceneTilesThread(Reference<Scene> scene);
+		static void DisplaySceneTilesThread(Reference<Scene> scene); 
 
 	private:  
 		RendererConfig			 m_Config;
@@ -47,7 +56,6 @@ namespace Engine
 		Scope<Bitmap>			 m_Interbuff; 
 		Reference<Scene>		 m_ActiveScene; 
 		std::vector<std::thread> m_Threads;
-
 	private: 
 		static Renderer* s_Instance;
 	};
