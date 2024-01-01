@@ -34,6 +34,17 @@ namespace Engine
 		SDL_BlitScaled(src.m_Surface, from, dest.m_Surface, to);   
 	}
 
+	void Bitmap::PresentOnDisplay(Bitmap& src)
+	{ 
+		auto renderer = static_cast<SDL_Renderer*>(Application::Instance().GetWindow().GetNativeRenderer());
+		SDL_Texture* fb = SDL_CreateTextureFromSurface(renderer, src.m_Surface);
+
+		SDL_RenderClear(renderer);
+		SDL_RenderCopy(renderer, fb, NULL, NULL);
+		SDL_RenderPresent(renderer);
+		SDL_DestroyTexture(fb);
+	}
+
 	void Bitmap::LoadBMP(std::string path)
 	{ 
 		m_Surface = SDL_LoadBMP(path.c_str()); 

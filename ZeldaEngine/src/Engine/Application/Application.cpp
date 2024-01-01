@@ -13,8 +13,8 @@ namespace Engine {
 		ENGINE_CORE_ASSERT(!s_Instance); 
 		s_Instance = this; 
 		
-		uint64_t default_w = 2560;
-		uint64_t default_h = 1440;
+		uint64_t default_w = 640;
+		uint64_t default_h = 480;
 		m_Window = Window::Create(WindowConfig(m_AppConfig.appName, default_w, default_h));  
 		m_Window->SetEventCallBack(EVENT_FUNCTION_BIND(Application::onEvent));
 		
@@ -108,8 +108,8 @@ namespace Engine {
 	} 
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
-	{ 
-		Renderer::ResizeFrameBuffer(e.GetWidth(), e.GetHeight());
+	{   
+		Application::Instance().GetWindow().ResizeWindow(e.GetWidth(), e.GetHeight());
 		return true;
 	}
 }

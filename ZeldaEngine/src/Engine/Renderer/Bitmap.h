@@ -9,8 +9,6 @@
 
 namespace Engine 
 { 
-	class FrameBuffer;
-
 	class Bitmap
 	{  
 	public:  
@@ -35,10 +33,10 @@ namespace Engine
 		static void Blit(Bitmap& src, const Rect* from,
 						  Bitmap& dest, Rect* to);  
 
-		static void ScaledBlit(Bitmap& src, const Rect* from, 
-								Bitmap& dest, Rect* to);  
+		static void ScaledBlit(Bitmap& src, const Rect* from,  
+								Bitmap& dest, Rect* to);   
 
-		SDL_Surface* GetSurfice() { return m_Surface; } 
+		static void PresentOnDisplay(Bitmap& src);
 
 	protected: 
 		void SetSurfice(SDL_Surface* surface) { m_Surface = surface; }   

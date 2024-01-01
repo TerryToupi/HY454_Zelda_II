@@ -26,7 +26,8 @@ namespace Engine
 		virtual void SetEventCallBack(const EventCallBackFunciton& EventCallBack) override { m_EventCallBack = EventCallBack; }
 
 		virtual void* GetNativeWindow() const override { return m_Window; }
-		virtual void* GetNativeRenderer() const override { return m_Renderer; }
+		virtual void* GetNativeRenderer() const override { return m_Renderer; } 
+		virtual void ResizeWindow(int w, int h) const override { SDL_RenderSetLogicalSize(m_Renderer, w, h); }
 
 	private:
 		void Init(const WindowConfig& config); 

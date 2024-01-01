@@ -117,9 +117,6 @@
     <ClInclude Include="src\Engine\Renderer\CollisionChecker.h">
       <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Renderer\Framebuffer.h">
-      <Filter>src\Engine\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\MotionQuantizer.h">
       <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
@@ -1422,9 +1419,6 @@
       <Filter>src\Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp">
-      <Filter>src\Engine\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\Renderer\Framebuffer.cpp">
       <Filter>src\Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\MotionQuantizer.cpp">

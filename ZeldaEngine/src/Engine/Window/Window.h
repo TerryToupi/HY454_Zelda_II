@@ -34,6 +34,7 @@ namespace Engine {
 
 		virtual void EventPolling() = 0;
 		virtual void SetEventCallBack(const EventCallBackFunciton& EventCallBack) = 0;
+		virtual void ResizeWindow(int w, int h) const = 0;
 
 		static Scope<Window> Create(const WindowConfig& config);
 	};

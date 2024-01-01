@@ -129,7 +129,6 @@ namespace Engine
 
 	void TileLayer::Allocate()
 	{ 
-		auto& fb = Renderer::FrameBufferInstance().GetBackBuffer();
 		ENGINE_CORE_ASSERT(m_Totalrows && m_Totalcolumns);
 		m_Map = (Index*)malloc((m_Totalcolumns * m_Totalrows) * sizeof(Index));  
 

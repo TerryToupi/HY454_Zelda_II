@@ -119,7 +119,6 @@
     <ClInclude Include="src\Engine\Renderer\Bitmap.h" />
     <ClInclude Include="src\Engine\Renderer\Clipper.h" />
     <ClInclude Include="src\Engine\Renderer\CollisionChecker.h" />
-    <ClInclude Include="src\Engine\Renderer\Framebuffer.h" />
     <ClInclude Include="src\Engine\Renderer\MotionQuantizer.h" />
     <ClInclude Include="src\Engine\Renderer\Render.h" />
     <ClInclude Include="src\Engine\Scene\LatelyDestroyable.h" />
@@ -556,7 +555,6 @@
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
     <ClCompile Include="src\Engine\Renderer\Clipper.cpp" />
     <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp" />
-    <ClCompile Include="src\Engine\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Engine\Renderer\MotionQuantizer.cpp" />
     <ClCompile Include="src\Engine\Renderer\Render.cpp" />
     <ClCompile Include="src\Engine\Scene\LatelyDestroyable.cpp" />
