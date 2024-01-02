@@ -97,6 +97,11 @@ namespace Engine
 		}
 	}
 
+	void* WindowAPI::GetKeyboardState() const
+	{
+		return (void*)(SDL_GetKeyboardState(NULL));
+	}
+
 	void WindowAPI::Init(const WindowConfig& config)
 	{ 
 		m_Data.Height = config.Height;

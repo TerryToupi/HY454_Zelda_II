@@ -20,8 +20,36 @@ void layer0::onDelete()
 	
 }
 
-void layer0::onUpdate()
+void layer0::move()
 {
+	float SPEED = 1; 
+
+	if (KeyboardInput::IsPressed(SCANCODE_A))
+	{ 
+		if (m_Scene->GetTiles()->CanScrollHoriz(-SPEED))
+			m_Scene->GetTiles()->Scroll(-SPEED, 0);
+	}  
+	else if (KeyboardInput::IsPressed(SCANCODE_W))
+	{ 
+		if (m_Scene->GetTiles()->CanScrollVert(-SPEED))
+			m_Scene->GetTiles()->Scroll(0, -SPEED);
+	}
+	else if (KeyboardInput::IsPressed(SCANCODE_D))
+	{ 
+		if (m_Scene->GetTiles()->CanScrollHoriz(+SPEED))
+			m_Scene->GetTiles()->Scroll(+SPEED, 0);
+	}
+	else if (KeyboardInput::IsPressed(SCANCODE_S))
+	{ 
+		if (m_Scene->GetTiles()->CanScrollVert(+SPEED))
+			m_Scene->GetTiles()->Scroll(0, +SPEED);
+	} 
+}
+
+void layer0::onUpdate()
+{ 
+	move();
+
 	Renderer::BeginScene(m_Scene); 
 	Renderer::DisplaySceneTiles();
 	Renderer::EndScene();
@@ -32,33 +60,10 @@ void layer0::onEvent(Event& e)
 	EventDispatcher dispatcher(e); 
 	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(layer0::mover));
 	dispatcher.Dispatch<KeyRepeatEvent>(APP_EVENT_FUNTION(layer0::mover));
-} 
-
-bool layer0::mover(KeyPressEvent& e) 
-{   
-	float SPEED = 2; 
-
-	if (e.GetKey() == InputKey::a)
-	{ 
-		if (m_Scene->GetTiles()->CanScrollHoriz(-SPEED))
-			m_Scene->GetTiles()->Scroll(-SPEED, 0);
-	}  
-	else if (e.GetKey() == InputKey::w)
-	{ 
-		if (m_Scene->GetTiles()->CanScrollVert(-SPEED))
-			m_Scene->GetTiles()->Scroll(0, -SPEED);
-	}
-	else if (e.GetKey() == InputKey::d)
-	{ 
-		if (m_Scene->GetTiles()->CanScrollHoriz(+SPEED))
-			m_Scene->GetTiles()->Scroll(+SPEED, 0);
-	}
-	else if (e.GetKey() == InputKey::s)
-	{ 
-		if (m_Scene->GetTiles()->CanScrollVert(+SPEED))
-			m_Scene->GetTiles()->Scroll(0, +SPEED);
-	}  
-	return true;
 }
 
+bool layer0::mover(KeyPressEvent& e)
+{
+	return true;
+} 
 

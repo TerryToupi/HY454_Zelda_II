@@ -1451,5 +1451,6 @@
     <ClCompile Include="src\Engine\Window\WindowAPI.cpp">
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Input\KeyBoardCodes.cpp" />
   </ItemGroup>
 </Project>

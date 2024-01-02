@@ -551,6 +551,7 @@
     <ClCompile Include="src\Engine\Application\GameTime.cpp" />
     <ClCompile Include="src\Engine\Application\Layer.cpp" />
     <ClCompile Include="src\Engine\Application\LayerStack.cpp" />
+    <ClCompile Include="src\Engine\Input\KeyBoardCodes.cpp" />
     <ClCompile Include="src\Engine\Logging\Log.cpp" />
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
     <ClCompile Include="src\Engine\Renderer\Clipper.cpp" />

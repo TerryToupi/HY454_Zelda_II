@@ -16,7 +16,9 @@ public:
 
 	void onUpdate() override; 
 
-	void onEvent(Event& e) override;   
+	void onEvent(Event& e) override;    
+
+	void move();
 
 	bool mover(KeyPressEvent& e); 
 private:

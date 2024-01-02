@@ -2,7 +2,8 @@
 #include "Layer.h"  
 #include <Engine/Assert/Assert.h>
 #include <Engine/Renderer/Bitmap.h> 
-#include <Engine/Renderer/Render.h>
+#include <Engine/Renderer/Render.h> 
+#include <Engine/Input/KeyBoardCodes.h>
 
 namespace Engine {
 	Application* Application::s_Instance = nullptr;
@@ -85,7 +86,8 @@ namespace Engine {
 
 		while (m_Running)
 		{  
-			Application::Instance().GetWindow().EventPolling();
+			Application::Instance().GetWindow().EventPolling(); 
+			KeyboardInput::UpdateKeyState();
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 

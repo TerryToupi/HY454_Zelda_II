@@ -13,10 +13,38 @@ void layer1::onStart()
 
 void layer1::onDelete()
 {
+} 
+
+void layer1::move()
+{ 
+	float SPEED = 1;
+
+	if (KeyboardInput::IsPressed(SCANCODE_A))
+	{
+		if (m_Scene->GetTiles()->CanScrollHoriz(-SPEED))
+			m_Scene->GetTiles()->Scroll(-SPEED, 0);
+	}
+	else if (KeyboardInput::IsPressed(SCANCODE_W)) 
+	{
+		if (m_Scene->GetTiles()->CanScrollVert(-SPEED))
+			m_Scene->GetTiles()->Scroll(0, -SPEED);
+	}
+	else if (KeyboardInput::IsPressed(SCANCODE_D))
+	{
+		if (m_Scene->GetTiles()->CanScrollHoriz(+SPEED))
+			m_Scene->GetTiles()->Scroll(+SPEED, 0);
+	}
+	else if (KeyboardInput::IsPressed(SCANCODE_S))
+	{
+		if (m_Scene->GetTiles()->CanScrollVert(+SPEED))
+			m_Scene->GetTiles()->Scroll(0, +SPEED);
+	}
 }
 
 void layer1::onUpdate()
-{
+{ 
+	move();
+
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
 	Renderer::EndScene();
@@ -31,28 +59,6 @@ void layer1::onEvent(Event& e)
 
 bool layer1::mover(KeyPressEvent& e)
 {
-	float SPEED = 2;
-
-	if (e.GetKey() == InputKey::a)
-	{
-		if (m_Scene->GetTiles()->CanScrollHoriz(-SPEED))
-			m_Scene->GetTiles()->Scroll(-SPEED, 0);
-	}
-	else if (e.GetKey() == InputKey::w)
-	{
-		if (m_Scene->GetTiles()->CanScrollVert(-SPEED))
-			m_Scene->GetTiles()->Scroll(0, -SPEED);
-	}
-	else if (e.GetKey() == InputKey::d)
-	{
-		if (m_Scene->GetTiles()->CanScrollHoriz(+SPEED))
-			m_Scene->GetTiles()->Scroll(+SPEED, 0);
-	}
-	else if (e.GetKey() == InputKey::s)
-	{
-		if (m_Scene->GetTiles()->CanScrollVert(+SPEED))
-			m_Scene->GetTiles()->Scroll(0, +SPEED);
-	}
 	return true;
 }
 

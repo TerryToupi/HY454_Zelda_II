@@ -22,7 +22,8 @@ namespace Engine
 		unsigned int GetWidth() const override { return m_Data.Width; }
 		unsigned int GetHeight() const override { return m_Data.Height; } 
 
-		virtual void EventPolling();
+		virtual void EventPolling() override;
+		virtual void* GetKeyboardState() const override;
 		virtual void SetEventCallBack(const EventCallBackFunciton& EventCallBack) override { m_EventCallBack = EventCallBack; }
 
 		virtual void* GetNativeWindow() const override { return m_Window; }
