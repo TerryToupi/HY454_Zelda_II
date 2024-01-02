@@ -1395,6 +1395,9 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Animator.h" />
+    <ClInclude Include="src\Engine\Renderer\AnimatorManager.h" />
+    <ClInclude Include="src\Engine\Renderer\Animation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1452,5 +1455,8 @@
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Input\KeyBoardCodes.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Animator.cpp" />
+    <ClCompile Include="src\Engine\Renderer\AnimatorManager.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Animation.cpp" />
   </ItemGroup>
 </Project>

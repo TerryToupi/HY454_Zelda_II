@@ -116,6 +116,9 @@
     <ClInclude Include="src\Engine\Input\MouseCodes.h" />
     <ClInclude Include="src\Engine\Logging\Log.h" />
     <ClInclude Include="src\Engine\Math\Math.h" />
+    <ClInclude Include="src\Engine\Renderer\Animation.h" />
+    <ClInclude Include="src\Engine\Renderer\Animator.h" />
+    <ClInclude Include="src\Engine\Renderer\AnimatorManager.h" />
     <ClInclude Include="src\Engine\Renderer\Bitmap.h" />
     <ClInclude Include="src\Engine\Renderer\Clipper.h" />
     <ClInclude Include="src\Engine\Renderer\CollisionChecker.h" />
@@ -553,6 +556,9 @@
     <ClCompile Include="src\Engine\Application\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Input\KeyBoardCodes.cpp" />
     <ClCompile Include="src\Engine\Logging\Log.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Animation.cpp" />
+    <ClCompile Include="src\Engine\Renderer\Animator.cpp" />
+    <ClCompile Include="src\Engine\Renderer\AnimatorManager.cpp" />
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
     <ClCompile Include="src\Engine\Renderer\Clipper.cpp" />
     <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp" />
