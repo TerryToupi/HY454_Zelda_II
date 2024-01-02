@@ -79,13 +79,15 @@ namespace Engine {
 	}
 
 	void Application::Run()
-	{   
-		Time time = SystemClock::Get().GetTime();  
-		Time timeStep = time - m_LastFrameTime;
-	 	m_LastFrameTime = timeStep;   
+	{ 
+		m_LastFrameTime = 0; 
 
 		while (m_Running)
 		{  
+			Time time = SystemClock::Get().GetTime();
+			Time timeStep = time - m_LastFrameTime;
+			m_LastFrameTime = timeStep;    
+
 			Application::Instance().GetWindow().EventPolling(); 
 			KeyboardInput::UpdateKeyState();
 
@@ -99,7 +101,10 @@ namespace Engine {
 				(*overlay)->onUpdate();   
 			}   
 
-			Renderer::BufferFlip();
+			Renderer::BufferFlip();  
+
+			Time frame = SystemClock::Get().GetTime() - time;
+			ENGINE_CORE_TRACE("Main loop time: {0}", ((frame > 0) ? 1000.0f / frame : 0.0f));
 		}
 	} 
 

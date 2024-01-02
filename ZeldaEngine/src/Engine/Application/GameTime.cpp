@@ -1,4 +1,5 @@
 #include "GameTime.h"
+#include <SDL.h>
 
 namespace Engine
 {
@@ -23,7 +24,8 @@ namespace Engine
 
 	uint64_t SystemClock::micro_sec(void) const
 	{ 
-		return std::chrono::duration_cast<std::chrono::microseconds>(m_Clock.now().time_since_epoch()).count();
+		return std::chrono::duration_cast<std::chrono::microseconds>
+			(m_Clock.now().time_since_epoch()).count();
 	}
 
 	uint64_t SystemClock::nano_sec(void) const
@@ -34,6 +36,6 @@ namespace Engine
 
 	uint64_t SystemClock::GetTime(void) const
 	{
-		return SystemClock::milli_sec();
+		return SystemClock::milli_sec(); 
 	}
 }

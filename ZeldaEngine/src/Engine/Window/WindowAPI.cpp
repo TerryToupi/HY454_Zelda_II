@@ -129,7 +129,8 @@ namespace Engine
 		);
 
 		SDL_SetWindowMinimumSize(m_Window, m_Data.Width, m_Data.Height); 
-		SDL_RenderSetLogicalSize(m_Renderer, m_Data.Width, m_Data.Height);
+		SDL_RenderSetLogicalSize(m_Renderer, m_Data.Width, m_Data.Height); 
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
 		ENGINE_CORE_ASSERT(m_Window != nullptr);  
 		ENGINE_CORE_ASSERT(m_Renderer != nullptr);

@@ -17,7 +17,7 @@ void layer1::onDelete()
 
 void layer1::move()
 { 
-	float SPEED = 1;
+	float SPEED = 2;
 
 	if (KeyboardInput::IsPressed(SCANCODE_A))
 	{
