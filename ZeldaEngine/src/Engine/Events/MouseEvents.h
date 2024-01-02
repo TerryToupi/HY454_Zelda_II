@@ -11,7 +11,6 @@ namespace Engine
 		MouseMotionEvent(uint32_t posX, uint32_t posY) 
 			:	m_PosX(posX), m_PosY(posY)
 		{
-			ENGINE_CORE_TRACE("Mouse motion event cupture: x:{0}, y:{1}", m_PosX, m_PosY);
 		} 
 		
 		uint32_t GetX() { return m_PosX; }
@@ -31,7 +30,6 @@ namespace Engine
 		MouseClickPressEvent(MButton button) 
 			: m_Button(button)
 		{ 
-			ENGINE_CORE_TRACE("Mouse Button press cupture: {0}", m_Button);
 		} 
 
 		static EventType GetEventTypeStatic() { return EventType::MouseButtonPressed; }
@@ -47,7 +45,6 @@ namespace Engine
 		MouseClickReleaseEvent(MButton button) 
 			: m_Button(button)
 		{
-			ENGINE_CORE_TRACE("Mouse Button release cupture: {0}", m_Button);
 		} 
 
 		static EventType GetEventTypeStatic() { return EventType::MouseButtonReleased; }
@@ -66,7 +63,6 @@ namespace Engine
 		MouseScrollEvent(int32_t Xoffset, int32_t Yoffset) 
 			: m_Xoffset(Xoffset), m_Yoffset(Yoffset)
 		{ 
-			ENGINE_CORE_TRACE("Mouse Scroll event cupture: x:{0}, y:{1}", m_Xoffset, m_Yoffset);
 		}  
 
 		uint32_t GetX() { return m_Xoffset; }

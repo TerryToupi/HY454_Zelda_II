@@ -19,7 +19,6 @@ namespace Engine
 		WindowResizeEvent(uint64_t width, uint64_t height)  
 			:	m_Width(width), m_Height(height)
 		{ 
-			ENGINE_CORE_TRACE("Window Resize dimension: W:{0}, H:{1}", m_Width, m_Height);
 		} 
 
 		uint64_t GetWidth() { return m_Width; }

@@ -35,7 +35,6 @@ namespace Engine
 		KeyTapEvent(InputKey key) 
 			: KeyPressEvent(key)
 		{ 
-			ENGINE_CORE_TRACE("key tap cuptured: {0}", m_Key);
 		} 
 
 		InputKey GetKey() { return m_Key; }
@@ -51,7 +50,6 @@ namespace Engine
 		KeyRepeatEvent(InputKey key, bool active) 
 			: KeyPressEvent(key), m_Active(active)
 		{
-			ENGINE_CORE_TRACE("key press cuptured: {0}", m_Key);
 		} 
 
 		InputKey GetKey() { return m_Key; }
@@ -69,7 +67,6 @@ namespace Engine
 		KeyReleaseEvent(InputKey key) 
 			: m_Key(key)
 		{
-			ENGINE_CORE_TRACE("key release cuptured: {0}", m_Key);
 		} 
 
 		InputKey GetKey() { return m_Key; }
