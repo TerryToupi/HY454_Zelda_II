@@ -12,7 +12,7 @@ layer0::layer0()
 void layer0::onStart()
 {
 	m_Scene = MakeReference<Scene>(0);
-	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
+	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp"); 
 }
 
 void layer0::onDelete()
@@ -22,7 +22,7 @@ void layer0::onDelete()
 
 void layer0::move()
 {
-	float SPEED = 2; 
+	float SPEED = 2;
 
 	if (KeyboardInput::IsPressed(SCANCODE_A))
 	{ 

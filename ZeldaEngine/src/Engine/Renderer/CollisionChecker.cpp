@@ -4,7 +4,7 @@
 
 namespace Engine
 {
-	auto Engine::CollisionChecker::Find(Sprite* s1, Sprite* s2) -> std::list<Entry>::iterator
+	auto CollisionChecker::Find(Sprite* s1, Sprite* s2) -> std::list<Entry>::iterator
 	{
 		return std::find_if(
 			entries.begin(),
