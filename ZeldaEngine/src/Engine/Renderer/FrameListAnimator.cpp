@@ -13,7 +13,7 @@ namespace Engine
 				m_frameIndex = 0;
 			}
 			else
-				m_currFrame = m_anim->GetFrames().at(m_frameIndex++);
+				m_currFrame = m_anim->GetFrames().at(++m_frameIndex);
 
 			lastTime += m_anim->GetDelay();
 			NotifyAction(*m_anim);
