@@ -6,7 +6,7 @@ namespace Engine
 {
 	class LatelyDestroyable; 
 
-	class DestructionManager { 
+	class DestructionManager final { 
 	public:
 		void Register(LatelyDestroyable* d);
 		void Commit(void);

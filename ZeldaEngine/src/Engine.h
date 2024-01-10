@@ -35,9 +35,9 @@
 #include "Engine/Renderer/FrameRangeAnimator.h"
 
 #include "Engine/Scene/AnimationFilm.h"
-#include "Engine/Scene/Scene.h" 
+#include "Engine/Scene/Scene.h"  
+#include "Engine/Scene/SpriteManager.h"
 #include "Engine/Scene/Sprite.h" 
-#include "Engine/Scene/SpriteData.h"  
 #include "Engine/Scene/Tiles.h"
  
 #include "Engine/UUID/UUID.h" 

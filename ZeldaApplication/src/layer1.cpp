@@ -13,17 +13,19 @@ void layer1::onStart()
 	m_linkSheet = MakeReference<AnimationSheet>("link-sheet", "Assets/AnimationFilms/link-sprites.bmp"); 
 	m_WalkRight = MakeReference<AnimationFilm>(m_linkSheet.get(), "Assets/Config/Animations/Link/moving_right.json");
 	m_WalkLeft = MakeReference<AnimationFilm>(m_linkSheet.get(), "Assets/Config/Animations/Link/moving_Left.json"); 
-	m_walkRightAnim = MakeReference<FrameRangeAnimation>("right", 0, m_WalkRight->GetTotalFrames() - 1, 1, 2*16, 2*16, 50);
-	m_walkLeftAnim = MakeReference<FrameRangeAnimation>("left", 0, m_WalkLeft->GetTotalFrames() - 1, 1, 2*16, 2*16, 50);
+	m_walkRightAnim = MakeReference<FrameRangeAnimation>("right", 0, m_WalkRight->GetTotalFrames(), 0, 2*16, 2*16, 80);
+	m_walkLeftAnim = MakeReference<FrameRangeAnimation>("left", 0, m_WalkLeft->GetTotalFrames(), 0, 2*16, 2*16, 80);
 
 	m_animator1 = MakeReference<FrameRangeAnimator>(m_Scene.get());
 	m_animator1.get()->SetOnAction( 
-		[this](Animator* animator, const Animation& anim) { return layer1::FrameRangeActionLeft(*this); }
+		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionLeft(); }
 	);
 	m_animator2 = MakeReference<FrameRangeAnimator>(m_Scene.get());
 	m_animator2.get()->SetOnAction(
-		[this](Animator* animator, const Animation& anim) { return layer1::FrameRangeActionRight(*this); }
-	);
+		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionRight(); }
+	); 
+
+	Sprite link = m_Scene->CreateSprite("Link", wdx, wdy, m_WalkRight.get(), "");
 }
 
 void layer1::onDelete()
@@ -32,12 +34,16 @@ void layer1::onDelete()
 
 void layer1::move(Time ts)
 {
-	float SPEED = 2;
+	float SPEED = 1;
 
 	if (KeyboardInput::IsPressed(SCANCODE_A))
 	{
 		if (m_Scene->GetTiles()->CanScrollHoriz(-SPEED))
-			m_Scene->GetTiles()->Scroll(-SPEED, 0);
+		{
+			m_Scene->GetTiles()->Scroll(-SPEED, 0);  
+			wdx += -SPEED; 
+			m_Scene->GetSprite("Link")->SetPos(wdx, wdy);
+		}
 	}
 	else if (KeyboardInput::IsPressed(SCANCODE_W))
 	{
@@ -47,7 +53,11 @@ void layer1::move(Time ts)
 	else if (KeyboardInput::IsPressed(SCANCODE_D))
 	{
 		if (m_Scene->GetTiles()->CanScrollHoriz(+SPEED))
-			m_Scene->GetTiles()->Scroll(+SPEED, 0); 
+		{
+			m_Scene->GetTiles()->Scroll(+SPEED, 0);
+			wdx += +SPEED; 
+			m_Scene->GetSprite("Link")->SetPos(wdx, wdy);
+		}
 	}
 	else if (KeyboardInput::IsPressed(SCANCODE_S))
 	{
@@ -64,7 +74,8 @@ void layer1::onUpdate(Time ts)
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
-	Renderer::UpdateSceneAnimators(ts);
+	Renderer::UpdateSceneAnimators(ts); 
+	Renderer::DisplaySprites();
 	Renderer::EndScene();
 }
 
@@ -77,48 +88,49 @@ void layer1::onEvent(Event& e)
 
 bool layer1::mover(Event& e)
 { 
-	if (KeyTapEvent::GetEventTypeStatic() == e.GetEventType())
+	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
 	{ 
-		m_animator2->Start(m_walkRightAnim.get(), curr);
-	} 
-
+		KeyPressEvent *event = dynamic_cast<KeyPressEvent*>(&e); 
+		if (event->GetKey() == InputKey::d)
+			m_animator2->Start(m_walkRightAnim.get(), curr);
+		else if (event->GetKey() == InputKey::a)
+			m_animator1->Start(m_walkLeftAnim.get(), curr);
+	}  
+	
 	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
-	{ 
-		m_animator2->Stop();
+	{
+		m_animator2->Stop(); 
+		m_animator1->Stop();
 	}
+
 	return true;
 }
 
-void layer1::FrameRangeActionLeft(layer1& layer)
-{
-	auto& interbuff = Renderer::InterBufferInstance();
-	
-	layer.m_WalkLeft->DisplayFrame(
-		interbuff,
-		{
-			layer.m_walkLeftAnim->GetDx(),
-			layer.m_walkLeftAnim->GetDy(),
-			layer.m_WalkLeft->GetFrameBox(layer.m_animator1->GetCurrFrame()).w,
-			layer.m_WalkLeft->GetFrameBox(layer.m_animator1->GetCurrFrame()).h
-		},
-		layer.m_animator1->GetCurrFrame()
-	);
+void layer1::FrameRangeActionLeft()
+{ 
+	Sprite link = m_Scene->GetSprite("Link"); 
+
+	link->SetFilm(m_WalkLeft.get()); 
+	link->SetFrame(m_animator1->GetCurrFrame());
 }
 
-void layer1::FrameRangeActionRight(layer1& layer)
-{
-	auto& interbuff = Renderer::InterBufferInstance();
-
-	layer.m_WalkRight->DisplayFrame(
-		interbuff,
-		{
-			layer.m_walkRightAnim->GetDx(),
-			layer.m_walkRightAnim->GetDy(),
-			layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()).w,
-			layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()).h
-		},
-		layer.m_animator2->GetCurrFrame()
-	);
+void layer1::FrameRangeActionRight()
+{ 
+	Sprite link = m_Scene->GetSprite("Link"); 
+	
+	link->SetFilm(m_WalkRight.get());
+	link->SetFrame(m_animator2->GetCurrFrame());  
+	//layer.m_WalkRight->DisplayFrame(
+	//	interbuff,
+	//	layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()),
+	//	{
+	//		layer.m_walkRightAnim->GetDx(),
+	//		layer.m_walkRightAnim->GetDy(),
+	//		layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()).w,
+	//		layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()).h
+	//	},
+	//	layer.m_animator2->GetCurrFrame()
+	//);
 }
 
 

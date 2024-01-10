@@ -3,7 +3,8 @@
 #include <Engine/Application/LayerStack.h>
 #include <Engine/Window/Window.h> 
 #include <Engine/Events/ApplicationEvents.h>
-#include <Engine/Application/GameTime.h>
+#include <Engine/Application/GameTime.h> 
+#include <Engine/Scene/LatelyDestroyable.h>
 
 #include <string>
 

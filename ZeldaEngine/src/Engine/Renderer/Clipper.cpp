@@ -56,10 +56,10 @@ namespace Engine
 			clippedBox->w = visibleArea.w;
 			
 			dpyPos->x = dpyArea.x + (visibleArea.x - m_View().x);
-			dpyPos->y = dpyArea.y + (visibleArea.y - m_View().y); 
-			
-			dpyPos->w = clippedBox->w;
-			dpyPos->h = clippedBox->h; 
+			dpyPos->y = dpyArea.y + (visibleArea.y - m_View().y);  
+
+			dpyPos->w = visibleArea.w;
+			dpyPos->h = visibleArea.h; 
 
 			return true;
 		}

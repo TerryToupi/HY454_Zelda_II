@@ -105,7 +105,9 @@ namespace Engine {
 				(*overlay)->onUpdate(currTime);   
 			}   
 
-			Renderer::BufferFlip();  
+			Renderer::BufferFlip(); 
+
+			DestructionManager::Get().Commit();
 		}
 	} 
 

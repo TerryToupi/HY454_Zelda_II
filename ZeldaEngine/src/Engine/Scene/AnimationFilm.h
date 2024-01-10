@@ -17,14 +17,14 @@ namespace Engine
 		AnimationFilm(AnimationSheet* sheet, std::string _configPath) 
 			: m_animationSheet(sheet) { Generate(_configPath); }
 
-		uint32_t	GetTotalFrames(void) const { return m_boxes.size(); } 
+		uint32_t	GetTotalFrames(void) const { return m_boxes.size() - 1; } 
 		Bitmap&		GetBitmap(void) { return m_animationSheet->GetSheet(); } 
 		auto		GetId(void) -> const std::string& { return m_name; } 
 		auto		GetFrameBox(uint32_t boxNo) -> const Rect& 
 						{ ENGINE_CORE_ASSERT(!m_boxes.empty()); return m_boxes[boxNo]; } 
 
-		void		DisplayFrame(Bitmap& dest, Rect at, uint32_t boxNo) 
-						{ Bitmap::Blit(m_animationSheet->GetSheet(), &m_boxes[boxNo], dest, &at); }
+		void		DisplayFrame(Bitmap& dest, Rect from, Rect to, uint32_t boxNo) 
+						{ Bitmap::Blit(m_animationSheet->GetSheet(), &from, dest, &to); }
 
 	private:
 		void		Generate(std::string configPath);

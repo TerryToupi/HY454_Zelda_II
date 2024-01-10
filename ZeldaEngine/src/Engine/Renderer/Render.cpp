@@ -61,6 +61,11 @@ namespace Engine
 		s_Instance->m_Threads.push_back(std::thread{ Renderer::UpdateSceneAnimatorsThread, s_Instance->m_ActiveScene, ts });
 		//s_Instance->m_ActiveScene->GetAnimatorManager().Progress(ts);
 	}
+
+	void Renderer::DisplaySprites()
+	{
+		s_Instance->m_Threads.push_back(std::thread{ Renderer::DisplaySpritesThread, s_Instance->m_ActiveScene });
+	}
 	
 	void Renderer::DisplaySceneTilesThread(Ref<Scene> scene)
 	{ 
@@ -75,6 +80,25 @@ namespace Engine
 	void Renderer::UpdateSceneAnimatorsThread(Ref<Scene> scene, Time ts)
 	{ 
 		scene->GetAnimatorManager().Progress(ts);
+	} 
+
+	const Clipper MakeTileLayerClipper(TileLayer* layer)
+	{
+		return Clipper().SetView(
+			[layer](void) -> const Rect&
+			{ return layer->GetViewWindow(); }
+		);
+	}
+
+	void Renderer::DisplaySpritesThread(Ref<Scene> scene)
+	{ 
+		auto& ib = s_Instance->InterBufferInstance();
+
+		for (auto sprite : scene->GetSpriteManager().GetDisplayList())
+		{
+			if (sprite != nullptr)
+				sprite->Display(ib, {0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, MakeTileLayerClipper(scene->GetTiles().get()));
+		}
 	}
 
 	void Renderer::EndScene()

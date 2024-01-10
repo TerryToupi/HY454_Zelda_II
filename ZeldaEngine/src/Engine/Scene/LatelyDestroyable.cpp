@@ -1,7 +1,9 @@
 #include "LatelyDestroyable.h"
 
 namespace Engine
-{
+{ 
+	DestructionManager DestructionManager::singleton;
+
 	void DestructionManager::Register(LatelyDestroyable* d)
 	{ 
 		ENGINE_CORE_ASSERT(!d->IsAlive());

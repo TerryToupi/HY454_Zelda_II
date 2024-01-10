@@ -20,8 +20,8 @@ public:
 
 	bool mover(Event& e);  
 
-	static void FrameRangeActionLeft(layer1& layer);
-	static void FrameRangeActionRight(layer1& layer);
+	void FrameRangeActionLeft();
+	void FrameRangeActionRight();
 
 	void move(Time ts); 
 
@@ -37,8 +37,8 @@ private:
 	Ref<FrameRangeAnimator> m_animator1;
 	Ref<FrameRangeAnimator> m_animator2;
 
-	float wdx = 0; 
-	float wdy = 0; 
+	int wdx = 100; 
+	int wdy = 100; 
 
 	Time curr = 0;
 };

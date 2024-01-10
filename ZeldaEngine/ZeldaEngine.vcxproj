@@ -121,7 +121,6 @@
     <ClInclude Include="src\Engine\Renderer\AnimatorManager.h" />
     <ClInclude Include="src\Engine\Renderer\Bitmap.h" />
     <ClInclude Include="src\Engine\Renderer\Clipper.h" />
-    <ClInclude Include="src\Engine\Renderer\CollisionChecker.h" />
     <ClInclude Include="src\Engine\Renderer\FlashAnimation.h" />
     <ClInclude Include="src\Engine\Renderer\FlashAnimator.h" />
     <ClInclude Include="src\Engine\Renderer\FrameListAnimator.h" />
@@ -139,7 +138,7 @@
     <ClInclude Include="src\Engine\Scene\LatelyDestroyable.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\Scene\Sprite.h" />
-    <ClInclude Include="src\Engine\Scene\SpriteData.h" />
+    <ClInclude Include="src\Engine\Scene\SpriteManager.h" />
     <ClInclude Include="src\Engine\Scene\Tiles.h" />
     <ClInclude Include="src\Engine\UUID\UUID.h" />
     <ClInclude Include="src\Engine\Window\Window.h" />
@@ -573,7 +572,6 @@
     <ClCompile Include="src\Engine\Renderer\AnimatorManager.cpp" />
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp" />
     <ClCompile Include="src\Engine\Renderer\Clipper.cpp" />
-    <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp" />
     <ClCompile Include="src\Engine\Renderer\FlashAnimator.cpp" />
     <ClCompile Include="src\Engine\Renderer\FrameListAnimator.cpp" />
     <ClCompile Include="src\Engine\Renderer\FrameRangeAnimator.cpp" />
@@ -586,7 +584,7 @@
     <ClCompile Include="src\Engine\Scene\LatelyDestroyable.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\Scene\Sprite.cpp" />
-    <ClCompile Include="src\Engine\Scene\SpriteData.cpp" />
+    <ClCompile Include="src\Engine\Scene\SpriteManager.cpp" />
     <ClCompile Include="src\Engine\Scene\Tiles.cpp" />
     <ClCompile Include="src\Engine\UUID\UUID.cpp" />
     <ClCompile Include="src\Engine\Window\Window.cpp" />

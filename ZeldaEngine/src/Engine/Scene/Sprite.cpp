@@ -1,159 +1,112 @@
 #include "Sprite.h" 
 
-#include <Engine/Scene/Scene.h>
-
 namespace Engine
 {
-	Sprite::Sprite(std::string name, Scene* scene) 
-		:	m_HashName(name),	m_Scene(scene)
+	SpriteClass::SpriteClass(std::string _name, int _x, int _y, AnimationFilm* _film, const std::string& _typeid)
+		: m_hashName(_name), m_x(_x), m_y(_y), m_currFilm(_film), m_typeId(_typeid)
 	{ 
-	}
-
-	void Sprite::SetMover(const Mover& move)
-	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName); 
-		spData->mover = move; 
-		spData->quantizer.SetMover(spData->mover); 
-		return;
-	}
-
-	const Rect Sprite::GetBox(void) const
-	{  
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);
-
-		Rect r;
-		r.x = spData->x; 
-		r.y = spData->y; 
-		r.w = spData->frameBox.w;
-		r.h = spData->frameBox.h;
-		return r;
-	}
-
-	Sprite& Sprite::Move(int dx, int dy)
-	{  
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName); 
-		
-		if (spData->directMotion)
-		{
-			spData->x += dx; 
-			spData->y += dy;
-		} 
-		else
-		{
-			spData->quantizer.Move(GetBox(), &dx, &dy);  
-			//spData->gravity.Check(GetBox());
-		}
-
-		return *this;
-	}
-
-	void Sprite::SetPos(int _x, int _y)
-	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName); 
-
-		spData->x = _x;
-		spData->y = _y;  
-		return;
+		m_frameNo = m_currFilm->GetTotalFrames();
+		SetFrame(0);
 	} 
 
-	void Sprite::SetZorder(unsigned z)
+	void SpriteClass::SetMover(const Mover& move)
 	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName); 
-		spData->zorder = z; 
-		return;
+		m_quantizer.SetMover(move);
 	}
 
-	unsigned Sprite::GetZorder(void)
+	const Rect SpriteClass::GetBox(void) const
+	{
+		return { m_x, m_y, m_frameBox.w, m_frameBox.h };
+	} 
+
+	void SpriteClass::Move(int dx, int dy)
 	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName); 
-		return spData->zorder;
+		m_quantizer.Move(GetBox(), &m_x, &m_y);
 	}
 
-	void Sprite::SetFrame(byte i)
-	{  
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName); 
-		
-		if (i != spData->frameNo)
-		{ 
-			//TODO FILM
+	void SpriteClass::SetPos(int _x, int _y)
+	{ 
+		m_x = _x;
+		m_y = _y;
+	}
+
+	void SpriteClass::SetZorder(unsigned z)
+	{ 
+		m_zorder = z;
+	}
+
+	unsigned SpriteClass::GetZorder(void)
+	{
+		return m_zorder;
+	}
+
+	void SpriteClass::SetFrame(byte i)
+	{
+		if (i != m_frameNo)
+		{
+			m_frameBox = m_currFilm->GetFrameBox(m_frameNo = i);
 		}
 	}
 
-	byte Sprite::GetFrame(void) const
-	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);  
-		return spData->frameNo;
-	} 
-
-	const std::string& Sprite::GetTypeId()
+	byte SpriteClass::GetFrame(void) const
 	{
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
-		return spData->typeID;
+		return m_frameNo;
 	}
 
-	void Sprite::SetVisibility(bool v)
+	void SpriteClass::SetFilm(AnimationFilm* film)
 	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
-		spData->isVisible = v; 
-		return;
+		m_currFilm = film;
 	}
 
-	bool Sprite::IsVisible(void) const
-	{
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
-		return spData->isVisible;
-	}
-
-	// TODO
-	bool Sprite::CollisionCheck(const Sprite* s) const
-	{
-		return false;
-	}
-
-	//GravityHandler& Sprite::GetGravityHandler(void)
-	//{ 
-	//	auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
-	//	return spData->gravity; 
-	//}
-
-	Sprite& Sprite::SetHasDirectMotion(bool v)
+	void SpriteClass::SetBoundingArea(BoundingArea* area)
 	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
-		spData->directMotion = v; 
-		return *this;
+		ENGINE_CORE_ASSERT(!m_boundingArea); 
+		m_boundingArea = area;
 	}
 
-	bool Sprite::GetHasDirectMotion(void) const
-	{
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);   
-		return spData->directMotion;
-	}
-
-	void Sprite::Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const
+	const std::string& SpriteClass::GetTypeId()
 	{ 
-		auto* spData = &m_Scene->m_SpritesMap.at(m_HashName);    
+		return m_typeId;
+	}
 
+	void SpriteClass::SetVisibility(bool v)
+	{ 
+		m_isVisible = v;
+	}
+
+	bool SpriteClass::IsVisible(void) const
+	{
+		return m_isVisible;
+	}
+
+	std::string& SpriteClass::GetHashName()
+	{ 
+		return m_hashName;
+	}
+
+	void SpriteClass::Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const
+	{ 
 		Rect clippedBox; 
 		Rect dpyPos;
 
 		if (clipper.Clip(GetBox(), dpyArea, &dpyPos, &clippedBox))
-		{
+		{  
 			Rect clippedFrame
 			{
-				spData->frameBox.x + clippedBox.x,
-				spData->frameBox.y + clippedBox.y, 
-				clippedBox.w, 
+				m_frameBox.x - clippedBox.x,
+				m_frameBox.y - clippedBox.y,
+				clippedBox.w,
 				clippedBox.h
-			}; 
-
-			//Bitmap::Blit( 
-			//	// TODO INSERT FILM HERE
-			//	Bitmap(), 
-			//	&clippedFrame, 
-			//	dest, 
-			//	&dpyPos
-			//);
-		}
+			};  
+			
+			m_currFilm->DisplayFrame(
+				dest, 
+				clippedFrame,
+				dpyPos,
+				m_frameNo
+			);
+		} 
 	}
+
 }
 

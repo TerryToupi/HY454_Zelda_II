@@ -114,9 +114,6 @@
     <ClInclude Include="src\Engine\Renderer\Clipper.h">
       <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Renderer\CollisionChecker.h">
-      <Filter>src\Engine\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\MotionQuantizer.h">
       <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
@@ -130,9 +127,6 @@
       <Filter>src\Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene\Sprite.h">
-      <Filter>src\Engine\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Scene\SpriteData.h">
       <Filter>src\Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene\Tiles.h">
@@ -1410,6 +1404,7 @@
     <ClInclude Include="src\Engine\Renderer\ScrollAnimator.h" />
     <ClInclude Include="src\Engine\Scene\AnimationFilm.h" />
     <ClInclude Include="src\Engine\Scene\AnimationSheet.h" />
+    <ClInclude Include="src\Engine\Scene\SpriteManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1433,9 +1428,6 @@
     <ClCompile Include="src\Engine\Renderer\Clipper.cpp">
       <Filter>src\Engine\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Renderer\CollisionChecker.cpp">
-      <Filter>src\Engine\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Renderer\MotionQuantizer.cpp">
       <Filter>src\Engine\Renderer</Filter>
     </ClCompile>
@@ -1449,9 +1441,6 @@
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Scene\Sprite.cpp">
-      <Filter>src\Engine\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Engine\Scene\SpriteData.cpp">
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Scene\Tiles.cpp">
@@ -1477,5 +1466,6 @@
     <ClCompile Include="src\Engine\Renderer\FlashAnimator.cpp" />
     <ClCompile Include="src\Engine\Renderer\ScrollAnimator.cpp" />
     <ClCompile Include="src\Engine\Scene\AnimationFilm.cpp" />
+    <ClCompile Include="src\Engine\Scene\SpriteManager.cpp" />
   </ItemGroup>
 </Project>
