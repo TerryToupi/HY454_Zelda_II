@@ -13,9 +13,9 @@ namespace Engine
 	} 
 
 	template<typename T>
-	using Reference = std::shared_ptr<T>;
+	using Ref = std::shared_ptr<T>;
 	template<typename T, typename ...Args> 
-	constexpr Reference<T> MakeReference(Args&& ... args)
+	constexpr Ref<T> MakeReference(Args&& ... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}  

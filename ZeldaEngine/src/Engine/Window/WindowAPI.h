@@ -28,7 +28,8 @@ namespace Engine
 
 		virtual void* GetNativeWindow() const override { return m_Window; }
 		virtual void* GetNativeRenderer() const override { return m_Renderer; } 
-		virtual void ResizeWindow(int w, int h) const override { SDL_RenderSetLogicalSize(m_Renderer, w, h); }
+		virtual void ResizeWindow(int w, int h) const override { SDL_RenderSetLogicalSize(m_Renderer, w, h); } 
+		virtual void UpdateEngineStats(Time ts) const override;
 
 	private:
 		void Init(const WindowConfig& config); 

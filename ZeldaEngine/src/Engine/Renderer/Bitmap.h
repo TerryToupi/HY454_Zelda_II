@@ -28,7 +28,7 @@ namespace Engine
 		uint64_t GetWidth() { return m_Width; }
 		uint64_t GetHeight() { return m_Height; } 
 
-		static void Reset(Bitmap& b);
+		void Reset();
 
 		static void Blit(Bitmap& src, const Rect* from,
 						  Bitmap& dest, Rect* to);  

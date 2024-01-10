@@ -8,7 +8,7 @@ namespace Engine
 	class MovingAnimator : public Animator
 	{
 	public:  
-		MovingAnimator(void) = default;
+		MovingAnimator(Scene* scene);
 
 		void	Progress(Time currtime); 
 		auto	GetAnim(void) const -> const MovingAnimation& { return *m_Anim; } 

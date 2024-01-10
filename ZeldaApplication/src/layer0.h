@@ -14,7 +14,7 @@ public:
 
 	void onDelete() override;
 
-	void onUpdate() override; 
+	void onUpdate(Time ts) override; 
 
 	void onEvent(Event& e) override;    
 
@@ -22,7 +22,7 @@ public:
 
 	bool mover(KeyPressEvent& e); 
 private:
-	Reference<Scene> m_Scene; 	
+	Ref<Scene> m_Scene; 	
 
 	float wdx = 0;
 	float wdy = 0;

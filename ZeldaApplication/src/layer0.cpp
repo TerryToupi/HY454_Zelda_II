@@ -46,12 +46,13 @@ void layer0::move()
 	} 
 }
 
-void layer0::onUpdate()
+void layer0::onUpdate(Time ts)
 { 
 	move();
 
 	Renderer::BeginScene(m_Scene); 
 	Renderer::DisplaySceneTiles();
+	Renderer::UpdateSceneAnimators(ts);
 	Renderer::EndScene();
 }
 
@@ -64,6 +65,7 @@ void layer0::onEvent(Event& e)
 
 bool layer0::mover(KeyPressEvent& e)
 {
+
 	return true;
 } 
 

@@ -39,17 +39,30 @@ namespace Engine
 		return MakeScope<Bitmap>();
 	}
 
-	void Renderer::BeginScene(Reference<Scene> scene)
+	void Renderer::BeginScene(Ref<Scene> scene)
 	{ 
 		s_Instance->m_ActiveScene = scene;
 	}
 
 	void Renderer::DisplaySceneTiles()
 	{
-		s_Instance->m_Threads.push_back(std::thread{ Renderer::DisplaySceneTilesThread, s_Instance->m_ActiveScene }); 
+		s_Instance->m_Threads.push_back(std::thread{ Renderer::DisplaySceneTilesThread, s_Instance->m_ActiveScene });
+
+		//int width = (int)s_Instance->InterBufferInstance().GetWidth();
+		//int height = (int)s_Instance->InterBufferInstance().GetHeight();
+		//s_Instance->m_ActiveScene->GetTiles()->Display(
+		//	s_Instance->InterBufferInstance(),
+		//	{ 0, 0, width, height }
+		//);
+	}
+
+	void Renderer::UpdateSceneAnimators(Time ts)
+	{
+		s_Instance->m_Threads.push_back(std::thread{ Renderer::UpdateSceneAnimatorsThread, s_Instance->m_ActiveScene, ts });
+		//s_Instance->m_ActiveScene->GetAnimatorManager().Progress(ts);
 	}
 	
-	void Renderer::DisplaySceneTilesThread(Reference<Scene> scene)
+	void Renderer::DisplaySceneTilesThread(Ref<Scene> scene)
 	{ 
 		int width = (int)s_Instance->InterBufferInstance().GetWidth();   
 		int height = (int)s_Instance->InterBufferInstance().GetHeight();
@@ -57,6 +70,11 @@ namespace Engine
 			s_Instance->InterBufferInstance(),
 			{ 0, 0, width, height }
 		);
+	}
+
+	void Renderer::UpdateSceneAnimatorsThread(Ref<Scene> scene, Time ts)
+	{ 
+		scene->GetAnimatorManager().Progress(ts);
 	}
 
 	void Renderer::EndScene()

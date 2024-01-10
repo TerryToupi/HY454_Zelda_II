@@ -2,6 +2,7 @@
 
 #include <Engine/Application/Core.h>  
 #include <Engine/Events/Event.h>
+#include <Engine/Application/GameTime.h>
 #include <string>
 
 namespace Engine { 
@@ -34,7 +35,8 @@ namespace Engine {
 
 		virtual void EventPolling() = 0;
 		virtual void SetEventCallBack(const EventCallBackFunciton& EventCallBack) = 0;
-		virtual void ResizeWindow(int w, int h) const = 0; 
+		virtual void ResizeWindow(int w, int h) const = 0;  
+		virtual void UpdateEngineStats(Time ts) const = 0;
 
 		virtual void* GetKeyboardState() const = 0;
 

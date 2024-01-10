@@ -3,18 +3,7 @@
 
 namespace Engine
 {
-	SystemClock* SystemClock::s_Instance = nullptr; 
-
-	void SystemClock::Init(void)
-	{ 
-		ENGINE_CORE_ASSERT(!s_Instance); 
-		SystemClock::s_Instance = new SystemClock();
-	}
-
-	void SystemClock::Shutdown(void)
-	{ 
-		delete SystemClock::s_Instance;
-	}
+	SystemClock SystemClock::s_Instance; 
 
 	uint64_t SystemClock::milli_sec(void) const
 	{
@@ -34,8 +23,14 @@ namespace Engine
 			(m_Clock.now().time_since_epoch()).count();
 	}
 
+	uint64_t SystemClock::sec(void) const
+	{
+		return std::chrono::duration_cast<std::chrono::seconds>
+			(m_Clock.now().time_since_epoch()).count();
+	}
+
 	uint64_t SystemClock::GetTime(void) const
 	{
-		return SystemClock::milli_sec(); 
+		return SystemClock::milli_sec();
 	}
 }

@@ -1,5 +1,6 @@
 #include "Animator.h"
-#include <Engine/Renderer/AnimatorManager.h> 
+#include <Engine/Renderer/AnimatorManager.h>  
+#include <Engine/Scene/Scene.h>
 
 namespace Engine 
 {
@@ -12,14 +13,15 @@ namespace Engine
 		}
 	} 
 
-	Animator::Animator(void)
-	{ 
-		AnimatorManager::GetInstance().Reginster(this);
+	Animator::Animator(Scene* scene) 
+		: scene(scene)
+	{  
+		scene->GetAnimatorManager().Reginster(this);
 	}
 
 	Animator::~Animator()
 	{ 
-		AnimatorManager::GetInstance().Cancel(this);
+		scene->GetAnimatorManager().Cancel(this);
 	}
 
 	void Animator::Stop(void)
@@ -29,14 +31,14 @@ namespace Engine
 
 	void Animator::NotifyStopped(void)
 	{  
-		AnimatorManager::GetInstance().MarkAsSuspended(this);
+		scene->GetAnimatorManager().MarkAsSuspended(this);
 		if (onFinish)
 			(onFinish)(this);
 	}
 
 	void Animator::NotifyStarted(void)
 	{ 
-		AnimatorManager::GetInstance().MarkAsRunning(this);
+		scene->GetAnimatorManager().MarkAsRunning(this);
 		if (onStart)
 			(onStart)(this);
 	}

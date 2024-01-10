@@ -44,7 +44,6 @@ namespace Engine
 		ApplicationConfig m_AppConfig;
 		LayerStack m_Layers;  
 		Scope<Window> m_Window;  
-		Time m_LastFrameTime;
 		bool m_Running;
 
 	private: 

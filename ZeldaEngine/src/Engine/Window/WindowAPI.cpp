@@ -102,6 +102,15 @@ namespace Engine
 		return (void*)(SDL_GetKeyboardState(NULL));
 	}
 
+	void WindowAPI::UpdateEngineStats(Time ts) const
+	{ 
+		std::string Tittle = m_Data.TitleBar;
+		std::string FPS = std::to_string((int)((1.0 / ts) * 1000));
+		std::string ms = std::to_string(ts);
+		std::string newTittle = Tittle + " FPS: " + FPS + " CPU time: " + ms + "ms";
+		SDL_SetWindowTitle(m_Window, newTittle.c_str());
+	}
+
 	void WindowAPI::Init(const WindowConfig& config)
 	{ 
 		m_Data.Height = config.Height;

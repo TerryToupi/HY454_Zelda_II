@@ -1,7 +1,9 @@
 #include "AnimatorManager.h" 
 
+#include <thread>
+
 namespace Engine
-{
+{ 
 	void AnimatorManager::Reginster(Animator* a)
 	{  
 		ENGINE_CORE_ASSERT(a->HasFinished());
@@ -29,10 +31,27 @@ namespace Engine
 	} 
 
 	void AnimatorManager::Progress(Time currTime)
-	{
+	{ 
+		std::vector<std::thread> threads;
+
 		auto copied(running); 
 		for (auto* a : copied)
-			a->Progress(currTime);
+		{  
+			threads.push_back(std::thread
+				{ 
+					[](Animator* a, Time currTime) -> void { a->Progress(currTime); }, 
+					std::ref(a), 
+					std::ref(currTime) 
+				}); 
+
+			//a->Progress(currTime);
+		} 
+
+		for (auto& thread : threads)
+		{
+			if (thread.joinable())
+				thread.join();
+		}
 	}
 }
 

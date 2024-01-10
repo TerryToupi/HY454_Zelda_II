@@ -3,7 +3,8 @@
 #include <Engine/Application/Core.h> 
 #include <Engine/Scene/Sprite.h>
 #include <Engine/Scene/SpriteData.h> 
-#include <Engine/Scene/Tiles.h>
+#include <Engine/Scene/Tiles.h> 
+#include <Engine/Renderer/AnimatorManager.h>
 
 #include <string>
 #include <unordered_map> 
@@ -19,13 +20,15 @@ namespace Engine
 		Sprite CreateSprite(std::string tag);  
 		Sprite GetSprite(std::string tag);  
 
-		Reference<TileLayer> GetTiles() { return m_Tiles; }
+		Ref<TileLayer> GetTiles() { return m_Tiles; } 
+		AnimatorManager& GetAnimatorManager() { return m_AnimManager; }
 
 	private: 
 		friend class Sprite;
 		
 	private:   
-		Reference<TileLayer> m_Tiles;
+		Ref<TileLayer> m_Tiles; 
+		AnimatorManager m_AnimManager;
 		std::unordered_map<std::string, SpriteData> m_SpritesMap; 
 	};
 };

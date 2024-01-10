@@ -1407,7 +1407,9 @@
     <ClInclude Include="src\Engine\Renderer\FrameListAnimator.h" />
     <ClInclude Include="src\Engine\Renderer\MovingPathAnimator.h" />
     <ClInclude Include="src\Engine\Renderer\FlashAnimator.h" />
-    <ClInclude Include="src\Engine\Renderer\ScrollAnimatior.h" />
+    <ClInclude Include="src\Engine\Renderer\ScrollAnimator.h" />
+    <ClInclude Include="src\Engine\Scene\AnimationFilm.h" />
+    <ClInclude Include="src\Engine\Scene\AnimationSheet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1473,6 +1475,7 @@
     <ClCompile Include="src\Engine\Renderer\FrameListAnimator.cpp" />
     <ClCompile Include="src\Engine\Renderer\MovingPathAnimator.cpp" />
     <ClCompile Include="src\Engine\Renderer\FlashAnimator.cpp" />
-    <ClCompile Include="src\Engine\Renderer\ScrollAnimatior.cpp" />
+    <ClCompile Include="src\Engine\Renderer\ScrollAnimator.cpp" />
+    <ClCompile Include="src\Engine\Scene\AnimationFilm.cpp" />
   </ItemGroup>
 </Project>

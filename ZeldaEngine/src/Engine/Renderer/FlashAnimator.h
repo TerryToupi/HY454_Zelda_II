@@ -8,7 +8,7 @@ namespace Engine
 	class FlashShowAnimator : public Animator
 	{
 	public:
-		FlashShowAnimator(void) = default;
+		FlashShowAnimator(Scene* scene);
 
 		void	 Progress(Time currtime);
 		uint32_t GetShowDelay(void) const { return m_showDelay; }		auto     GetAnim(void) const -> const FlashAnimation& { return *m_Anim; }
@@ -29,7 +29,7 @@ namespace Engine
 	class FlashHideAnimator : public Animator
 	{
 	public:
-		FlashHideAnimator(void) = default;
+		FlashHideAnimator(Scene* scene);
 
 		void	 Progress(Time currtime);  
 		uint32_t GetHideDelay(void) const { return m_hideDelay; }

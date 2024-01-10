@@ -14,16 +14,31 @@ public:
 
 	void onDelete() override;
 
-	void onUpdate() override;
+	void onUpdate(Time ts) override;
 
 	void onEvent(Event& e) override;
 
-	bool mover(KeyPressEvent& e); 
+	bool mover(Event& e);  
 
-	void move();
-private:
-	Reference<Scene> m_Scene;
+	static void FrameRangeActionLeft(layer1& layer);
+	static void FrameRangeActionRight(layer1& layer);
 
-	float wdx = 0;
-	float wdy = 0;
+	void move(Time ts); 
+
+private: 
+	Ref<Scene> m_Scene;  
+	Ref<AnimationSheet> m_linkSheet; 
+
+	Ref<AnimationFilm> m_WalkRight;
+	Ref<AnimationFilm> m_WalkLeft; 
+	Ref<FrameRangeAnimation> m_walkRightAnim;
+	Ref<FrameRangeAnimation> m_walkLeftAnim; 
+
+	Ref<FrameRangeAnimator> m_animator1;
+	Ref<FrameRangeAnimator> m_animator2;
+
+	float wdx = 0; 
+	float wdy = 0; 
+
+	Time curr = 0;
 };

@@ -133,7 +133,9 @@
     <ClInclude Include="src\Engine\Renderer\MovingPathAnimator.h" />
     <ClInclude Include="src\Engine\Renderer\Render.h" />
     <ClInclude Include="src\Engine\Renderer\ScrollAnimation.h" />
-    <ClInclude Include="src\Engine\Renderer\ScrollAnimatior.h" />
+    <ClInclude Include="src\Engine\Renderer\ScrollAnimator.h" />
+    <ClInclude Include="src\Engine\Scene\AnimationFilm.h" />
+    <ClInclude Include="src\Engine\Scene\AnimationSheet.h" />
     <ClInclude Include="src\Engine\Scene\LatelyDestroyable.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\Scene\Sprite.h" />
@@ -579,7 +581,8 @@
     <ClCompile Include="src\Engine\Renderer\MovingAnimator.cpp" />
     <ClCompile Include="src\Engine\Renderer\MovingPathAnimator.cpp" />
     <ClCompile Include="src\Engine\Renderer\Render.cpp" />
-    <ClCompile Include="src\Engine\Renderer\ScrollAnimatior.cpp" />
+    <ClCompile Include="src\Engine\Renderer\ScrollAnimator.cpp" />
+    <ClCompile Include="src\Engine\Scene\AnimationFilm.cpp" />
     <ClCompile Include="src\Engine\Scene\LatelyDestroyable.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\Scene\Sprite.cpp" />

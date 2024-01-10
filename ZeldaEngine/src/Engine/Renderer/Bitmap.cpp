@@ -18,10 +18,10 @@ namespace Engine
 	{
 		SDL_FreeSurface(m_Surface); 
 	} 
-	
-	void Bitmap::Reset(Bitmap& b)
-	{ 
-		SDL_FillRect(b.m_Surface, NULL, 0x000000);
+
+	void Bitmap::Reset()
+	{
+		SDL_FillRect(m_Surface, NULL, 0x000000);
 	}
 
 	void Bitmap::Blit(Bitmap& src, const Rect* from, Bitmap& dest, Rect* to)
@@ -35,7 +35,7 @@ namespace Engine
 	}
 
 	void Bitmap::PresentOnDisplay(Bitmap& src)
-	{ 
+	{   
 		auto renderer = static_cast<SDL_Renderer*>(Application::Instance().GetWindow().GetNativeRenderer());
 		SDL_Texture* fb = SDL_CreateTextureFromSurface(renderer, src.m_Surface);
 

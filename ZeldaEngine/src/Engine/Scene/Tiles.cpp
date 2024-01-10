@@ -72,8 +72,8 @@ namespace Engine
 
 	void TileLayer::LoadTiles(std::string path)
 	{
-		std::ifstream file1("Assets/Config/TileMap.json"); 
-		std::ifstream file2("Assets/Config/TileSet.json");
+		std::ifstream file1("Assets/Config/TileMap/TileMap.json"); 
+		std::ifstream file2("Assets/Config/TileMap/TileSet.json");
 		json MapConfig = json::parse(file1);  
 		json SetConfig = json::parse(file2);  
 
@@ -200,13 +200,20 @@ namespace Engine
 			//	}
 			//}
 
-			Rect dpySrc{ m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h };
-			Rect dpyDest{ displayArea.x, displayArea.y, displayArea.w, displayArea.h };
-			Bitmap::Blit (
-				m_DpyBuffer, &dpySrc,
-				dest, &dpyDest
-			);
-		}
+			//Rect dpySrc{ m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h };
+			//Rect dpyDest{ displayArea.x, displayArea.y, displayArea.w, displayArea.h };
+			//Bitmap::Blit (
+			//	m_DpyBuffer, &dpySrc,
+			//	dest, &dpyDest
+			//);
+		} 
+
+		Rect dpySrc{ m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h };
+		Rect dpyDest{ displayArea.x, displayArea.y, displayArea.w, displayArea.h };
+		Bitmap::Blit (
+			m_DpyBuffer, &dpySrc,
+			dest, &dpyDest
+		);
 
 		return;
 	} 

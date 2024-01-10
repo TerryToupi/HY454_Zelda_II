@@ -5,6 +5,10 @@
 #include <Engine/Renderer/Render.h> 
 #include <Engine/Input/KeyBoardCodes.h>
 
+
+#include <Engine/Renderer/AnimatorManager.h>
+
+
 namespace Engine {
 	Application* Application::s_Instance = nullptr;
 
@@ -20,10 +24,8 @@ namespace Engine {
 		m_Window->SetEventCallBack(EVENT_FUNCTION_BIND(Application::onEvent));
 		
 		m_Running = true; 
-		m_LastFrameTime = 0;
 		ENGINE_CORE_INFO("Application successfully initialized!"); 
 	
-		SystemClock::Init();
 		RendererConfig rConfig; 
 		rConfig.fb_height = default_h;
 		rConfig.fb_width = default_w; 
@@ -32,10 +34,8 @@ namespace Engine {
 
 	Application::~Application()
 	{ 
-		SystemClock::Shutdown(); 
-		ENGINE_CORE_WARN("Shutting down SystemTimer"); 
-		Renderer::Shutdown(); 
 		ENGINE_CORE_WARN("Shutting down Renderer"); 
+		Renderer::Shutdown(); 
 
 		ENGINE_CORE_WARN("Shutting down Application"); 
 	}
@@ -79,32 +79,33 @@ namespace Engine {
 	}
 
 	void Application::Run()
-	{ 
-		m_LastFrameTime = 0; 
+	{  
+		Time prevTime = 0; 
+		Time currTime = 0; 
+		Time timeStep; 
 
 		while (m_Running)
 		{  
-			Time time = SystemClock::Get().GetTime();
-			Time timeStep = time - m_LastFrameTime;
-			m_LastFrameTime = timeStep;    
+			currTime = SystemClock::Get().GetTime(); 
+			timeStep = currTime - prevTime;   
+			prevTime = currTime;  
+
+			Application::Instance().GetWindow().UpdateEngineStats(timeStep);
 
 			Application::Instance().GetWindow().EventPolling(); 
 			KeyboardInput::UpdateKeyState();
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 
-				(*layer)->onUpdate();   
+				(*layer)->onUpdate(currTime);   
 			}  
 
 			for (auto overlay = m_Layers.OverlaysFront(); overlay != m_Layers.OverLaysBack(); overlay++)
 			{ 
-				(*overlay)->onUpdate();   
+				(*overlay)->onUpdate(currTime);   
 			}   
 
 			Renderer::BufferFlip();  
-
-			Time frame = SystemClock::Get().GetTime() - time;
-			ENGINE_CORE_TRACE("Main loop time: {0}", ((frame > 0) ? 1000.0f / frame : 0.0f));
 		}
 	} 
 

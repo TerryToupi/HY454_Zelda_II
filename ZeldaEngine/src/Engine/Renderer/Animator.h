@@ -13,7 +13,8 @@ namespace Engine
 	};  
 
 	class Animation; 
-	class AnimatorManager;
+	class AnimatorManager; 
+	class Scene;
 
 	class Animator
 	{
@@ -23,7 +24,7 @@ namespace Engine
 		using OnAction	= std::function<void(Animator*, const Animation&)>;  
 
 	public:  
-		Animator(void); 
+		Animator(Scene* scene); 
 		Animator(const Animator&) = delete; 
 		Animator(Animator&&) = delete; 
 		virtual ~Animator();
@@ -33,11 +34,12 @@ namespace Engine
 		virtual void	TimeShift(Time offset);
 		virtual void	Progress(Time currTime) = 0; 
 
-		template<typename T> void SetOnFinish(const T& f) { onFinish = f; } 
-		template<typename T> void SetOnStart(const T& f) { onStart = f; } 
-		template<typename T> void SetOnAction(const T& f) { onAction = f; } 
+		void SetOnFinish(OnFinish f) { onFinish = f; } 
+		void SetOnStart(OnStart f) { onStart = f; } 
+		void SetOnAction(OnAction f) { onAction = f; } 
 
-	protected: 
+	protected:  
+		Scene*				scene = nullptr;
 		Time				lastTime = 0; 
 		animatorstate_t		state = ANIMATOR_FINISHED; 
 		OnFinish			onFinish;

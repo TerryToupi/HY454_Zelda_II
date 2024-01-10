@@ -2,6 +2,11 @@
 
 namespace Engine
 {
+	FrameListAnimator::FrameListAnimator(Scene* scene) 
+		: Animator(scene)
+	{
+	} 
+
 	void FrameListAnimator::Progress(Time currtime)
 	{ 
 		while (currtime > lastTime && (currtime - lastTime) >= m_anim->GetDelay())

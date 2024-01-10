@@ -28,19 +28,21 @@ namespace Engine
 		static Bitmap&				InterBufferInstance(); 
 		static Scope<Bitmap>		CreateInterBuffer();
 
-		static void BeginScene(Reference<Scene> scene); 
-		static void DisplaySceneTiles();
+		static void BeginScene(Ref<Scene> scene); 
+		static void DisplaySceneTiles(); 
+		static void UpdateSceneAnimators(Time ts);
 		static void	EndScene(); 
 
 		static void BufferFlip();  
 
 	protected:
-		static void DisplaySceneTilesThread(Reference<Scene> scene); 
+		static void DisplaySceneTilesThread(Ref<Scene> scene);  
+		static void UpdateSceneAnimatorsThread(Ref<Scene> scene, Time ts);
 
 	private:  
 		RendererConfig			 m_Config;
 		Scope<Bitmap>			 m_Interbuff; 
-		Reference<Scene>		 m_ActiveScene; 
+		Ref<Scene>		 m_ActiveScene; 
 		std::vector<std::thread> m_Threads;
 	private: 
 		static Renderer* s_Instance;

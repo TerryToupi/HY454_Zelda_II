@@ -8,7 +8,7 @@ namespace Engine
 	class FrameListAnimator : public Animator
 	{
 	public:
-		FrameListAnimator(void) = default;
+		FrameListAnimator(Scene* scene);
 
 		void		Progress(Time currtime);
 		uint32_t	GetCurrFrame(void) const { return m_currFrame; }
@@ -19,7 +19,8 @@ namespace Engine
 			lastTime = t;
 			state = ANIMATOR_RUNNING;
 			m_currFrame = a->GetFrames().at(0);
-			m_currRep = 0;
+			m_currRep = 0; 
+			m_frameIndex = 0;
 			NotifyStarted();
 			NotifyAction(*m_anim);
 		}
