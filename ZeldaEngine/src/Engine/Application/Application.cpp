@@ -97,12 +97,12 @@ namespace Engine {
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 
-				(*layer)->onUpdate(currTime);   
+				(*layer)->onUpdate(currTime);
 			}  
 
 			for (auto overlay = m_Layers.OverlaysFront(); overlay != m_Layers.OverLaysBack(); overlay++)
 			{ 
-				(*overlay)->onUpdate(currTime);   
+				(*overlay)->onUpdate(currTime);
 			}   
 
 			Renderer::BufferFlip(); 

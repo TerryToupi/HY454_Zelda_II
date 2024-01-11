@@ -90,7 +90,7 @@ bool layer1::mover(Event& e)
 { 
 	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
 	{ 
-		KeyPressEvent *event = dynamic_cast<KeyPressEvent*>(&e); 
+		KeyTapEvent *event = dynamic_cast<KeyTapEvent*>(&e); 
 		if (event->GetKey() == InputKey::d)
 			m_animator2->Start(m_walkRightAnim.get(), curr);
 		else if (event->GetKey() == InputKey::a)
@@ -99,8 +99,11 @@ bool layer1::mover(Event& e)
 	
 	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
 	{
-		m_animator2->Stop(); 
-		m_animator1->Stop();
+		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
+		if (event->GetKey() == InputKey::d)
+			m_animator2->Stop();
+		else if (event->GetKey() == InputKey::a)
+			m_animator1->Stop();
 	}
 
 	return true;

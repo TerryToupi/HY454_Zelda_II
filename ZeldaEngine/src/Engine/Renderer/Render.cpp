@@ -92,12 +92,33 @@ namespace Engine
 
 	void Renderer::DisplaySpritesThread(Ref<Scene> scene)
 	{ 
-		auto& ib = s_Instance->InterBufferInstance();
+		auto& ib = s_Instance->InterBufferInstance(); 
+		std::vector<std::thread> threads;
 
 		for (auto sprite : scene->GetSpriteManager().GetDisplayList())
 		{
 			if (sprite != nullptr)
-				sprite->Display(ib, {0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, MakeTileLayerClipper(scene->GetTiles().get()));
+			{ 
+				threads.push_back(std::thread
+					{
+						[sprite, scene](Bitmap& ib)
+							{
+								sprite->Display(
+									ib,
+									{0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()},
+									MakeTileLayerClipper(scene->GetTiles().get()));
+							},
+						std::ref(ib)
+					}
+				);
+			}
+				//sprite->Display(ib, {0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, MakeTileLayerClipper(scene->GetTiles().get()));
+		} 
+
+		for (auto& thread : threads)
+		{
+			if (thread.joinable())
+				thread.join();
 		}
 	}
 
