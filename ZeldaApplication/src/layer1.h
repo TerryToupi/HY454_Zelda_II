@@ -21,7 +21,8 @@ public:
 	bool mover(Event& e);  
 
 	void FrameRangeActionLeft();
-	void FrameRangeActionRight();
+	void FrameRangeActionRight(); 
+	void FrameRangerFinish(Animator* animator, const Animation& anim);
 
 	void move(Time ts); 
 

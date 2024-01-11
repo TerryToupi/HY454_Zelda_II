@@ -31,9 +31,12 @@ namespace Engine
 		void		 SetPos(int _x, int _y); 
 		void		 SetZorder(unsigned z); 
 		unsigned	 GetZorder(void); 
-		void		 SetFrame(byte i); 
+		void		 SetFrame(byte i);  
+		int			 GetPosX() const;
+		int			 GetPosY() const;
 		byte		 GetFrame(void) const;   
-		void		 SetFilm(AnimationFilm* film);
+		void		 SetFilm(AnimationFilm* film); 
+		auto		 GetFilm() const->AnimationFilm* { return m_currFilm; }
 		void		SetBoundingArea(BoundingArea* area); 
 		auto		GetBoundingArea() const -> BoundingArea* { return m_boundingArea; }
 		

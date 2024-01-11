@@ -39,8 +39,9 @@ namespace Engine
 	private:  
 		RendererConfig			 m_Config;
 		Scope<Bitmap>			 m_Interbuff; 
-		Ref<Scene>		 m_ActiveScene; 
-		std::vector<std::thread> m_Threads;
+		Ref<Scene>			     m_ActiveScene; 
+		std::vector<std::thread> m_Threads; 
+
 	private: 
 		static Renderer* s_Instance;
 	};

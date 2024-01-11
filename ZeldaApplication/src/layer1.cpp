@@ -3,7 +3,7 @@
 layer1::layer1()
 	: Layer("layer1")
 {
-}
+} 
 
 void layer1::onStart()
 {
@@ -19,13 +19,20 @@ void layer1::onStart()
 	m_animator1 = MakeReference<FrameRangeAnimator>(m_Scene.get());
 	m_animator1.get()->SetOnAction( 
 		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionLeft(); }
+	); 
+	m_animator1.get()->SetOnFinish(
+		[this](Animator* animator) { return this->FrameRangerFinish(animator, *m_walkLeftAnim.get()); }
 	);
 	m_animator2 = MakeReference<FrameRangeAnimator>(m_Scene.get());
 	m_animator2.get()->SetOnAction(
 		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionRight(); }
 	); 
+	m_animator2.get()->SetOnFinish(
+		[this](Animator* animator) { return this->FrameRangerFinish(animator, *m_walkRightAnim.get()); }
+	);
 
-	Sprite link = m_Scene->CreateSprite("Link", wdx, wdy, m_WalkRight.get(), "");
+	Sprite link = m_Scene->CreateSprite("Link", wdx, wdy, m_WalkRight.get(), ""); 
+	Sprite link2 = m_Scene->CreateSprite("Link2", 50, 50, m_WalkRight.get(), "");
 }
 
 void layer1::onDelete()
@@ -92,9 +99,9 @@ bool layer1::mover(Event& e)
 	{ 
 		KeyTapEvent *event = dynamic_cast<KeyTapEvent*>(&e); 
 		if (event->GetKey() == InputKey::d)
-			m_animator2->Start(m_walkRightAnim.get(), curr);
+			m_animator2->Start(m_walkRightAnim.get(), curr, m_walkRightAnim.get()->GetStartFrame());
 		else if (event->GetKey() == InputKey::a)
-			m_animator1->Start(m_walkLeftAnim.get(), curr);
+			m_animator1->Start(m_walkLeftAnim.get(), curr, m_walkRightAnim.get()->GetStartFrame());
 	}  
 	
 	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
@@ -124,5 +131,22 @@ void layer1::FrameRangeActionRight()
 	link->SetFilm(m_WalkRight.get());
 	link->SetFrame(m_animator2->GetCurrFrame());  
 
+}
+
+void layer1::FrameRangerFinish(Animator* animator, const Animation& anim)
+{ 
+	FrameRangeAnimator* a = (FrameRangeAnimator*)animator;   
+	FrameRangeAnimation* film = (FrameRangeAnimation*)anim.Clone(); 
+
+	//int currF = a->GetCurrFrame();   
+	//film->SetReps(1);
+
+	//if (currF != film->GetStartFrame())
+	//{  
+	//	ENGINE_CORE_TRACE("currf: {0}, end film: {1}", currF, film->GetEndFrame());
+	//	a->Start(film, curr, currF);
+	//}  
+
+	//delete film; 
 }
 

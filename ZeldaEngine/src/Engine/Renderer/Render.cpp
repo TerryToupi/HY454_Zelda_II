@@ -70,17 +70,17 @@ namespace Engine
 	void Renderer::DisplaySprites()
 	{
 		auto& ib = s_Instance->InterBufferInstance();
-		std::vector<std::thread> threads;
 
 		for (auto sprite : s_Instance->m_ActiveScene->GetSpriteManager().GetDisplayList())
 		{
 			if (sprite != nullptr)
-			{
-				sprite->Display(
-					ib, 
-					{0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, 
-					MakeTileLayerClipper(s_Instance->m_ActiveScene->GetTiles().get())
-				);
+			{ 
+				if (sprite->GetFilm())
+					sprite->Display(
+						ib, 
+						{0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, 
+						MakeTileLayerClipper(s_Instance->m_ActiveScene->GetTiles().get())
+					);
 			}
 		}
 	}

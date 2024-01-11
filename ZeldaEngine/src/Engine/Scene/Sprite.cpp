@@ -4,8 +4,12 @@ namespace Engine
 {
 	SpriteClass::SpriteClass(std::string _name, int _x, int _y, AnimationFilm* _film, const std::string& _typeid)
 		: m_hashName(_name), m_x(_x), m_y(_y), m_currFilm(_film), m_typeId(_typeid)
-	{ 
-		m_frameNo = m_currFilm->GetTotalFrames();
+	{  
+		if (m_currFilm)
+			m_frameNo = m_currFilm->GetTotalFrames();
+		else
+			m_frameNo = 0;
+
 		SetFrame(0);
 	} 
 
@@ -48,6 +52,16 @@ namespace Engine
 		}
 	}
 
+	int SpriteClass::GetPosX() const
+	{
+		return m_x;
+	}
+
+	int SpriteClass::GetPosY() const
+	{
+		return m_y;
+	}
+
 	byte SpriteClass::GetFrame(void) const
 	{
 		return m_frameNo;
@@ -87,25 +101,26 @@ namespace Engine
 	void SpriteClass::Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const
 	{ 
 		Rect clippedBox; 
-		Rect dpyPos;
+		Rect dpyPos; 
+
 
 		if (clipper.Clip(GetBox(), dpyArea, &dpyPos, &clippedBox))
-		{  
+		{ 
 			Rect clippedFrame
 			{
 				m_frameBox.x - clippedBox.x,
 				m_frameBox.y - clippedBox.y,
 				clippedBox.w,
 				clippedBox.h
-			};  
-			
+			};
+
 			m_currFilm->DisplayFrame(
-				dest, 
+				dest,
 				clippedFrame,
 				dpyPos,
 				m_frameNo
 			);
-		} 
+		}
 	}
 
 }
