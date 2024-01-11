@@ -46,40 +46,17 @@ namespace Engine
 
 	void Renderer::DisplaySceneTiles()
 	{
-		s_Instance->m_Threads.push_back(std::thread{ Renderer::DisplaySceneTilesThread, s_Instance->m_ActiveScene });
-
-		//int width = (int)s_Instance->InterBufferInstance().GetWidth();
-		//int height = (int)s_Instance->InterBufferInstance().GetHeight();
-		//s_Instance->m_ActiveScene->GetTiles()->Display(
-		//	s_Instance->InterBufferInstance(),
-		//	{ 0, 0, width, height }
-		//);
-	}
-
-	void Renderer::UpdateSceneAnimators(Time ts)
-	{
-		s_Instance->m_Threads.push_back(std::thread{ Renderer::UpdateSceneAnimatorsThread, s_Instance->m_ActiveScene, ts });
-		//s_Instance->m_ActiveScene->GetAnimatorManager().Progress(ts);
-	}
-
-	void Renderer::DisplaySprites()
-	{
-		s_Instance->m_Threads.push_back(std::thread{ Renderer::DisplaySpritesThread, s_Instance->m_ActiveScene });
-	}
-	
-	void Renderer::DisplaySceneTilesThread(Ref<Scene> scene)
-	{ 
-		int width = (int)s_Instance->InterBufferInstance().GetWidth();   
+		int width = (int)s_Instance->InterBufferInstance().GetWidth();
 		int height = (int)s_Instance->InterBufferInstance().GetHeight();
-		scene->GetTiles()->Display(
+		s_Instance->m_ActiveScene->GetTiles()->Display(
 			s_Instance->InterBufferInstance(),
 			{ 0, 0, width, height }
 		);
 	}
 
-	void Renderer::UpdateSceneAnimatorsThread(Ref<Scene> scene, Time ts)
-	{ 
-		scene->GetAnimatorManager().Progress(ts);
+	void Renderer::UpdateSceneAnimators(Time ts)
+	{
+		s_Instance->m_ActiveScene->GetAnimatorManager().Progress(ts);
 	} 
 
 	const Clipper MakeTileLayerClipper(TileLayer* layer)
@@ -90,50 +67,26 @@ namespace Engine
 		);
 	}
 
-	void Renderer::DisplaySpritesThread(Ref<Scene> scene)
-	{ 
-		auto& ib = s_Instance->InterBufferInstance(); 
+	void Renderer::DisplaySprites()
+	{
+		auto& ib = s_Instance->InterBufferInstance();
 		std::vector<std::thread> threads;
 
-		for (auto sprite : scene->GetSpriteManager().GetDisplayList())
+		for (auto sprite : s_Instance->m_ActiveScene->GetSpriteManager().GetDisplayList())
 		{
 			if (sprite != nullptr)
-			{ 
-				threads.push_back(std::thread
-					{
-						[sprite, scene](Bitmap& ib)
-							{
-								sprite->Display(
-									ib,
-									{0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()},
-									MakeTileLayerClipper(scene->GetTiles().get()));
-							},
-						std::ref(ib)
-					}
+			{
+				sprite->Display(
+					ib, 
+					{0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, 
+					MakeTileLayerClipper(s_Instance->m_ActiveScene->GetTiles().get())
 				);
 			}
-				//sprite->Display(ib, {0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, MakeTileLayerClipper(scene->GetTiles().get()));
-		} 
-
-		for (auto& thread : threads)
-		{
-			if (thread.joinable())
-				thread.join();
 		}
 	}
 
 	void Renderer::EndScene()
 	{  
-		if (!s_Instance->m_Threads.empty())
-		{
-			for (auto& thread : s_Instance->m_Threads)
-			{
-				if (thread.joinable())
-					thread.join();
-			}
-			s_Instance->m_Threads.clear();
-		}  
-
 		s_Instance->m_ActiveScene.reset();
 	}  
 

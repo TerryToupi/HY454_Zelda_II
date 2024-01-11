@@ -36,11 +36,6 @@ namespace Engine
 
 		static void BufferFlip();  
 
-	protected:
-		static void DisplaySceneTilesThread(Ref<Scene> scene);  
-		static void UpdateSceneAnimatorsThread(Ref<Scene> scene, Time ts); 
-		static void DisplaySpritesThread(Ref<Scene> scene);
-
 	private:  
 		RendererConfig			 m_Config;
 		Scope<Bitmap>			 m_Interbuff; 

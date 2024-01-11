@@ -123,18 +123,6 @@ void layer1::FrameRangeActionRight()
 	
 	link->SetFilm(m_WalkRight.get());
 	link->SetFrame(m_animator2->GetCurrFrame());  
-	//layer.m_WalkRight->DisplayFrame(
-	//	interbuff,
-	//	layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()),
-	//	{
-	//		layer.m_walkRightAnim->GetDx(),
-	//		layer.m_walkRightAnim->GetDy(),
-	//		layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()).w,
-	//		layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()).h
-	//	},
-	//	layer.m_animator2->GetCurrFrame()
-	//);
+
 }
-
-
 
