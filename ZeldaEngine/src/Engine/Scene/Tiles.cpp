@@ -110,7 +110,9 @@ namespace Engine
 					GetTile(col, row)
 				);
 			}
-		} 
+		}
+
+
 	}
 
 	TileLayer::TileLayer(uint32_t id) 
@@ -175,37 +177,10 @@ namespace Engine
 	{ 
 		if (m_ViewPosCached.x != m_ViewWindow.x || m_ViewPosCached.y != m_ViewWindow.y)
 		{
-			//auto startCol = DIV_TILE_WIDTH(m_ViewWindow.x);
-			//auto startRow = DIV_TILE_HEIGHT(m_ViewWindow.y);
-			//auto endCol = DIV_TILE_WIDTH(m_ViewWindow.x + m_ViewWindow.w - 1);
-			//auto endRow = DIV_TILE_HEIGHT(m_ViewWindow.y + m_ViewWindow.h - 1);
-			//m_DpyX = MOD_TILE_WIDTH(m_ViewWindow.x); 
-			//m_DpyY = MOD_TILE_WIDTH(m_ViewWindow.y); 
 			m_DpyX = m_ViewWindow.x; 
 			m_DpyY = m_ViewWindow.y;
 			m_ViewPosCached.x = m_ViewWindow.x;
 			m_ViewPosCached.y = m_ViewWindow.y;
-
-			//for (Dim row = startRow; row <= endRow; ++row)
-			//{
-			//	for (Dim col = startCol; col <= endCol; ++col)
-			//	{
-			//		PutTile(
-			//			m_DpyBuffer,
-			//			MUL_TILE_WIDTH(col - startCol),
-			//			MUL_TILE_HEIGHT(row - startRow),
-			//			m_Tileset,
-			//			GetTile(col, row)
-			//		);
-			//	}
-			//}
-
-			//Rect dpySrc{ m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h };
-			//Rect dpyDest{ displayArea.x, displayArea.y, displayArea.w, displayArea.h };
-			//Bitmap::Blit (
-			//	m_DpyBuffer, &dpySrc,
-			//	dest, &dpyDest
-			//);
 		} 
 
 		Rect dpySrc{ m_DpyX, m_DpyY, m_ViewWindow.w, m_ViewWindow.h };
@@ -247,6 +222,31 @@ namespace Engine
 	{ 
 		m_ViewWindow.x += dx;
 		m_ViewWindow.y += dy;
+	}
+
+	void TileLayer::FilterScrollDistance(uint32_t viewStartCoord, uint32_t viewSize, uint32_t* d, uint32_t maxMapSize)
+	{ 
+		auto val = *d + viewStartCoord; 
+		if (val < 0)
+			*d = viewStartCoord; 
+
+		else if (viewSize >= maxMapSize)
+			*d = 0;  
+
+		else if ((val + viewSize) >= maxMapSize)
+			*d = maxMapSize - (viewStartCoord + viewSize);
+	}
+
+	void TileLayer::FilterScroll(uint32_t* dx, uint32_t* dy)
+	{ 
+		FilterScrollDistance(m_ViewWindow.x, m_ViewWindow.w, dx, GetPixelWidth());
+		FilterScrollDistance(m_ViewWindow.y, m_ViewWindow.h, dy, GetPixelHeight());
+	}
+
+	void TileLayer::ScrollWithBoundsCheck(uint32_t _dx, uint32_t _dy)
+	{ 
+		FilterScroll(&_dx, &_dy); 
+		Scroll(_dx, _dy);
 	}
 
 	bool TileLayer::CanScrollHoriz(float dx) const

@@ -32,26 +32,26 @@ namespace Engine
 
 	void AnimatorManager::Progress(Time currTime)
 	{ 
-		std::vector<std::thread> threads;
+		//std::vector<std::thread> threads;
 
 		auto copied(running); 
 		for (auto* a : copied)
 		{  
-			threads.push_back(std::thread
-				{ 
-					[](Animator* a, Time currTime) -> void { a->Progress(currTime); }, 
-					std::ref(a), 
-					std::ref(currTime) 
-				}); 
+			//threads.push_back(std::thread
+			//	{ 
+			//		[](Animator* a, Time currTime) -> void { a->Progress(currTime); }, 
+			//		std::ref(a), 
+			//		std::ref(currTime) 
+			//	}); 
 
-			//a->Progress(currTime);
+			a->Progress(currTime);
 		} 
 
-		for (auto& thread : threads)
-		{
-			if (thread.joinable())
-				thread.join();
-		}
+		//for (auto& thread : threads)
+		//{
+		//	if (thread.joinable())
+		//		thread.join();
+		//}
 	}
 }
 

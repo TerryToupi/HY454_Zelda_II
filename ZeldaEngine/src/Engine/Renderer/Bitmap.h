@@ -8,11 +8,14 @@
 #include<string>
 
 namespace Engine 
-{ 
+{  
 	class Bitmap
 	{  
-	public:  
+	public:     
+		using PixelMemory = void*;
+		using BitmapAccessFunctor = std::function<void(PixelMemory)>;
 
+	public:
 		Bitmap();
 		Bitmap(const std::string path, uint64_t Width, uint64_t Height);
 		Bitmap(const Bitmap& other) = default; 
@@ -26,9 +29,10 @@ namespace Engine
 		void SetHeight(uint64_t Height) { m_Height = Height; } 
 
 		uint64_t GetWidth() { return m_Width; }
-		uint64_t GetHeight() { return m_Height; } 
-
+		uint64_t GetHeight() { return m_Height; }  
 		void Reset();
+
+		static void BitmapAccessPixels(Bitmap& bmp, const BitmapAccessFunctor& f);
 
 		static void Blit(Bitmap& src, const Rect* from,
 						  Bitmap& dest, Rect* to);  

@@ -16,8 +16,10 @@ namespace Engine
 	}
 
 	void SpriteManager::Add(Sprite s)
-	{
-		insert_ascending_zorder(s);
+	{ 
+		if (s->GetFilm() != NONPRINTABLE)
+			insert_ascending_zorder(s); 
+
 		if ((m_sprites.find(s->GetHashName()) != m_sprites.end()) &&
 			(m_sprites[s->GetHashName()] == nullptr))
 			m_sprites.erase(s->GetHashName());

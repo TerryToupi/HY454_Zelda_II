@@ -26,7 +26,10 @@ namespace Engine
 		unsigned GetTileWidth(void) const;
 		unsigned GetTileHeight(void) const; 
 
-		void Scroll(float dx, float dy);
+		void Scroll(float dx, float dy); 
+		void FilterScrollDistance(uint32_t viewStartCoord, uint32_t viewSize, uint32_t* d, uint32_t maxMapSize);
+		void FilterScroll(uint32_t* dx, uint32_t* dy); 
+		void ScrollWithBoundsCheck(uint32_t _dx, uint32_t _dy);
 		bool CanScrollHoriz(float dx) const;
 		bool CanScrollVert(float dy) const;
 

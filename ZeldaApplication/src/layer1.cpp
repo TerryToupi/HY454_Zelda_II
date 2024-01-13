@@ -32,7 +32,7 @@ void layer1::onStart()
 	);
 
 	Sprite link = m_Scene->CreateSprite("Link", wdx, wdy, m_WalkRight.get(), ""); 
-	Sprite link2 = m_Scene->CreateSprite("Link2", 50, 50, m_WalkRight.get(), "");
+	Sprite Waypoint = m_Scene->CreateSprite("Waypoint1", 50, 50, NONPRINTABLE, ""); 
 }
 
 void layer1::onDelete()
@@ -75,8 +75,7 @@ void layer1::move(Time ts)
 
 void layer1::onUpdate(Time ts)
 { 
-	curr = ts;
-
+	curr = ts; 
 	move(ts);
 
 	Renderer::BeginScene(m_Scene);

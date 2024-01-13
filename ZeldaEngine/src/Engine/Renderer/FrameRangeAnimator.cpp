@@ -28,8 +28,6 @@ namespace Engine
 			{
 				if (!m_anim->IsForEver() && ++m_currRep == m_anim->GetReps())
 				{
-					m_currFrame = m_anim->GetStartFrame();
-					NotifyAction(*m_anim);
 					state = ANIMATOR_FINISHED;
 					NotifyStopped();
 					return;

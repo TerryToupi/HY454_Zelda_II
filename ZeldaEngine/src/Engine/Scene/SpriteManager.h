@@ -4,10 +4,12 @@
 #include<Engine/Scene/Sprite.h>  
 
 #include<unordered_map> 
-#include<list> 
+#include<list>  
+
+#define NONPRINTABLE	nullptr
 
 namespace Engine
-{
+{ 
 	class SpriteManager final
 	{
 	public:

@@ -48,7 +48,7 @@ void layer0::move()
 
 void layer0::onUpdate(Time ts)
 { 
-	move();
+	move(); 
 
 	Renderer::BeginScene(m_Scene); 
 	Renderer::DisplaySceneTiles();

@@ -24,6 +24,30 @@ namespace Engine
 		SDL_FillRect(m_Surface, NULL, 0x000000);
 	}
 
+	void Bitmap::BitmapAccessPixels(Bitmap& bmp, const BitmapAccessFunctor& f)
+	{ 
+		auto result = SDL_LockSurface(bmp.m_Surface); 
+		ENGINE_CORE_ASSERT(result);
+		
+		auto mem = bmp.m_Surface->pixels; 
+		auto offset = bmp.m_Surface->pitch;
+		auto buffOffset = bmp.m_Surface->pitch / bmp.m_Surface->w;  
+
+		for (auto y = bmp.m_Surface->h; y--;)
+		{
+			auto buff = mem; 
+			for (auto x = bmp.m_Surface->w; x--;)
+			{
+				f(buff);  
+				buff = (void*)((char*)buff + buffOffset);
+			}  
+
+			mem = (void*)((char*)(mem) + offset);
+		} 
+
+		SDL_UnlockSurface(bmp.m_Surface);
+	}
+
 	void Bitmap::Blit(Bitmap& src, const Rect* from, Bitmap& dest, Rect* to)
 	{
 		SDL_BlitSurface(src.m_Surface, from, dest.m_Surface, to);    

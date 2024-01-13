@@ -73,14 +73,13 @@ namespace Engine
 
 		for (auto sprite : s_Instance->m_ActiveScene->GetSpriteManager().GetDisplayList())
 		{
-			if (sprite != nullptr)
+			if (sprite && sprite->GetFilm())
 			{ 
-				if (sprite->GetFilm())
-					sprite->Display(
-						ib, 
-						{0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, 
-						MakeTileLayerClipper(s_Instance->m_ActiveScene->GetTiles().get())
-					);
+				sprite->Display(
+					ib, 
+					{0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, 
+					MakeTileLayerClipper(s_Instance->m_ActiveScene->GetTiles().get())
+				);
 			}
 		}
 	}
