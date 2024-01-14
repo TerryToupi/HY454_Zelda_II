@@ -27,7 +27,7 @@ namespace Engine
 	void Bitmap::BitmapAccessPixels(Bitmap& bmp, const BitmapAccessFunctor& f)
 	{ 
 		auto result = SDL_LockSurface(bmp.m_Surface); 
-		ENGINE_CORE_ASSERT(result);
+		ENGINE_CORE_ASSERT(result == 0);
 		
 		auto mem = bmp.m_Surface->pixels; 
 		auto offset = bmp.m_Surface->pitch;
@@ -38,7 +38,7 @@ namespace Engine
 			auto buff = mem; 
 			for (auto x = bmp.m_Surface->w; x--;)
 			{
-				f(buff);  
+				f(bmp, buff);  
 				buff = (void*)((char*)buff + buffOffset);
 			}  
 
@@ -46,6 +46,14 @@ namespace Engine
 		} 
 
 		SDL_UnlockSurface(bmp.m_Surface);
+	}
+
+	Uint32 Bitmap::GetPixel32(Bitmap& bmp, PixelMemory mem)
+	{
+		Uint8 r, g, b, a;
+		SDL_GetRGBA(*(Uint32*)mem, bmp.m_Surface->format, &r, &g, &b, &a); 
+		//ENGINE_CORE_TRACE("r:{0}, g:{1}, b:{2}, a:{3}", r, g, b, a); 
+		return SDL_MapRGBA(bmp.m_Surface->format, r, g, b, a); 
 	}
 
 	void Bitmap::Blit(Bitmap& src, const Rect* from, Bitmap& dest, Rect* to)
@@ -75,10 +83,36 @@ namespace Engine
 	} 
 
 	void Bitmap::Generate(uint32_t width, uint32_t height)
-	{ 
-		m_Surface = SDL_CreateRGBSurface(0, width, height, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-		SDL_SetSurfaceBlendMode(m_Surface, SDL_BLENDMODE_BLEND); 
-		SetHeight(height);
-		SetWidth(width);
+	{  
+		if (m_Surface == nullptr)
+		{ 
+			Uint32 rmask, gmask, bmask, amask;
+			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+					rmask = 0xff000000;
+					gmask = 0x00ff0000;
+					bmask = 0x0000ff00;
+					amask = 0x000000ff;
+			#else
+					rmask = 0x000000ff;
+					gmask = 0x0000ff00;
+					bmask = 0x00ff0000;
+					amask = 0xff000000;
+			#endif
+
+			m_Surface = SDL_CreateRGBSurface(
+				0, 
+				width, 
+				height, 
+				32, 
+				rmask,
+				gmask,
+				bmask,
+				amask
+			); 
+
+			SDL_SetSurfaceBlendMode(m_Surface, SDL_BLENDMODE_BLEND); 
+			SetHeight(height);
+			SetWidth(width);
+		}
 	}
 }

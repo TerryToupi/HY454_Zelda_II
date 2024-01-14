@@ -108,17 +108,65 @@
     <ClInclude Include="src\Engine\Math\Math.h">
       <Filter>src\Engine\Math</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Animation.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\Animator.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\AnimatorManager.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Bitmap.h">
       <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Clipper.h">
       <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\FlashAnimation.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\FlashAnimator.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\FrameListAnimator.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\FrameRangeAnimator.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Engine\Renderer\MotionQuantizer.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\MovingAnimation.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\MovingAnimator.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\MovingPathAnimation.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\MovingPathAnimator.h">
       <Filter>src\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Renderer\Render.h">
       <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\ScrollAnimation.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Renderer\ScrollAnimator.h">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\AnimationFilm.h">
+      <Filter>src\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\AnimationSheet.h">
+      <Filter>src\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\Grid.h">
+      <Filter>src\Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene\LatelyDestroyable.h">
       <Filter>src\Engine\Scene</Filter>
@@ -127,6 +175,9 @@
       <Filter>src\Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene\Sprite.h">
+      <Filter>src\Engine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Scene\SpriteManager.h">
       <Filter>src\Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Scene\Tiles.h">
@@ -1389,22 +1440,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Engine\Renderer\Animator.h" />
-    <ClInclude Include="src\Engine\Renderer\AnimatorManager.h" />
-    <ClInclude Include="src\Engine\Renderer\Animation.h" />
-    <ClInclude Include="src\Engine\Renderer\MovingAnimation.h" />
-    <ClInclude Include="src\Engine\Renderer\MovingPathAnimation.h" />
-    <ClInclude Include="src\Engine\Renderer\FlashAnimation.h" />
-    <ClInclude Include="src\Engine\Renderer\ScrollAnimation.h" />
-    <ClInclude Include="src\Engine\Renderer\MovingAnimator.h" />
-    <ClInclude Include="src\Engine\Renderer\FrameRangeAnimator.h" />
-    <ClInclude Include="src\Engine\Renderer\FrameListAnimator.h" />
-    <ClInclude Include="src\Engine\Renderer\MovingPathAnimator.h" />
-    <ClInclude Include="src\Engine\Renderer\FlashAnimator.h" />
-    <ClInclude Include="src\Engine\Renderer\ScrollAnimator.h" />
-    <ClInclude Include="src\Engine\Scene\AnimationFilm.h" />
-    <ClInclude Include="src\Engine\Scene\AnimationSheet.h" />
-    <ClInclude Include="src\Engine\Scene\SpriteManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Application\Application.cpp">
@@ -1419,8 +1454,20 @@
     <ClCompile Include="src\Engine\Application\LayerStack.cpp">
       <Filter>src\Engine\Application</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Input\KeyBoardCodes.cpp">
+      <Filter>src\Engine\Input</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Logging\Log.cpp">
       <Filter>src\Engine\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Animation.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\Animator.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\AnimatorManager.cpp">
+      <Filter>src\Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Bitmap.cpp">
       <Filter>src\Engine\Renderer</Filter>
@@ -1428,11 +1475,35 @@
     <ClCompile Include="src\Engine\Renderer\Clipper.cpp">
       <Filter>src\Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\FlashAnimator.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\FrameListAnimator.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\FrameRangeAnimator.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Engine\Renderer\MotionQuantizer.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\MovingAnimator.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\MovingPathAnimator.cpp">
       <Filter>src\Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Renderer\Render.cpp">
       <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Renderer\ScrollAnimator.cpp">
+      <Filter>src\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene\AnimationFilm.cpp">
+      <Filter>src\Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene\Grid.cpp">
+      <Filter>src\Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Scene\LatelyDestroyable.cpp">
       <Filter>src\Engine\Scene</Filter>
@@ -1441,6 +1512,9 @@
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Scene\Sprite.cpp">
+      <Filter>src\Engine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\Scene\SpriteManager.cpp">
       <Filter>src\Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\Scene\Tiles.cpp">
@@ -1455,17 +1529,5 @@
     <ClCompile Include="src\Engine\Window\WindowAPI.cpp">
       <Filter>src\Engine\Window</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Input\KeyBoardCodes.cpp" />
-    <ClCompile Include="src\Engine\Renderer\Animator.cpp" />
-    <ClCompile Include="src\Engine\Renderer\AnimatorManager.cpp" />
-    <ClCompile Include="src\Engine\Renderer\Animation.cpp" />
-    <ClCompile Include="src\Engine\Renderer\MovingAnimator.cpp" />
-    <ClCompile Include="src\Engine\Renderer\FrameRangeAnimator.cpp" />
-    <ClCompile Include="src\Engine\Renderer\FrameListAnimator.cpp" />
-    <ClCompile Include="src\Engine\Renderer\MovingPathAnimator.cpp" />
-    <ClCompile Include="src\Engine\Renderer\FlashAnimator.cpp" />
-    <ClCompile Include="src\Engine\Renderer\ScrollAnimator.cpp" />
-    <ClCompile Include="src\Engine\Scene\AnimationFilm.cpp" />
-    <ClCompile Include="src\Engine\Scene\SpriteManager.cpp" />
   </ItemGroup>
 </Project>

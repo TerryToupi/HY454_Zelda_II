@@ -2,11 +2,12 @@
 
 #include <Engine/Application/Core.h> 
 #include <Engine/Renderer/Bitmap.h>
+#include <Engine/Scene/Grid.h>
 
 namespace Engine
 { 
 	typedef uint16_t Index; 
-	typedef uint16_t Dim;
+	typedef uint16_t Dim; 
 
 	class TileLayer
 	{  
@@ -25,6 +26,11 @@ namespace Engine
 
 		unsigned GetTileWidth(void) const;
 		unsigned GetTileHeight(void) const; 
+
+		void	PutTile(Bitmap& dest, Dim x, Dim y, Bitmap& tiles, Index tile);
+		Dim		TileY(Index index);
+		Dim		TileX(Index index);
+		Index	MakeIndex(byte row, byte col);
 
 		void Scroll(float dx, float dy); 
 		void FilterScrollDistance(uint32_t viewStartCoord, uint32_t viewSize, uint32_t* d, uint32_t maxMapSize);
@@ -46,18 +52,22 @@ namespace Engine
 		~TileLayer();
 
 	private:
-		void Allocate();
+		void Allocate(); 
+
+	private:
+		friend class GridLayer;
 			
 	private: 
 		uint32_t	m_Id = 0;
-		Index*		m_Map = nullptr; 
-		// GRID
+		Index*		m_Map = nullptr;  
+		GridLayer*	m_grid = nullptr;
 		Dim			m_Totalrows = 0, m_Totalcolumns = 0; 
 		Bitmap		m_Tileset;
 		Rect		m_ViewWindow;
 		Bitmap		m_DpyBuffer;
 		bool		m_DpyChanged = 0; 
 		Dim			m_DpyX = 0, m_DpyY = 0;  
-		Point		m_ViewPosCached {-1, -1}; 
+		Point		m_ViewPosCached {-1, -1};  
+		Bitmap		m_blankTile;
 	};
 }

@@ -8,12 +8,16 @@
 #include<string>
 
 namespace Engine 
-{  
+{ 
 	class Bitmap
 	{  
-	public:     
+	public:      
+		using Pixel8 = Uint8;
+		using Pixel16 = Uint16;
+		using Pixel32 = Uint32; 
+
 		using PixelMemory = void*;
-		using BitmapAccessFunctor = std::function<void(PixelMemory)>;
+		using BitmapAccessFunctor = std::function<void(Bitmap& ,PixelMemory)>;
 
 	public:
 		Bitmap();
@@ -33,6 +37,7 @@ namespace Engine
 		void Reset();
 
 		static void BitmapAccessPixels(Bitmap& bmp, const BitmapAccessFunctor& f);
+		static Uint32 GetPixel32(Bitmap& bmp, PixelMemory mem);
 
 		static void Blit(Bitmap& src, const Rect* from,
 						  Bitmap& dest, Rect* to);  
@@ -40,13 +45,7 @@ namespace Engine
 		static void ScaledBlit(Bitmap& src, const Rect* from,  
 								Bitmap& dest, Rect* to);   
 
-		static void PresentOnDisplay(Bitmap& src);
-
-	protected: 
-		void SetSurfice(SDL_Surface* surface) { m_Surface = surface; }   
-
-	protected:
-		friend class FrameBuffer;
+		static void PresentOnDisplay(Bitmap& src); 
 
 	private:
 		SDL_Surface* m_Surface; 
