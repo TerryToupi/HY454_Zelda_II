@@ -14,7 +14,7 @@ namespace Engine
 		return *cw > 0 && *ch > 0;
 	} 
 
-	bool clip_rect_func(const Rect& r, const Rect& area, Rect* result) {
+	bool clip_rect_func(Rect& r, const Rect& area, Rect* result) {
 		return clip_rect(
 			r.x,
 			r.y,
@@ -37,7 +37,7 @@ namespace Engine
 		return *this;
 	} 
 
-	bool Clipper::Clip(const Rect& r, const Rect& dpyArea, Rect* dpyPos, Rect* clippedBox) const
+	bool Clipper::Clip(Rect& r, const Rect& dpyArea, Rect* dpyPos, Rect* clippedBox) const
 	{ 
 		Rect visibleArea;
 		if (!clip_rect_func(r, m_View(), &visibleArea))

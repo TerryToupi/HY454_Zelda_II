@@ -30,7 +30,8 @@ namespace Engine
 
 		static void BeginScene(Ref<Scene> scene); 
 		static void DisplaySceneTiles(); 
-		static void UpdateSceneAnimators(Time ts); 
+		static void UpdateSceneAnimators(Time ts);  
+		static void DebugDisplayGrid();
 		static void DisplaySprites();
 		static void	EndScene(); 
 

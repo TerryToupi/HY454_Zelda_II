@@ -135,7 +135,10 @@
     <ClInclude Include="src\Engine\Renderer\ScrollAnimator.h" />
     <ClInclude Include="src\Engine\Scene\AnimationFilm.h" />
     <ClInclude Include="src\Engine\Scene\AnimationSheet.h" />
+    <ClInclude Include="src\Engine\Scene\BoundingArea.h" />
+    <ClInclude Include="src\Engine\Scene\CollisionChecker.h" />
     <ClInclude Include="src\Engine\Scene\Grid.h" />
+    <ClInclude Include="src\Engine\Scene\Gravity.h" />
     <ClInclude Include="src\Engine\Scene\LatelyDestroyable.h" />
     <ClInclude Include="src\Engine\Scene\Scene.h" />
     <ClInclude Include="src\Engine\Scene\Sprite.h" />
@@ -582,7 +585,10 @@
     <ClCompile Include="src\Engine\Renderer\Render.cpp" />
     <ClCompile Include="src\Engine\Renderer\ScrollAnimator.cpp" />
     <ClCompile Include="src\Engine\Scene\AnimationFilm.cpp" />
+    <ClCompile Include="src\Engine\Scene\BoundingArea.cpp" />
+    <ClCompile Include="src\Engine\Scene\CollisionChecker.cpp" />
     <ClCompile Include="src\Engine\Scene\Grid.cpp" />
+    <ClCompile Include="src\Engine\Scene\Gravity.cpp" />
     <ClCompile Include="src\Engine\Scene\LatelyDestroyable.cpp" />
     <ClCompile Include="src\Engine\Scene\Scene.cpp" />
     <ClCompile Include="src\Engine\Scene\Sprite.cpp" />

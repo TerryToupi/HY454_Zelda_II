@@ -15,17 +15,29 @@ namespace Engine
 
 	void SpriteClass::SetMover(const Mover& move)
 	{ 
-		m_quantizer.SetMover(move);
+		m_quantizer.SetMover(m_mover = move);
 	}
 
-	const Rect SpriteClass::GetBox(void) const
-	{
+	Rect SpriteClass::GetBox(void)
+	{ 
 		return { m_x, m_y, m_frameBox.w, m_frameBox.h };
 	} 
 
-	void SpriteClass::Move(int dx, int dy)
-	{ 
-		m_quantizer.Move(GetBox(), &m_x, &m_y);
+	SpriteClass& SpriteClass::Move(int dx, int dy)
+	{   
+		Rect r = GetBox();
+		if (m_directMotion)
+		{  
+			m_x += dx; 
+			m_y += dy;
+		} 
+		else
+		{
+			m_quantizer.Move(r, &dx, &dy);
+			//m_gravity.Check(r);
+		} 
+
+		return *this;
 	}
 
 	void SpriteClass::SetPos(int _x, int _y)
@@ -48,7 +60,7 @@ namespace Engine
 	{
 		if (i != m_frameNo)
 		{
-			m_frameBox = m_currFilm->GetFrameBox(m_frameNo = i);
+			m_frameBox = m_currFilm->GetFrameBox(m_frameNo = i);  
 		}
 	}
 
@@ -74,8 +86,14 @@ namespace Engine
 
 	void SpriteClass::SetBoundingArea(BoundingArea* area)
 	{ 
-		ENGINE_CORE_ASSERT(!m_boundingArea); 
 		m_boundingArea = area;
+	}
+
+	void SpriteClass::SetColiderBox(unsigned _w, unsigned _h)
+	{
+		ENGINE_CORE_ASSERT(m_currFilm == nullptr); 
+		m_frameBox.w = _w;
+		m_frameBox.h = _h;
 	}
 
 	const std::string& SpriteClass::GetTypeId()
@@ -93,18 +111,44 @@ namespace Engine
 		return m_isVisible;
 	}
 
+	bool SpriteClass::CollisionCheck(const Sprite s) 
+	{ 
+		SetBoundingArea(new BoundingBox(m_x, m_y, m_frameBox.w + m_x, m_frameBox.h + m_y));  
+		s->SetBoundingArea(new BoundingBox(s->m_x, s->m_y, s->m_frameBox.w + s->m_x, s->m_frameBox.h + s->m_y));
+		bool outcome = m_boundingArea->Intersects(*s->GetBoundingArea()); 
+		m_boundingArea->Destroy(); 
+		s->m_boundingArea->Destroy(); 
+		return outcome;
+	}
+
+	GravityHandler& SpriteClass::GetGravityHandler(void)
+	{
+		return m_gravity;
+	}
+
+	SpriteClass& SpriteClass::SetHasDirectMotion(bool v)
+	{ 
+		m_directMotion = v;
+		return *this;
+	}
+
+	bool SpriteClass::GetHasDirectMotion(void) const
+	{
+		return m_directMotion;
+	}
+
 	std::string& SpriteClass::GetHashName()
 	{ 
 		return m_hashName;
 	}
 
-	void SpriteClass::Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const
+	void SpriteClass::Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper)
 	{ 
 		Rect clippedBox; 
 		Rect dpyPos; 
+		Rect r = GetBox();
 
-
-		if (clipper.Clip(GetBox(), dpyArea, &dpyPos, &clippedBox))
+		if (clipper.Clip(r, dpyArea, &dpyPos, &clippedBox))
 		{ 
 			Rect clippedFrame
 			{

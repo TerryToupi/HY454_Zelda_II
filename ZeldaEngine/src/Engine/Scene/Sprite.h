@@ -5,7 +5,9 @@
 #include<Engine/Scene/AnimationFilm.h> 
 #include<Engine/Renderer/MotionQuantizer.h> 
 #include<Engine/Renderer/Clipper.h> 
-#include<Engine/Scene/LatelyDestroyable.h>
+#include<Engine/Scene/LatelyDestroyable.h> 
+#include<Engine/Scene/BoundingArea.h> 
+#include<Engine/Scene/Gravity.h>
 
 #include<string>
 
@@ -13,21 +15,20 @@ namespace Engine
 { 
 	class Clipper;
 	class SpriteClass;  
-	class BoundingArea;
 
 	typedef SpriteClass* Sprite;
 
 	class SpriteClass : public LatelyDestroyable
 	{ 
 	public: 
-		using Mover = std::function<void(const Rect&, int* dx, int* dy)>; 
+		using Mover = std::function<void(Rect& r, int* dx, int* dy)>; 
 
 	public:
 		SpriteClass(std::string _name, int _x, int _y, AnimationFilm* _film, const std::string& _typeid);
 
 		void		 SetMover(const Mover& move); 
-		const Rect	 GetBox(void) const; 
-		void		 Move(int dx, int dy);
+		Rect		 GetBox(void); 
+		SpriteClass& Move(int dx, int dy);
 		void		 SetPos(int _x, int _y); 
 		void		 SetZorder(unsigned z); 
 		unsigned	 GetZorder(void); 
@@ -37,21 +38,22 @@ namespace Engine
 		byte		 GetFrame(void) const;   
 		void		 SetFilm(AnimationFilm* film); 
 		auto		 GetFilm() const->AnimationFilm* { return m_currFilm; }
-		void		SetBoundingArea(BoundingArea* area); 
-		auto		GetBoundingArea() const -> BoundingArea* { return m_boundingArea; }
+		void		 SetBoundingArea(BoundingArea* area); 
+		void		 SetColiderBox(unsigned _w, unsigned _h);
+		auto		 GetBoundingArea() const -> BoundingArea* { return m_boundingArea; }
 		
 		const std::string&	GetTypeId();
 		void				SetVisibility(bool v);
 		bool				IsVisible(void) const;  
-		bool				CollisionCheck(const SpriteClass* s) const;  
-		//GravityHandler&		GetGravityHandler(void); 
-		SpriteClass&		SetHasDirectMotion(bool v); 
+		bool				CollisionCheck(const Sprite s);  
+		GravityHandler&		GetGravityHandler(void); 
+		SpriteClass&		SetHasDirectMotion(bool v);
 		bool				GetHasDirectMotion(void) const; 
 
 		std::string&		GetHashName();
 
 
-		void Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper) const;
+		void Display(Bitmap& dest, const Rect& dpyArea, const Clipper& clipper);
 
 	private:  
 		std::string m_hashName; 
@@ -64,6 +66,8 @@ namespace Engine
 		unsigned m_zorder = 0;
 		std::string m_typeId, m_stateId;
 		Mover m_mover;
-		MotionQuantizer m_quantizer;
+		MotionQuantizer m_quantizer;  
+		GravityHandler m_gravity;
+		bool m_directMotion = false;
 	};
 }

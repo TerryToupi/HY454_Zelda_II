@@ -26,7 +26,7 @@ namespace Engine
 		m_Mover = f; return *this;
 	} 
 
-	void MotionQuantizer::Move(const Rect& r, int* dx, int* dy)
+	void MotionQuantizer::Move(Rect& r, int* dx, int* dy)
 	{
 		if (!m_Used)
 			m_Mover(r, dx, dy); 

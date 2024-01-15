@@ -52,6 +52,7 @@ void layer0::onUpdate(Time ts)
 
 	Renderer::BeginScene(m_Scene); 
 	Renderer::DisplaySceneTiles();
+	//Renderer::DebugDisplayGrid();
 	Renderer::UpdateSceneAnimators(ts);
 	Renderer::EndScene();
 }

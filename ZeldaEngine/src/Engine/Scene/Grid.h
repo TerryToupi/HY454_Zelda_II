@@ -19,7 +19,7 @@ namespace Engine
 
 		void FilterGridMotion(Rect& r, int* dx, int* dy);
 
-		bool IsOnSolidGround(const Rect& r) const;
+		bool IsOnSolidGround(Rect& r);
 		GridIndex*& GetBuffer(void) { return m_grid; }
 		void SetGridTile(Dim col, Dim row, GridIndex index);
 		GridIndex GetGridTile(Dim col, Dim row);

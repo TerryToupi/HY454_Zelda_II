@@ -57,7 +57,22 @@ namespace Engine
 	void Renderer::UpdateSceneAnimators(Time ts)
 	{
 		s_Instance->m_ActiveScene->GetAnimatorManager().Progress(ts);
-	} 
+	}
+
+	void disp(Bitmap& dest, int x, int y, int w, int h)
+	{ 
+		Bitmap red; 
+		Rect r{ x, y, w, h };
+		red.LoadBMP("Assets/Debug/alpha_tiles_bmp/4_tile_red.bmp");
+		Bitmap::Blit(red, NULL, dest, &r);
+	}
+	
+	void Renderer::DebugDisplayGrid()
+	{ 
+		auto& ib = s_Instance->InterBufferInstance(); 
+		s_Instance->m_ActiveScene->GetTiles()->DisplayGrid(ib, disp);
+	}
+
 
 	const Clipper MakeTileLayerClipper(TileLayer* layer)
 	{

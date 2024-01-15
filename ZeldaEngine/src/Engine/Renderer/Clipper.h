@@ -15,7 +15,7 @@ namespace Engine
 
 		Clipper& SetView(const View& f);
 		bool Clip(
-			const Rect& r,
+			Rect& r,
 			const Rect& dpyArea,
 			Rect* dpyPos,
 			Rect* clippedBox

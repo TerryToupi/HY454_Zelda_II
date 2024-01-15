@@ -12,6 +12,9 @@ namespace Engine
 	class TileLayer
 	{  
 	public: 
+		using GridDpyFunk = std::function<void(Bitmap&, int, int, int, int)>; 
+
+	public:
 		void SetTile(Dim col, Dim row, Index index);
 		Index GetTile(Dim col, Dim row) const; 
 		const Point Pick(Dim x, Dim y) const; 
@@ -19,7 +22,8 @@ namespace Engine
 		const Rect& GetViewWindow(void);
 		void SetViewWindow(const Rect& r); 
 		void Display(Bitmap& dest, const Rect& displayArea);
-		Bitmap GetBitmap(void) const; 
+		Bitmap GetBitmap(void) const;  
+		GridLayer* GetGrid();
 
 		int GetPixelWidth(void) const;
 		int GetPixelHeight(void) const; 
@@ -36,8 +40,8 @@ namespace Engine
 		void FilterScrollDistance(uint32_t viewStartCoord, uint32_t viewSize, uint32_t* d, uint32_t maxMapSize);
 		void FilterScroll(uint32_t* dx, uint32_t* dy); 
 		void ScrollWithBoundsCheck(uint32_t _dx, uint32_t _dy);
-		bool CanScrollHoriz(float dx) const;
-		bool CanScrollVert(float dy) const;
+		bool CanScrollHoriz(float dx) const; 
+		bool CanScrollVert(float dy) const; 
 
 		auto ToString(void) const -> const std::string; // unparse
 		bool FromString(const std::string&); // parse
@@ -47,6 +51,7 @@ namespace Engine
 		bool ReadText(FILE* fp);  
 
 		void LoadTiles(std::string path);
+		void DisplayGrid(Bitmap& dest, const GridDpyFunk& display_f);
 
 		TileLayer(uint32_t id);
 		~TileLayer();

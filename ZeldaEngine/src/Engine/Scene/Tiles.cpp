@@ -99,20 +99,28 @@ namespace Engine
 		return;
 	}
 
-	void printGrid(int* grid) {
+	void printGrid(GridIndex* grid) {
 		int m_TotalCol = 4;
-
-		for (Dim row = 0; row < 4; row++) {
-
-			for (Dim col = 0; col < 4; col++) {
-				std::cout << " | " << std::setw(2) << grid[row * m_TotalCol + col] << " | ";
-			}
-			std::cout << std::endl;
-
-			for (int i = 0; i < 31; i++)
-				std::cout << "-";
-			std::cout << std::endl;
-		}
+ 
+		ENGINE_CORE_TRACE(
+			"\n | {0} | {1} | {2} | {3} |\n | {4} | {5} | {6} | {7} |\n | {8} | {9} | {10} | {11} |\n | {12} | {13} | {14} | {15} | ",
+			grid[0 * m_TotalCol + 0],
+			grid[0 * m_TotalCol + 1],
+			grid[0 * m_TotalCol + 2],
+			grid[0 * m_TotalCol + 3],
+			grid[1 * m_TotalCol + 0],
+			grid[1 * m_TotalCol + 1],
+			grid[1 * m_TotalCol + 2],
+			grid[1 * m_TotalCol + 3],
+			grid[2 * m_TotalCol + 0],
+			grid[2 * m_TotalCol + 1],
+			grid[2 * m_TotalCol + 2],
+			grid[2 * m_TotalCol + 3],
+			grid[3 * m_TotalCol + 0],
+			grid[3 * m_TotalCol + 1],
+			grid[3 * m_TotalCol + 2],
+			grid[3 * m_TotalCol + 3]
+		);
 	}
 
 	void TileLayer::LoadTiles(std::string path)
@@ -131,24 +139,23 @@ namespace Engine
 		Allocate();    
 		m_grid = new GridLayer((m_Totalrows * GRID_BLOCK_ROWS), (m_Totalcolumns * GRID_BLOCK_COLUMNS));  
 
-		byte assumtedEmpty;
-
-		for (int row = 0; row < m_Totalrows; row++) 
+		for (Dim row = 0; row < m_Totalrows; row++) 
 		{
-			for (int col = 0; col < m_Totalcolumns; col++)
+			for (Dim col = 0; col < m_Totalcolumns; col++)
 			{ 
 				unsigned id = MapConfig["layers"][m_Id]["data"][row * m_Totalcolumns + col].get<unsigned>();
 				if (id == 0)
 				{ 
 					SetTile(col, row, EMTY_TILE); 
-					assumtedEmpty = 1;
+					m_grid->ComputeTileGridBlock(this, row, col, m_Totalcolumns, 8, true);
 				} 
 				else
 				{
 					Dim r = SetConfig["tiles"][std::to_string(id)]["y"].get<Dim>();
 					Dim c = SetConfig["tiles"][std::to_string(id)]["x"].get<Dim>(); 
-					assumtedEmpty = SetConfig["tiles"][std::to_string(id)]["empty"].get<byte>();
+					byte assumtedEmpty = SetConfig["tiles"][std::to_string(id)]["empty"].get<byte>(); 
 					SetTile(col, row, MakeIndex(r, c)); 
+					m_grid->ComputeTileGridBlock(this, row, col, m_Totalcolumns, 8, (bool)assumtedEmpty);
 				} 
 
 				PutTile(
@@ -158,20 +165,18 @@ namespace Engine
 					m_Tileset,
 					GetTile(col, row)
 				); 
-
-				m_grid->ComputeTileGridBlock(this, row, col, m_Totalcolumns, 8, assumtedEmpty);
 			}
 		} 
 
-		for (int row = 0; row < m_Totalrows; row++)
-		{
-			for (int col = 0; col < m_Totalcolumns; col++)
-			{
-				printGrid((int*)m_grid->GetGridTileBlock(col, row, m_Totalcolumns)); 
-				std::cout << std::endl;
-			}
-		}
-
+		//for (int row = 0; row < m_Totalrows; row++)
+		//{
+		//	for (int col = 0; col < m_Totalcolumns; col++)
+		//	{ 
+		//		std::cout << "x: " << DIV_TILE_WIDTH(TileX(GetTile(col, row))) << " y: " << DIV_TILE_HEIGHT(TileY(GetTile(col, row))) << std::endl;
+		//		printGrid(m_grid->GetGridTileBlock(col, row, m_Totalcolumns)); 
+		//		std::cout << std::endl;
+		//	}
+		//}
 	}
 
 	TileLayer::TileLayer(uint32_t id) 
@@ -279,6 +284,11 @@ namespace Engine
 		return DIV_TILE_HEIGHT(m_ViewWindow.h);
 	}
 
+	GridLayer* TileLayer::GetGrid()
+	{
+		return m_grid;
+	}
+
 	void TileLayer::Scroll(float dx, float dy)
 	{ 
 		m_ViewWindow.x += dx;
@@ -320,5 +330,30 @@ namespace Engine
 		return (m_ViewWindow.y >= -dy) && (m_ViewWindow.y + m_ViewWindow.h + dy) <= (m_Totalrows * TILE_HEIGHT);
 	}
 
+	void TileLayer::DisplayGrid(Bitmap& dest, const GridDpyFunk& display_f)
+	{
+		auto startCol = DIV_TILE_WIDTH(m_ViewWindow.x);
+		auto startRow = DIV_TILE_HEIGHT(m_ViewWindow.y);
+		auto endCol = DIV_TILE_WIDTH(m_ViewWindow.x + m_ViewWindow.w - 1);
+		auto endRow = DIV_TILE_HEIGHT(m_ViewWindow.y + m_ViewWindow.h - 1);
+
+		for (Dim rowTile = startRow; rowTile <= endRow; ++rowTile)
+			for (Dim colTile = startCol; colTile <= endCol; ++colTile) { 
+
+				auto sx = MUL_TILE_WIDTH(colTile - startCol);
+				auto sy = MUL_TILE_HEIGHT(rowTile - startRow);
+				auto* gridBlock = m_grid->GetGridTileBlock(colTile, rowTile, m_Totalcolumns);
+
+				for (auto rowElem = 0; rowElem < GRID_BLOCK_ROWS; ++rowElem)
+					for (auto colElem = 0; colElem < GRID_BLOCK_COLUMNS; ++colElem)
+						if (*gridBlock++ & GRID_SOLID_TILE) {
+							auto x = sx + MUL_GRID_ELEMENT_WIDTH(colElem);
+							auto y = sy + MUL_GRID_ELEMENT_HEIGHT(rowElem);
+							auto w = GRID_ELEMENT_WIDTH - 1;
+							auto h = GRID_ELEMENT_HEIGHT - 1;
+							display_f(dest, x, y, w, h);
+						}
+			}
+	}
 }
 

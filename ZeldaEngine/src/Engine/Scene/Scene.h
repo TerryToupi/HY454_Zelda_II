@@ -4,6 +4,7 @@
 #include <Engine/Scene/Tiles.h> 
 #include <Engine/Renderer/AnimatorManager.h> 
 #include <Engine/Scene/SpriteManager.h>
+#include <Engine/Scene/CollisionChecker.h>
 
 #include <string>
 #include <unordered_map> 
@@ -22,6 +23,7 @@ namespace Engine
 		Ref<TileLayer> GetTiles() { return m_Tiles; } 
 		AnimatorManager& GetAnimatorManager() { return m_AnimManager; }
 		SpriteManager& GetSpriteManager() { return m_sprites; }
+		CollisionChecker& GetColider() { return m_colider; }
 
 	private: 
 		friend class SpriteClass;
@@ -29,6 +31,7 @@ namespace Engine
 	private:   
 		Ref<TileLayer> m_Tiles;  
 		SpriteManager m_sprites;
-		AnimatorManager m_AnimManager;
+		AnimatorManager m_AnimManager; 
+		CollisionChecker m_colider;
 	};
 };

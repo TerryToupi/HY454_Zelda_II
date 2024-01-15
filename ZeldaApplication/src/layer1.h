@@ -26,7 +26,7 @@ public:
 
 	void move(Time ts); 
 
-private: 
+public: 
 	Ref<Scene> m_Scene;  
 	Ref<AnimationSheet> m_linkSheet; 
 
@@ -36,7 +36,8 @@ private:
 	Ref<FrameRangeAnimation> m_walkLeftAnim; 
 
 	Ref<FrameRangeAnimator> m_animator1;
-	Ref<FrameRangeAnimator> m_animator2;
+	Ref<FrameRangeAnimator> m_animator2; 
+	Ref<MovingAnimator> m_movingLink;
 
 	int wdx = 100; 
 	int wdy = 100; 

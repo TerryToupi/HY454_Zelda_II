@@ -11,7 +11,8 @@ namespace Engine
 		FlashShowAnimator(Scene* scene);
 
 		void	 Progress(Time currtime);
-		uint32_t GetShowDelay(void) const { return m_showDelay; }		auto     GetAnim(void) const -> const FlashAnimation& { return *m_Anim; }
+		uint32_t GetShowDelay(void) const { return m_showDelay; }
+		auto     GetAnim(void) const -> const FlashAnimation& { return *m_Anim; }
 		void	 Start(FlashAnimation* a, Time t)
 		{
 			m_Anim = a;
