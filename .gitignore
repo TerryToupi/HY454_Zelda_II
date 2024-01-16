@@ -399,4 +399,9 @@ FodyWeavers.xsd
 
 # bin and bin-int Files
 bin
-bin-int
+bin-int 
+
+# extra project stuff
+*.vcxproj
+*.vcxproj.filters
+*.vcsproj.user
