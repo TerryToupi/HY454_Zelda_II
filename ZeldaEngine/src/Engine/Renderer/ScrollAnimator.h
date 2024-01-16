@@ -7,7 +7,7 @@ namespace Engine
 {
 	class ScrollAnimator : public Animator
 	{
-		ScrollAnimator(Scene* scene);
+		ScrollAnimator() = default;
 
 		void		Progress(Time currtime);
 		uint32_t	GetCurrRep(void) const { return m_currRep; }

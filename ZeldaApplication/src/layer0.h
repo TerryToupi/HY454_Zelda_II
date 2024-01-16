@@ -24,6 +24,11 @@ public:
 private:
 	Ref<Scene> m_Scene; 	
 
+	Ref<MovingAnimator> m_CamLeft;
+	Ref<MovingAnimator> m_CamRight;
+
 	float wdx = 0;
 	float wdy = 0;
+	
+	Time curr = 0;
 };

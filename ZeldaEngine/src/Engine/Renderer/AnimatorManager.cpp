@@ -3,7 +3,9 @@
 #include <thread>
 
 namespace Engine
-{ 
+{  
+	AnimatorManager AnimatorManager::s_Instance;
+
 	void AnimatorManager::Reginster(Animator* a)
 	{  
 		ENGINE_CORE_ASSERT(a->HasFinished());

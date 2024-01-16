@@ -96,6 +96,16 @@ namespace Engine
 		m_frameBox.h = _h;
 	}
 
+	void SpriteClass::SetMotionQuantizerUse(bool v)
+	{ 
+		m_quantizer.SetUsed(v);
+	}
+
+	void SpriteClass::SetQuanntizerHeightVelocity(int v, int h)
+	{ 
+		m_quantizer.SetRange(h, v);
+	}
+
 	const std::string& SpriteClass::GetTypeId()
 	{ 
 		return m_typeId;

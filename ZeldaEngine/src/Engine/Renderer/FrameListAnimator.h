@@ -8,7 +8,7 @@ namespace Engine
 	class FrameListAnimator : public Animator
 	{
 	public:
-		FrameListAnimator(Scene* scene);
+		FrameListAnimator() = default;
 
 		void		Progress(Time currtime);
 		uint32_t	GetCurrFrame(void) const { return m_currFrame; }

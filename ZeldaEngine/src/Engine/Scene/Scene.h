@@ -21,7 +21,6 @@ namespace Engine
 		Sprite GetSprite(std::string _tag);  
 
 		Ref<TileLayer> GetTiles() { return m_Tiles; } 
-		AnimatorManager& GetAnimatorManager() { return m_AnimManager; }
 		SpriteManager& GetSpriteManager() { return m_sprites; }
 		CollisionChecker& GetColider() { return m_colider; }
 
@@ -31,7 +30,6 @@ namespace Engine
 	private:   
 		Ref<TileLayer> m_Tiles;  
 		SpriteManager m_sprites;
-		AnimatorManager m_AnimManager; 
 		CollisionChecker m_colider;
 	};
 };

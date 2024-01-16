@@ -9,7 +9,7 @@ namespace Engine
 		ENGINE_CORE_ASSERT(!s_Instance);  
 		this->m_Config = config;
 		this->m_Interbuff = this->CreateInterBuffer(); 
-		this->m_Interbuff->Generate(24 * 16, 17 * 16); 
+		this->m_Interbuff->Generate(21 * 16, 16 * 16); 
 		this->m_ActiveScene = nullptr; 
 	} 
 
@@ -54,12 +54,7 @@ namespace Engine
 		);
 	}
 
-	void Renderer::UpdateSceneAnimators(Time ts)
-	{
-		s_Instance->m_ActiveScene->GetAnimatorManager().Progress(ts);
-	}
-
-	void disp(Bitmap& dest, int x, int y, int w, int h)
+	void dispDebugGrid(Bitmap& dest, int x, int y, int w, int h)
 	{ 
 		Bitmap red; 
 		Rect r{ x, y, w, h };
@@ -70,7 +65,7 @@ namespace Engine
 	void Renderer::DebugDisplayGrid()
 	{ 
 		auto& ib = s_Instance->InterBufferInstance(); 
-		s_Instance->m_ActiveScene->GetTiles()->DisplayGrid(ib, disp);
+		s_Instance->m_ActiveScene->GetTiles()->DisplayGrid(ib, dispDebugGrid);
 	}
 
 

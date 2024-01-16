@@ -4,8 +4,6 @@
 #include <Engine/Renderer/Bitmap.h> 
 #include <Engine/Renderer/Render.h> 
 #include <Engine/Input/KeyBoardCodes.h>
-
-
 #include <Engine/Renderer/AnimatorManager.h>
 
 
@@ -93,7 +91,7 @@ namespace Engine {
 			Application::Instance().GetWindow().UpdateEngineStats(timeStep);
 
 			Application::Instance().GetWindow().EventPolling(); 
-			KeyboardInput::UpdateKeyState();
+			KeyboardInput::UpdateKeyState(); 
 
 			for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 			{ 
@@ -102,11 +100,11 @@ namespace Engine {
 
 			for (auto overlay = m_Layers.OverlaysFront(); overlay != m_Layers.OverLaysBack(); overlay++)
 			{ 
-				(*overlay)->onUpdate(currTime);
-			}   
+				(*overlay)->onUpdate(currTime); 
+			}     
+			AnimatorManager::GetInstance().Progress(currTime); 
 
 			Renderer::BufferFlip(); 
-
 			DestructionManager::Get().Commit();
 		}
 	} 

@@ -1,10 +1,11 @@
 #pragma once  
-#include<Engine/Application/Core.h>  
+#include<Engine/Application/Core.h>   
+#include<Engine/Scene/LatelyDestroyable.h>
 #include<string>
 
 namespace Engine
 { 
-	class Animation
+	class Animation : public LatelyDestroyable
 	{
 	public: 
 		Animation(const std::string& _id);

@@ -13,15 +13,14 @@ namespace Engine
 		}
 	} 
 
-	Animator::Animator(Scene* scene) 
-		: scene(scene)
-	{  
-		scene->GetAnimatorManager().Reginster(this);
+	Animator::Animator() 
+	{   
+		AnimatorManager::GetInstance().Reginster(this);
 	}
 
 	Animator::~Animator()
-	{ 
-		scene->GetAnimatorManager().Cancel(this);
+	{  
+		AnimatorManager::GetInstance().Cancel(this);
 	}
 
 	void Animator::Stop(void)
@@ -31,14 +30,14 @@ namespace Engine
 
 	void Animator::NotifyStopped(void)
 	{  
-		scene->GetAnimatorManager().MarkAsSuspended(this);
+		AnimatorManager::GetInstance().MarkAsSuspended(this);
 		if (onFinish)
 			(onFinish)(this);
 	}
 
 	void Animator::NotifyStarted(void)
 	{ 
-		scene->GetAnimatorManager().MarkAsRunning(this);
+		AnimatorManager::GetInstance().MarkAsRunning(this);
 		if (onStart)
 			(onStart)(this);
 	}

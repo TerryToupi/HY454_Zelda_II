@@ -5,21 +5,28 @@
 
 namespace Engine
 {  
-	class AnimatorManager 
+	class AnimatorManager
 	{
 	public:
-		AnimatorManager(void) = default;  
-
 		void Reginster(Animator* a); 
 		void Cancel(Animator* a); 
 		void MarkAsRunning(Animator* a); 
 		void MarkAsSuspended(Animator* a); 
-		void Progress(Time currTime); 
+		void Progress(Time currTime);  
+
+		static auto GetInstance(void) -> AnimatorManager& { return s_Instance; } 
+		static auto GetInstanceConst(void) -> const AnimatorManager& { return s_Instance; }
+	
+	private:
+		AnimatorManager(void) = default;  
+		AnimatorManager(const AnimatorManager&) = delete; 
+		AnimatorManager(AnimatorManager&&) = delete;
 
 	private: 
 		std::set<Animator*>	running, suspended; 
-		AnimatorManager(const AnimatorManager&) = delete; 
-		AnimatorManager(AnimatorManager&&) = delete;
+
+	private:
+		static AnimatorManager s_Instance;
 	};
 } 
 

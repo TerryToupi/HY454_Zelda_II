@@ -15,46 +15,51 @@ SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite)
 }
 
 void layer1::onStart()
-{ 
+{
 	m_Scene = MakeReference<Scene>(1);
-	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp"); 
+	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 
-	m_linkSheet = MakeReference<AnimationSheet>("link-sheet", "Assets/AnimationFilms/link-sprites.bmp"); 
+	m_linkSheet = MakeReference<AnimationSheet>("link-sheet", "Assets/AnimationFilms/link-sprites.bmp");
 	m_WalkRight = MakeReference<AnimationFilm>(m_linkSheet.get(), "Assets/Config/Animations/Link/moving_right.json");
-	m_WalkLeft = MakeReference<AnimationFilm>(m_linkSheet.get(), "Assets/Config/Animations/Link/moving_Left.json"); 
+	m_WalkLeft = MakeReference<AnimationFilm>(m_linkSheet.get(), "Assets/Config/Animations/Link/moving_Left.json");
 	m_walkRightAnim = MakeReference<FrameRangeAnimation>("right", 0, m_WalkRight->GetTotalFrames(), 0, 300, 12 * 16, 50);
 	m_walkLeftAnim = MakeReference<FrameRangeAnimation>("left", 0, m_WalkLeft->GetTotalFrames(), 0, 300, 12 * 16, 50);
 
-	m_movingLink = MakeReference<MovingAnimator>(m_Scene.get());
-	m_movingLink.get()->SetOnAction(
+	m_movingLink = MakeReference<MovingAnimator>();
+	m_movingLink->SetOnAction(
 		[this](Animator* animator, const Animation& anim)
 		{
-			Sprite link = this->m_Scene->GetSprite("Link"); 
+			Sprite link = this->m_Scene->GetSprite("Link");
+			//link->SetHasDirectMotion(true).Move(+1, 0).SetHasDirectMotion(false); 
 			link->Move(+1, 0);
 		}
-	); 
+	);
 
-	m_animator1 = MakeReference<FrameRangeAnimator>(m_Scene.get());
-	m_animator1.get()->SetOnAction( 
+	m_animator1 = MakeReference<FrameRangeAnimator>();
+	m_animator1.get()->SetOnAction(
 		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionLeft(); }
-	); 
+	);
 	m_animator1.get()->SetOnFinish(
 		[this](Animator* animator) { return this->FrameRangerFinish(animator, *m_walkLeftAnim.get()); }
 	);
-	m_animator2 = MakeReference<FrameRangeAnimator>(m_Scene.get());
+	m_animator2 = MakeReference<FrameRangeAnimator>();
 	m_animator2.get()->SetOnAction(
 		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionRight(); }
-	); 
+	);
 	m_animator2.get()->SetOnFinish(
 		[this](Animator* animator) { return this->FrameRangerFinish(animator, *m_walkRightAnim.get()); }
 	);
 
+	m_CamLeft = MakeReference<MovingAnimator>();
+	m_CamRight = MakeReference <MovingAnimator>();
+	m_CamLeft->SetOnAction([this](Animator* animator, const Animation& anim) { this->m_Scene->GetTiles()->Scroll(-1, 0);});
+	m_CamRight->SetOnAction([this](Animator* animator, const Animation& anim) { this->m_Scene->GetTiles()->Scroll(+1, 0);});
+
 	GridLayer* grid = m_Scene->GetTiles()->GetGrid();
-	Sprite link = m_Scene->CreateSprite("Link", 100, 10*16, m_WalkRight.get(), ""); 
+	Sprite link = m_Scene->CreateSprite("Link", 210, 10*16, m_WalkRight.get(), ""); 
 	link->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), link)); 
 	link->GetGravityHandler().SetGravityAddicted(true);
-	link->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
-
+	link->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });  
 
 	Sprite waypoint = m_Scene->CreateSprite("w1", 132, 8 * 16, NONPRINTABLE, ""); 
 	waypoint->SetColiderBox(5, 32);
@@ -81,8 +86,11 @@ void layer1::move(Time ts)
 		if (m_Scene->GetTiles()->CanScrollVert(-SPEED))
 		{
 			m_Scene->GetTiles()->Scroll(0, -SPEED);
-		}
-			m_Scene->GetSprite("Link")->Move(0, -SPEED);
+		} 
+		//m_Scene->GetSprite("Link")->SetMotionQuantizerUse(true); 
+		//m_Scene->GetSprite("Link")->SetQuanntizerHeightVelocity(5, 5);
+		m_Scene->GetSprite("Link")->Move(0, -SPEED); 
+		//m_Scene->GetSprite("Link")->SetMotionQuantizerUse(false); 
 	}
 	else if (KeyboardInput::IsPressed(SCANCODE_D))
 	{
@@ -116,7 +124,6 @@ void layer1::onUpdate(Time ts)
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
 	//Renderer::DebugDisplayGrid();
-	Renderer::UpdateSceneAnimators(ts); 
 	Renderer::DisplaySprites();
 	Renderer::EndScene();
 }
@@ -135,12 +142,17 @@ bool layer1::mover(Event& e)
 		KeyTapEvent *event = dynamic_cast<KeyTapEvent*>(&e); 
 		if (event->GetKey() == InputKey::d)
 		{ 
-			//MovingAnimation m {"moving", 0, 0, 0, 1};
-			m_animator2->Start(m_walkRightAnim.get(), curr, m_walkRightAnim.get()->GetStartFrame());
-			//m_movingLink->Start(&m, curr);
+			MovingAnimation *m = new MovingAnimation {"moving", 0, 0, 0, 7};
+			//m_CamRight->Start(m, curr);
+			m_animator2->Start(m_walkRightAnim.get(), curr, m_walkRightAnim.get()->GetStartFrame()); 
+			m_movingLink->Start(m, curr); 
 		}
 		else if (event->GetKey() == InputKey::a)
+		{ 
+			MovingAnimation *m = new MovingAnimation {"moving", 0, 0, 0, 7}; 
+			//m_CamLeft->Start(m, curr);
 			m_animator1->Start(m_walkLeftAnim.get(), curr, m_walkRightAnim.get()->GetStartFrame());
+		}
 	}  
 	
 	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
@@ -148,11 +160,15 @@ bool layer1::mover(Event& e)
 		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{
-			m_animator2->Stop();
-			//m_movingLink->Stop();
+			m_animator2->Stop(); 
+			//m_CamRight->Stop();
+			m_movingLink->Stop();
 		}
 		else if (event->GetKey() == InputKey::a)
+		{ 
 			m_animator1->Stop();
+			//m_CamLeft->Stop();
+		}
 	}
 
 	return true;

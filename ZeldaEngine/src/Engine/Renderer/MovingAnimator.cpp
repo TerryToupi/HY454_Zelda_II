@@ -2,11 +2,6 @@
 
 namespace Engine
 {
-	MovingAnimator::MovingAnimator(Scene* scene) 
-		: Animator(scene)
-	{
-	}  
-
 	void MovingAnimator::Progress(Time currtime)
 	{ 
 		while (currtime > lastTime && (currtime - lastTime) >= m_Anim->GetDelay())

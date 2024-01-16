@@ -186,8 +186,8 @@ namespace Engine
 
 		m_ViewWindow.x = 0	* TILE_WIDTH;
 		m_ViewWindow.y = 0	* TILE_HEIGHT;
-		m_ViewWindow.w = 24 * TILE_WIDTH;
-		m_ViewWindow.h = 17 * TILE_HEIGHT; 
+		m_ViewWindow.w = 21 * TILE_WIDTH;
+		m_ViewWindow.h = 16 * TILE_HEIGHT; 
 	}
 
 	TileLayer::~TileLayer()

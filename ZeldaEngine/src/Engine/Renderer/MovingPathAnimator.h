@@ -8,7 +8,7 @@ namespace Engine
 	class MovingPathAnimator : public Animator
 	{
 	public:
-		MovingPathAnimator(Scene* scene);
+		MovingPathAnimator() = default;
 
 		void		Progress(Time currtime);
 		uint32_t	GetCurrRep(void) const { return m_currRep; } 

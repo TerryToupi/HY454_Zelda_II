@@ -2,11 +2,6 @@
 
 namespace Engine
 {
-	FlashShowAnimator::FlashShowAnimator(Scene* scene)
-		: Animator(scene)
-	{ 
-	} 
-
 	void FlashShowAnimator::Progress(Time currtime)
 	{ 
 		while (currtime > lastTime && (currtime - lastTime) >= m_Anim->GetShowDelay())
@@ -21,11 +16,6 @@ namespace Engine
 			}
 		}
 	} 
-
-	FlashHideAnimator::FlashHideAnimator(Scene* scene)
-		: Animator(scene)
-	{
-	}
 
 	void FlashHideAnimator::Progress(Time currtime)
 	{ 

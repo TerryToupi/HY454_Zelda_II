@@ -24,7 +24,7 @@ namespace Engine
 		using OnAction	= std::function<void(Animator*, const Animation&)>;  
 
 	public:  
-		Animator(Scene* scene); 
+		Animator(); 
 		Animator(const Animator&) = delete; 
 		Animator(Animator&&) = delete; 
 		virtual ~Animator();

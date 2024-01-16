@@ -2,11 +2,6 @@
 
 namespace Engine
 {
-	FrameRangeAnimator::FrameRangeAnimator(Scene* scene)
-		: Animator(scene)
-	{
-	}  
-
 	void FrameRangeAnimator::Progress(Time currtime)
 	{
 		while (currtime > lastTime && (currtime - lastTime) >= m_anim->GetDelay())

@@ -8,7 +8,7 @@ namespace Engine
 	class FrameRangeAnimator : public Animator
 	{
 	public:  
-		FrameRangeAnimator(Scene* scene);
+		FrameRangeAnimator() = default;
 
 		void		Progress(Time currtime);
 		uint32_t	GetCurrFrame(void) const { return m_currFrame; }  

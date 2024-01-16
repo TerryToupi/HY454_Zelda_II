@@ -37,7 +37,10 @@ public:
 
 	Ref<FrameRangeAnimator> m_animator1;
 	Ref<FrameRangeAnimator> m_animator2; 
-	Ref<MovingAnimator> m_movingLink;
+	Ref<MovingAnimator> m_movingLink;  
+
+	Ref<MovingAnimator> m_CamLeft; 
+	Ref<MovingAnimator> m_CamRight; 
 
 	int wdx = 100; 
 	int wdy = 100; 

@@ -2,11 +2,6 @@
 
 namespace Engine
 { 
-	ScrollAnimator::ScrollAnimator(Scene* scene)
-		: Animator(scene)
-	{
-	}
-
 	void ScrollAnimator::Progress(Time currtime)
 	{ 
 		while (currtime > lastTime && (currtime - lastTime) >= m_anim->GetScroll().at(m_currScroll).delay)
