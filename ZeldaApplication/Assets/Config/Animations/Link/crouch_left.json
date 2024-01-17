@@ -1,0 +1,21 @@
+{
+  "animation": "crouch_left",
+  "total_frames" : 2,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 128,
+      "y": 0,
+      "h": 32,
+      "w": 16
+    },
+    {
+      "frame": 2,
+      "x": 48,
+      "y": 40,
+      "h": 32,
+      "w": 16
+    }
+  ]
+}
+
