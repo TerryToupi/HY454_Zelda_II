@@ -78,17 +78,24 @@ namespace Engine {
 
 	void Application::Run()
 	{  
-		Time prevTime = 0; 
-		Time currTime = 0; 
+		Time currTime = SystemClock::Get().GetTime();
+		Time prevTime = currTime;  
+		Time statTimer = currTime;
 		Time timeStep; 
 
 		while (m_Running)
 		{  
 			currTime = SystemClock::Get().GetTime(); 
-			timeStep = currTime - prevTime;   
-			prevTime = currTime;  
+			timeStep = currTime - prevTime;    
+			prevTime = currTime;
 
-			Application::Instance().GetWindow().UpdateEngineStats(timeStep);
+			if (currTime >= statTimer + 150)
+			{ 
+				Application::Instance().GetWindow().UpdateEngineStats(timeStep);
+				if (timeStep > 200)
+					ENGINE_CORE_TRACE("stater");
+				statTimer = currTime;
+			}
 
 			Application::Instance().GetWindow().EventPolling(); 
 			KeyboardInput::UpdateKeyState(); 
@@ -102,10 +109,11 @@ namespace Engine {
 			{ 
 				(*overlay)->onUpdate(currTime); 
 			}     
-			AnimatorManager::GetInstance().Progress(currTime); 
+			AnimatorManager::GetInstance().Progress(currTime);
 
 			Renderer::BufferFlip(); 
-			DestructionManager::Get().Commit();
+			
+			DestructionManager::Get().Commit(); 
 		}
 	} 
 

@@ -74,7 +74,7 @@ namespace Engine
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, fb, NULL, NULL);
 		SDL_RenderPresent(renderer);
-		SDL_DestroyTexture(fb);
+		SDL_DestroyTexture(fb); 
 	}
 
 	void Bitmap::LoadBMP(std::string path)

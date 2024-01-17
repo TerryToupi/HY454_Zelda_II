@@ -78,12 +78,12 @@ bool layer0::mover(KeyPressEvent& e)
 		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{ 
-			//MovingAnimation* m = new MovingAnimation{ "moving", 0, 0, 0, 7 };
+			MovingAnimation* m = new MovingAnimation{ "moving", 0, 0, 0, 7 };
 			//m_CamRight->Start(m, curr);
 		}
 		else if (event->GetKey() == InputKey::a)
 		{
-			//MovingAnimation* m = new MovingAnimation{ "moving", 0, 0, 0, 7 };
+			MovingAnimation* m = new MovingAnimation{ "moving", 0, 0, 0, 7 };
 			//m_CamLeft->Start(m, curr);
 		}
 	}

@@ -23,7 +23,7 @@ void layer1::onStart()
 	m_WalkRight = MakeReference<AnimationFilm>(m_linkSheet.get(), "Assets/Config/Animations/Link/moving_right.json");
 	m_WalkLeft = MakeReference<AnimationFilm>(m_linkSheet.get(), "Assets/Config/Animations/Link/moving_Left.json");
 	m_walkRightAnim = MakeReference<FrameRangeAnimation>("right", 0, m_WalkRight->GetTotalFrames(), 0, 300, 12 * 16, 50);
-	m_walkLeftAnim = MakeReference<FrameRangeAnimation>("left", 0, m_WalkLeft->GetTotalFrames(), 0, 300, 12 * 16, 50);
+	m_walkLeftAnim = MakeReference<FrameRangeAnimation>("left", 0, m_WalkLeft->GetTotalFrames(), 0, 300, 12 * 16, 50);  
 
 	m_movingLink = MakeReference<MovingAnimator>();
 	m_movingLink->SetOnAction(
@@ -160,18 +160,18 @@ bool layer1::mover(Event& e)
 		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{
-			m_animator2->Stop(); 
 			//m_CamRight->Stop();
+			m_animator2->Stop(); 
 			m_movingLink->Stop();
 		}
 		else if (event->GetKey() == InputKey::a)
 		{ 
-			m_animator1->Stop();
 			//m_CamLeft->Stop();
+			m_animator1->Stop();
 		}
 	}
 
-	return true;
+	return false;
 }
 
 void layer1::FrameRangeActionLeft()
