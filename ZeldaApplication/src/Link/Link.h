@@ -13,8 +13,6 @@ private:
     int magicPoints = 100;
     int lives = 3;
 
-    std::string m_state;
-
 public:
     Link();
     ~Link() = default;
@@ -23,9 +21,10 @@ public:
     int getDamage() const;
     int getMagicPoints() const;
     int getLives() const;
-    std::string GetState();
+
     
     void SetState(std::string _state);
+    void SetLookingAt(std::string _loookingAt);
     void setHealth(int newHealth);
     void setDamage(int newDamage);
     void setMagicPoints(int newMagicPoints);

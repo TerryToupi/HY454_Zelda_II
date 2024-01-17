@@ -5,11 +5,11 @@
 
 using namespace Engine;
 
-class layer1 : public Layer
+class Layer1 : public Layer
 {
 public:
-    layer1();
-    ~layer1() = default;
+    Layer1();
+    ~Layer1() = default;
 
     void onStart() override;
 
@@ -21,14 +21,6 @@ public:
 
     bool mover(Event& e);
 
-    void FrameRangeActionLeft();
-    void FrameRangeActionRight();
-    void FrameRangeActionCrouchLeft();
-    void FrameRangeActionCrouchRight();
-    void FrameRangeActionAttackLeft();
-    void FrameRangeActionAttackRight();
-    void FrameRangerFinish(Animator* animator, const Animation& anim);
-
     void move(Time ts);
 
 public:
@@ -36,6 +28,9 @@ public:
     Ref<AnimationSheet> m_linkSheet;
     Link* link;
 
+    std::unordered_map < std::string, Ref<AnimationFilm> > animationFilmsMap;
+    std::unordered_map < std::string, Ref<FrameRangeAnimation> > frameRangeAnimationsMap;
+    std::unordered_map < std::string, Ref<FrameRangeAnimator> > frameRangeAnimatorsMap;
 
     Ref<MovingAnimator> m_movingLink;
     Ref<MovingAnimator> m_CamLeft;

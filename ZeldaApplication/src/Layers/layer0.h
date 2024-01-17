@@ -4,11 +4,11 @@
 
 using namespace Engine; 
 
-class layer0 : public Layer 
+class Layer0 : public Layer 
 { 
 public:
-	layer0(); 
-	~layer0() = default;
+	Layer0(); 
+	~Layer0() = default;
 
 	void onStart() override;
 

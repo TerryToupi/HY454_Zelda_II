@@ -1,15 +1,15 @@
-#include "layer0.h"
+#include "Layer0.h"
 
 #define THE_GREATES_MPAMPIS "Mpampis"
 
 using namespace Engine;
 
-layer0::layer0()
-	: Layer("layer0")
+Layer0::Layer0()
+	: Layer("Layer0")
 { 
 }
 
-void layer0::onStart()
+void Layer0::onStart()
 {
 	m_Scene = MakeReference<Scene>(0);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
@@ -18,12 +18,12 @@ void layer0::onStart()
 	m_CamRight = MakeReference <MovingAnimator>();
 }
 
-void layer0::onDelete()
+void Layer0::onDelete()
 { 
 	
 }
 
-void layer0::move()
+void Layer0::move()
 {
 	float SPEED = 1;
 
@@ -53,7 +53,7 @@ void layer0::move()
 	} 
 }
 
-void layer0::onUpdate(Time ts)
+void Layer0::onUpdate(Time ts)
 {  
 	curr = ts;
 	move(); 
@@ -64,14 +64,14 @@ void layer0::onUpdate(Time ts)
 	Renderer::EndScene();
 }
 
-void layer0::onEvent(Event& e)
+void Layer0::onEvent(Event& e)
 {    
 	EventDispatcher dispatcher(e); 
-	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(layer0::mover));
-	dispatcher.Dispatch<KeyRepeatEvent>(APP_EVENT_FUNTION(layer0::mover));
+	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer0::mover));
+	dispatcher.Dispatch<KeyRepeatEvent>(APP_EVENT_FUNTION(Layer0::mover));
 }
 
-bool layer0::mover(KeyPressEvent& e)
+bool Layer0::mover(KeyPressEvent& e)
 {
 	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
 	{

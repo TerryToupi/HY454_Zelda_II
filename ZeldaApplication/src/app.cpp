@@ -3,8 +3,8 @@
 #include <Engine/EngineHook.h>
 
 // Game application include 
-#include "Layers/layer0.h"   
-#include "Layers/layer1.h"
+#include "Layers/Layer0.h"   
+#include "Layers/Layer1.h"
 
 // STD::LIB include
 #include <string>
@@ -18,8 +18,8 @@ public:
 	Zelda(const Engine::ApplicationConfig& config)
 		: Engine::Application(config)
 	{
-		pushLayer(new layer0());
-		pushLayer(new layer1());
+		pushLayer(new Layer0());
+		pushLayer(new Layer1());
 	} 
 
 	~Zelda() 

@@ -22,8 +22,15 @@ public:
 	void EmplaceFilm(std::string id, AnimationFilm* film);
 	void EmplaceAnimator(std::string id, Animator* animator);
 	void SetSprite(Sprite s);
+	void Reposition(std::string name);
+	std::string GetState();
+	std::string GetLookingAt();
 
-	void FrameRangerFinish(Animator* animator, const Animation& anim);
+public:
+	void FrameRangeFinish(Animator* animator, const Animation& anim);
+	void FrameRangeAction(std::string name);
+	void FrameRangeStart(std::string name);
+	void InitializeAnimators();
 
 protected:
 
@@ -32,4 +39,11 @@ protected:
 	Films m_films;
 	Animations m_animations;
 	Animators m_animators;
+
+	std::string m_state;
+	std::string m_lookingAt;
+
+private:
+	uint32_t startX;
+	uint32_t startY;
 };
