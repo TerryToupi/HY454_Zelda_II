@@ -14,6 +14,7 @@ private:
     int lives = 3;
 
     std::string m_state;
+    std::string m_lookingAt;
 
 public:
     Link();
@@ -24,8 +25,10 @@ public:
     int getMagicPoints() const;
     int getLives() const;
     std::string GetState();
+    std::string GetLookingAt();
     
     void SetState(std::string _state);
+    void SetLookingAt(std::string _loookingAt);
     void setHealth(int newHealth);
     void setDamage(int newDamage);
     void setMagicPoints(int newMagicPoints);

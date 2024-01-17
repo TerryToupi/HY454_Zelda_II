@@ -23,6 +23,7 @@ void layer1::onStart()
 	
 	link = new Link();
 	link->SetSprite(m_Scene->CreateSprite("Link", 210, 10 * 16, link->GetFilm("moving_right"), ""));
+	ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
 
 	m_movingLink = MakeReference<MovingAnimator>();
 	m_movingLink->SetOnAction(
@@ -60,6 +61,20 @@ void layer1::onStart()
 	);
 	((FrameRangeAnimator*)link->GetAnimator("crouch_left"))->SetOnFinish(
 		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("crouch_right")));  }
+	);
+
+	((FrameRangeAnimator*)link->GetAnimator("attacking_right"))->SetOnAction(
+		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionAttackRight(); }
+	);
+	((FrameRangeAnimator*)link->GetAnimator("attacking_right"))->SetOnFinish(
+		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("attacking_right")));  }
+	);
+
+	((FrameRangeAnimator*)link->GetAnimator("attacking_left"))->SetOnAction(
+		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionAttackLeft(); }
+	);
+	((FrameRangeAnimator*)link->GetAnimator("attacking_left"))->SetOnFinish(
+		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("attacking_left")));  }
 	);
 
 	m_CamLeft = MakeReference<MovingAnimator>();
@@ -146,39 +161,60 @@ bool layer1::mover(Event& e)
 		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{
-			MovingAnimation* m = new MovingAnimation{ "moving", 0, 0, 0, 7 };
+			//MovingAnimation* m = new MovingAnimation{ "moving", 0, 0, 0, 7 };
 			//m_CamRight->Start(m, curr);
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("moving_right");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("moving_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("moving_right"))->GetStartFrame());
 			//m_movingLink->Start(m, curr); 
 
-			link->SetState("moving_right");
+			link->SetState("moving");
+			link->SetLookingAt("right");
+
+			ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
+
 		}
 		else if (event->GetKey() == InputKey::a)
 		{
-			MovingAnimation* m = new MovingAnimation{ "moving", 0, 0, 0, 7 };
+			//MovingAnimation* m = new MovingAnimation{ "moving", 0, 0, 0, 7 };
 			//m_CamLeft->Start(m, curr);
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("moving_left");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("moving_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("moving_left"))->GetStartFrame());
 
 		//	frameRangeAnimatorsMap["moving_left"]->Start(frameRangeAnimationsMap["moving_left"].get(), curr, frameRangeAnimationsMap["moving_left"].get()->GetStartFrame());
-			link->SetState("moving_left");
+			link->SetState("moving");
+			link->SetLookingAt("left");
+
+			ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
+
 		}
 		else if (event->GetKey() == InputKey::s)
 		{
-			if (link->GetState() == "moving_right") {
+			if (link->GetLookingAt() == "right") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_right");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_right"))->GetStartFrame());
-
-				//frameRangeAnimatorsMap["crouch_right"]->Start(frameRangeAnimationsMap["crouch_right"].get(), curr, frameRangeAnimationsMap["crouch_right"].get()->GetStartFrame());
-				link->SetState("crouch_right");
+				
+				link->SetState("crouch");
 			}
-			else if (link->GetState() == "moving_left") {
+			else if (link->GetLookingAt() == "left") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_left");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_left"))->GetStartFrame());
+				
+				link->SetState("crouch");
+			}
+		}
+		else if (event->GetKey() == InputKey::q)
+		{
+			if (link->GetLookingAt() == "right"){
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("attacking_right");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("attacking_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("attacking_right"))->GetStartFrame());
 
-				//frameRangeAnimatorsMap["crouch_left"]->Start(frameRangeAnimationsMap["crouch_left"].get(), curr, frameRangeAnimationsMap["crouch_left"].get()->GetStartFrame());
-				link->SetState("crouch_left");
+				link->SetState("attacking");
+			}
+			else if (link->GetLookingAt() == "left") {
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("attacking_left");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("attacking_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("attacking_left"))->GetStartFrame());
+
+				link->SetState("attacking");
 			}
 		}
 
@@ -192,7 +228,6 @@ bool layer1::mover(Event& e)
 			((FrameRangeAnimator*)link->GetAnimator("moving_right"))->Stop();
 			//m_CamRight->Stop();
 			m_movingLink->Stop();
-			ENGINE_TRACE(m_Scene->GetSprite("Link")->GetFilm()->GetId());
 
 		}
 		else if (event->GetKey() == InputKey::a)
@@ -200,29 +235,23 @@ bool layer1::mover(Event& e)
 			((FrameRangeAnimator*)link->GetAnimator("moving_left"))->Stop();
 			//frameRangeAnimatorsMap["moving_left"]->Stop();
 			//m_CamLeft->Stop();
-			ENGINE_TRACE(m_Scene->GetSprite("Link")->GetFilm()->GetId());
 
 		}
 		else if (event->GetKey() == InputKey::s)
 		{
-			if (link->GetState() == "crouch_right") {
+			if (link->GetLookingAt() == "right") {
 				Sprite link_sprite = m_Scene->GetSprite("Link");
 				link_sprite->SetFilm(link->GetFilm("crouch_right"));
 				link_sprite->SetFrame(0);
-				link->SetState("moving_right");
-
+				link->SetState("moving");
 			}
-			else if (link->GetState() == "crouch_left") {
+			else if (link->GetLookingAt() == "left") {
 				Sprite link_sprite = m_Scene->GetSprite("Link");
 				link_sprite->SetFilm(link->GetFilm("crouch_left"));
 				link_sprite->SetFrame(0);
-				link->SetState("moving_left");
-
+				link->SetState("moving");
 			}
-
-
 		}
-
 	}
 
 	return true;
@@ -230,43 +259,41 @@ bool layer1::mover(Event& e)
 
 void layer1::FrameRangeActionLeft()
 {
-//	Sprite link_sprite = m_Scene->GetSprite("Link");
-
 	link->GetSprite()->SetFilm(link->GetFilm("moving_left"));
 	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("moving_left"))->GetCurrFrame());
 }
 
 void layer1::FrameRangeActionRight()
 {
-//	Sprite link_sprite = m_Scene->GetSprite("Link");
-
-//	link->SetFilm(animationFilmsMap["moving_right"].get());
-//	link->SetFrame(frameRangeAnimatorsMap["moving_right"]->GetCurrFrame());
-
 	link->GetSprite()->SetFilm(link->GetFilm("moving_right"));
 	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("moving_right"))->GetCurrFrame());
 }
 
 void layer1::FrameRangeActionCrouchRight()
 {
-//	Sprite link_sprite = m_Scene->GetSprite("Link");
-
-//	link->SetFilm(animationFilmsMap["crouch_right"].get());
-//	link->SetFrame(frameRangeAnimatorsMap["crouch_right"]->GetCurrFrame());
-
 	link->GetSprite()->SetFilm(link->GetFilm("crouch_right"));
 	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("crouch_right"))->GetCurrFrame());
 }
 
 void layer1::FrameRangeActionCrouchLeft()
 {
-//	Sprite link_sprite = m_Scene->GetSprite("Link");
-
-	//	link->SetFilm(animationFilmsMap["crouch_left"].get());
-	//	link->SetFrame(frameRangeAnimatorsMap["crouch_left"]->GetCurrFrame());
 
 	link->GetSprite()->SetFilm(link->GetFilm("crouch_left"));
 	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("crouch_left"))->GetCurrFrame());
+}
+
+void layer1::FrameRangeActionAttackRight()
+{
+
+	link->GetSprite()->SetFilm(link->GetFilm("attacking_right"));
+	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("attacking_right"))->GetCurrFrame());
+}
+
+void layer1::FrameRangeActionAttackLeft()
+{
+
+	link->GetSprite()->SetFilm(link->GetFilm("attacking_left"));
+	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("attacking_left"))->GetCurrFrame());
 }
 
 void layer1::FrameRangerFinish(Animator* animator, const Animation& anim)

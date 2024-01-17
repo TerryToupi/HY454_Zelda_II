@@ -25,6 +25,8 @@ public:
     void FrameRangeActionRight();
     void FrameRangeActionCrouchLeft();
     void FrameRangeActionCrouchRight();
+    void FrameRangeActionAttackLeft();
+    void FrameRangeActionAttackRight();
     void FrameRangerFinish(Animator* animator, const Animation& anim);
 
     void move(Time ts);
