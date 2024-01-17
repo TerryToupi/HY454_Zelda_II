@@ -2,6 +2,9 @@
 
 Link::Link()
 {
+    m_lookingAt = "right";
+    m_state = "moving";
+
     m_sheet = new AnimationSheet("link_sheet", "Assets/AnimationFilms/link-sprites.bmp");
     EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_right.json"));
     EmplaceFilm("moving_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_left.json"));
@@ -9,7 +12,6 @@ Link::Link()
     EmplaceFilm("crouch_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/crouch_right.json"));
     EmplaceFilm("attacking_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/attacking_left.json"));
     EmplaceFilm("attacking_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/attacking_right.json"));
-
 
     EmplaceAnimation(new FrameRangeAnimation("moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
     EmplaceAnimation(new FrameRangeAnimation("moving_left", 0, m_films["moving_left"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
@@ -25,6 +27,8 @@ Link::Link()
     EmplaceAnimator("attacking_left", new FrameRangeAnimator());
     EmplaceAnimator("attacking_right", new FrameRangeAnimator());
 
+    InitializeAnimators();  //initializes the onAction and OnFinish of all inserted animations in the entity
+                            //fully dynamic 
 }
 
 int Link::getHealth() const 
@@ -52,9 +56,19 @@ std::string Link::GetState()
     return m_state;
 }
 
+std::string Link::GetLookingAt()
+{
+    return m_lookingAt;
+}
+
 void Link::SetState(std::string _state)
 {
     m_state = _state;
+}
+
+void Link::SetLookingAt(std::string _lookingAt)
+{
+    m_lookingAt = _lookingAt;
 }
 
 void Link::setHealth(int newHealth)

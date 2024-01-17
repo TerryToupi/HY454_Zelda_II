@@ -23,7 +23,10 @@ public:
 	void EmplaceAnimator(std::string id, Animator* animator);
 	void SetSprite(Sprite s);
 
-	void FrameRangerFinish(Animator* animator, const Animation& anim);
+public:
+	void FrameRangeFinish(Animator* animator, const Animation& anim);
+	void FrameRangeAction(std::string name);
+	void InitializeAnimators();
 
 protected:
 

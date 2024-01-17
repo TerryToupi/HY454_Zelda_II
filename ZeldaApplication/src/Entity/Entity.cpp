@@ -40,8 +40,28 @@ void Entity::SetSprite(Sprite s)
 	m_Sprite = s;
 }
 
-void Entity::FrameRangerFinish(Animator* animator, const Animation& anim)
+void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
 {
 	FrameRangeAnimator* a = (FrameRangeAnimator*)animator;
 	FrameRangeAnimation* film = (FrameRangeAnimation*)anim.Clone();
+}
+
+void Entity::FrameRangeAction(std::string name)
+{
+	m_Sprite->SetFilm(m_films[name]);
+	m_Sprite->SetFrame(((FrameRangeAnimator*)m_animators[name])->GetCurrFrame());
+}
+
+void Entity::InitializeAnimators()
+{
+	for (auto i : m_animators) {
+		i.second->SetOnAction(
+			[this,i](Animator* animator, const Animation& anim) { return this->FrameRangeAction(i.first); }
+		);
+
+		i.second->SetOnFinish(
+			[this,i](Animator* animator) { return this->FrameRangeFinish(animator, *(this->GetAnimation(i.first))); }
+		);
+
+	}
 }

@@ -1,8 +1,8 @@
-#include "layer1.h"
+#include "Layer1.h"
 
 
-layer1::layer1()
-	: Layer("layer1")
+Layer1::Layer1()
+	: Layer("Layer1")
 {
 }
 
@@ -15,64 +15,24 @@ SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite)
 		};
 }
 
-void layer1::onStart()
+void Layer1::onStart()
 {
 
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
-
+	
 	link = new Link();
 	link->SetSprite(m_Scene->CreateSprite("Link", 210, 10 * 16, link->GetFilm("moving_right"), ""));
+	ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
 
 	m_movingLink = MakeReference<MovingAnimator>();
 	m_movingLink->SetOnAction(
 		[this](Animator* animator, const Animation& anim)
 		{
+			Sprite link = this->m_Scene->GetSprite("Link");
 			//link->SetHasDirectMotion(true).Move(+1, 0).SetHasDirectMotion(false); 
-			link->GetSprite()->Move(+1, 0);
+			link->Move(+1, 0);
 		}
-	);
-
-	((FrameRangeAnimator*)link->GetAnimator("moving_left"))->SetOnAction(
-		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionLeft(); }
-	);
-	((FrameRangeAnimator*)link->GetAnimator("moving_left"))->SetOnFinish(
-		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("moving_left"))); }
-	);
-
-	((FrameRangeAnimator*)link->GetAnimator("moving_right"))->SetOnAction(
-		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionRight(); }
-	);
-	((FrameRangeAnimator*)link->GetAnimator("moving_right"))->SetOnFinish(
-		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("moving_right")));  }
-	);
-
-	((FrameRangeAnimator*)link->GetAnimator("crouch_right"))->SetOnAction(
-		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionCrouchRight(); }
-	);
-	((FrameRangeAnimator*)link->GetAnimator("crouch_right"))->SetOnFinish(
-		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("crouch_left"))); }
-	);
-
-	((FrameRangeAnimator*)link->GetAnimator("crouch_left"))->SetOnAction(
-		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionCrouchLeft(); }
-	);
-	((FrameRangeAnimator*)link->GetAnimator("crouch_left"))->SetOnFinish(
-		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("crouch_right")));  }
-	);
-
-	((FrameRangeAnimator*)link->GetAnimator("attacking_right"))->SetOnAction(
-		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionAttackRight(); }
-	);
-	((FrameRangeAnimator*)link->GetAnimator("attacking_right"))->SetOnFinish(
-		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("attacking_right")));  }
-	);
-
-	((FrameRangeAnimator*)link->GetAnimator("attacking_left"))->SetOnAction(
-		[this](Animator* animator, const Animation& anim) { return this->FrameRangeActionAttackLeft(); }
-	);
-	((FrameRangeAnimator*)link->GetAnimator("attacking_left"))->SetOnFinish(
-		[this](Animator* animator) { return this->FrameRangerFinish(animator, *(link->GetAnimation("attacking_left")));  }
 	);
 
 	m_CamLeft = MakeReference<MovingAnimator>();
@@ -81,6 +41,7 @@ void layer1::onStart()
 	m_CamRight->SetOnAction([this](Animator* animator, const Animation& anim) { this->m_Scene->GetTiles()->Scroll(+1, 0); });
 
 	GridLayer* grid = m_Scene->GetTiles()->GetGrid();
+	//Sprite link = m_Scene->CreateSprite("Link", 210, 10 * 16, animationFilmsMap["moving_right"].get(), "");
 	link->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), link->GetSprite()));
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	link->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
@@ -89,11 +50,11 @@ void layer1::onStart()
 	waypoint->SetColiderBox(5, 32);
 }
 
-void layer1::onDelete()
+void Layer1::onDelete()
 {
 }
 
-void layer1::move(Time ts)
+void Layer1::move(Time ts)
 {
 	float SPEED = 1;
 
@@ -126,7 +87,7 @@ void layer1::move(Time ts)
 	}
 }
 
-void layer1::onUpdate(Time ts)
+void Layer1::onUpdate(Time ts)
 {
 	curr = ts;
 	move(ts);
@@ -144,14 +105,14 @@ void layer1::onUpdate(Time ts)
 	Renderer::EndScene();
 }
 
-void layer1::onEvent(Event& e)
+void Layer1::onEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(layer1::mover));
-	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(layer1::mover));
+	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::mover));
+	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer1::mover));
 }
 
-bool layer1::mover(Event& e)
+bool Layer1::mover(Event& e)
 {
 	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
 	{
@@ -164,7 +125,11 @@ bool layer1::mover(Event& e)
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("moving_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("moving_right"))->GetStartFrame());
 			//m_movingLink->Start(m, curr); 
 
-			link->SetState("moving_right");
+			link->SetState("moving");
+			link->SetLookingAt("right");
+
+			ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
+
 		}
 		else if (event->GetKey() == InputKey::a)
 		{
@@ -173,37 +138,41 @@ bool layer1::mover(Event& e)
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("moving_left");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("moving_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("moving_left"))->GetStartFrame());
 
-			//	frameRangeAnimatorsMap["moving_left"]->Start(frameRangeAnimationsMap["moving_left"].get(), curr, frameRangeAnimationsMap["moving_left"].get()->GetStartFrame());
-			link->SetState("moving_left");
+		//	frameRangeAnimatorsMap["moving_left"]->Start(frameRangeAnimationsMap["moving_left"].get(), curr, frameRangeAnimationsMap["moving_left"].get()->GetStartFrame());
+			link->SetState("moving");
+			link->SetLookingAt("left");
+
+			ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
+
 		}
 		else if (event->GetKey() == InputKey::s)
 		{
-			if (link->GetState() == "moving_right") {
+			if (link->GetLookingAt() == "right") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_right");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_right"))->GetStartFrame());
-
-				link->SetState("crouch_right");
+				
+				link->SetState("crouch");
 			}
-			else if (link->GetState() == "moving_left") {
+			else if (link->GetLookingAt() == "left") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_left");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_left"))->GetStartFrame());
-
-				link->SetState("crouch_left");
+				
+				link->SetState("crouch");
 			}
 		}
 		else if (event->GetKey() == InputKey::q)
 		{
-			if (link->GetState() == "moving_right" || (link->GetState() == "attacking_right")) {
-				ENGINE_CORE_TRACE("{0}",link->GetFilm("attacking_right")->GetTotalFrames());
+			if (link->GetLookingAt() == "right"){
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("attacking_right");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("attacking_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("attacking_right"))->GetStartFrame());
 
-				link->SetState("attacking_right");
+				link->SetState("attacking");
 			}
-			else if (link->GetState() == "moving_left" || (link->GetState() == "attacking_left")) {
+			else if (link->GetLookingAt() == "left") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("attacking_left");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("attacking_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("attacking_left"))->GetStartFrame());
-				link->SetState("attacking_left");
+
+				link->SetState("attacking");
 			}
 		}
 
@@ -213,11 +182,10 @@ bool layer1::mover(Event& e)
 	{
 		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
-		{
+		{	
 			((FrameRangeAnimator*)link->GetAnimator("moving_right"))->Stop();
 			//m_CamRight->Stop();
 			m_movingLink->Stop();
-			ENGINE_TRACE(m_Scene->GetSprite("Link")->GetFilm()->GetId());
 
 		}
 		else if (event->GetKey() == InputKey::a)
@@ -225,74 +193,24 @@ bool layer1::mover(Event& e)
 			((FrameRangeAnimator*)link->GetAnimator("moving_left"))->Stop();
 			//frameRangeAnimatorsMap["moving_left"]->Stop();
 			//m_CamLeft->Stop();
-			ENGINE_TRACE(m_Scene->GetSprite("Link")->GetFilm()->GetId());
 
 		}
 		else if (event->GetKey() == InputKey::s)
 		{
-			if (link->GetState() == "crouch_right") {
+			if (link->GetLookingAt() == "right") {
 				Sprite link_sprite = m_Scene->GetSprite("Link");
 				link_sprite->SetFilm(link->GetFilm("crouch_right"));
 				link_sprite->SetFrame(0);
-				link->SetState("moving_right");
-
+				link->SetState("moving");
 			}
-			else if (link->GetState() == "crouch_left") {
+			else if (link->GetLookingAt() == "left") {
 				Sprite link_sprite = m_Scene->GetSprite("Link");
 				link_sprite->SetFilm(link->GetFilm("crouch_left"));
 				link_sprite->SetFrame(0);
-				link->SetState("moving_left");
-
+				link->SetState("moving");
 			}
 		}
 	}
 
 	return true;
 }
-
-void layer1::FrameRangeActionLeft()
-{
-	link->GetSprite()->SetFilm(link->GetFilm("moving_left"));
-	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("moving_left"))->GetCurrFrame());
-}
-
-void layer1::FrameRangeActionRight()
-{
-	link->GetSprite()->SetFilm(link->GetFilm("moving_right"));
-	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("moving_right"))->GetCurrFrame());
-}
-
-void layer1::FrameRangeActionCrouchRight()
-{
-	link->GetSprite()->SetFilm(link->GetFilm("crouch_right"));
-	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("crouch_right"))->GetCurrFrame());
-}
-
-void layer1::FrameRangeActionCrouchLeft()
-{
-
-	link->GetSprite()->SetFilm(link->GetFilm("crouch_left"));
-	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("crouch_left"))->GetCurrFrame());
-}
-
-void layer1::FrameRangeActionAttackRight()
-{
-
-	link->GetSprite()->SetFilm(link->GetFilm("attacking_right"));
-	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("attacking_right"))->GetCurrFrame());
-}
-
-void layer1::FrameRangeActionAttackLeft()
-{
-
-	link->GetSprite()->SetFilm(link->GetFilm("attacking_left"));
-	link->GetSprite()->SetFrame(((FrameRangeAnimator*)link->GetAnimator("attacking_left"))->GetCurrFrame());
-}
-
-void layer1::FrameRangerFinish(Animator* animator, const Animation& anim)
-{
-	FrameRangeAnimator* a = (FrameRangeAnimator*)animator;
-	FrameRangeAnimation* film = (FrameRangeAnimation*)anim.Clone();
-
-}
-
