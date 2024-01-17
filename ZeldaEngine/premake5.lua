@@ -12,23 +12,20 @@ project "ZeldaEngine"
 		"src/**.h",
 		"src/**.cpp", 
 		"src/**.hpp",
-		"vendor/glm/glm/**.hpp",
-		"vendor/glm/glm/**.inl"
 	} 
 	
 	includedirs
 	{  
 		"src",
 		"vendor/spdlog/include",
-		"%{IncludeDir.SDL2}",
-		"%{IncludeDir.glm}",
+		"%{IncludeDir.SDL3}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.json}"
 	} 
 
 	links
 	{ 
-		 "SDL2",
+		 "SDL3",
 		 "Glad",
 		 "opengl32.lib"
 	}  

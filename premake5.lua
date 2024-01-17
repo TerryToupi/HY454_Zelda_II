@@ -25,18 +25,18 @@ workspace "HY454_Zelda_II"
 outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["SDL2"] = "%{wks.location}/ZeldaEngine/vendor/SDL2/include"
+IncludeDir["SDL3"] = "%{wks.location}/ZeldaEngine/vendor/SDL/include/SDL3"
 IncludeDir["Glad"] = "%{wks.location}/ZeldaEngine/vendor/Glad/include"
 IncludeDir["glm"]  = "%{wks.location}/ZeldaEngine/vendor/glm"
 IncludeDir["json"] = "%{wks.location}/ZeldaEngine/vendor/json/single_include/nlohmann"
 
 DLLbuildDir = {} 
-DLLbuildDir["SDL2"] = "%{wks.location}/ZeldaEngine/vendor/SDL2/Binaries"
+DLLbuildDir["SDL3"] = "%{wks.location}/ZeldaEngine/vendor/SDL/Binaries"
 
 group "Dependencies"
 	include "vendor/premake5"
-	include "ZeldaEngine/vendor/SDL2/SDL2.lua"
-	include "ZeldaEngine/vendor/SDL2/SDL2main.lua"
+	include "ZeldaEngine/vendor/SDL/SDL3.lua"
+	include "ZeldaEngine/vendor/SDL/SDL3main.lua"
 	include "ZeldaEngine/vendor/Glad"
 group ""
 

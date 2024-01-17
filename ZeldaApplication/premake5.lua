@@ -18,8 +18,7 @@ project "ZeldaApplication"
 		"%{wks.location}/ZeldaEngine/vendor/spdlog/include",
 		"%{wks.location}/ZeldaEngine/src",
 
-		"%{IncludeDir.SDL2}",
-		"%{IncludeDir.glm}",
+		"%{IncludeDir.SDL3}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.json}"
 	}  
@@ -41,7 +40,7 @@ project "ZeldaApplication"
 
 	postbuildcommands 
 	{
-	  "{COPY} %{DLLbuildDir.SDL2}/Debug-windows-x86_64/SDL2.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaApplication"
+	  "{COPY} %{DLLbuildDir.SDL3}/Debug-windows-x86_64/SDL3.dll %{wks.location}/bin/" .. outputDir .. "/ZeldaApplication"
 	}
 		
 	filter "configurations:Debug" 
