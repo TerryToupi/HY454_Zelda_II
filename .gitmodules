@@ -1,12 +1,6 @@
 [submodule "ZeldaEngine/vendor/spdlog"]
 	path = ZeldaEngine/vendor/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "ZeldaEngine/vendor/glm"]
-	path = ZeldaEngine/vendor/glm
-	url = https://github.com/g-truc/glm.git
-[submodule "ZeldaEngine/vendor/SDL2"]
-	path = ZeldaEngine/vendor/SDL2
-	url = https://github.com/SpookyScaryDev/SDL2.git
 [submodule "ZeldaEngine/vendor/json"]
 	path = ZeldaEngine/vendor/json
 	url = https://github.com/nlohmann/json
