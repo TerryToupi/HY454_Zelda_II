@@ -92,8 +92,6 @@ namespace Engine {
 			if (currTime >= statTimer + 150)
 			{ 
 				Application::Instance().GetWindow().UpdateEngineStats(timeStep);
-				if (timeStep > 200)
-					ENGINE_CORE_TRACE("stater");
 				statTimer = currTime;
 			}
 
