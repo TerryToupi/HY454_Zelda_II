@@ -162,7 +162,20 @@ bool Layer1::mover(Event& e)
 		}
 		else if (event->GetKey() == InputKey::q)
 		{
-			if (link->GetLookingAt() == "right"){
+			
+			if (link->GetLookingAt() == "right" && (link->GetState() == "crouch" || link->GetState() == "crouch_attacking")) {
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_attack_right");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_attack_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_attack_right"))->GetStartFrame());
+
+				link->SetState("crouch_attacking");
+			}
+			else if (link->GetLookingAt() == "left" && (link->GetState() == "crouch" || link->GetState() == "crouch_attacking")) {
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_attack_left");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_attack_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_attack_left"))->GetStartFrame());
+
+				link->SetState("crouch_attacking");
+			}
+			else if (link->GetLookingAt() == "right"){
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("attacking_right");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("attacking_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("attacking_right"))->GetStartFrame());
 

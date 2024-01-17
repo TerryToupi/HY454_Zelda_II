@@ -20,6 +20,16 @@ Sprite Entity::GetSprite()
 	return m_Sprite;
 }
 
+std::string Entity::GetState()
+{
+	return m_state;
+}
+
+std::string Entity::GetLookingAt()
+{
+	return m_lookingAt;
+}
+
 void Entity::EmplaceAnimation(Animation* animation) 
 {
 	m_animations.emplace(std::make_pair(animation->GetId(), animation));
@@ -40,21 +50,58 @@ void Entity::SetSprite(Sprite s)
 	m_Sprite = s;
 }
 
+void Entity::Reposition(std::string name)
+{
+	uint32_t offset = 0;
+	uint32_t w = 0;
+	uint32_t currX = m_Sprite->GetPosX();
+	uint32_t currY = m_Sprite->GetPosY();
+
+
+	w = m_films[name]->GetFrameBox(2).w;
+	offset = w / 2;
+	if (currX > offset) {
+		m_Sprite->SetPos(currX - offset, currY);
+	}
+	
+}
+
+void Entity::FrameRangeStart(std::string name) 
+{
+	startX = m_Sprite->GetPosX();
+	startY = m_Sprite->GetPosY();
+	m_Sprite->SetFilm(m_films[name]);
+}
+
 void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
 {
-	FrameRangeAnimator* a = (FrameRangeAnimator*)animator;
-	FrameRangeAnimation* film = (FrameRangeAnimation*)anim.Clone();
+	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attacking"))
+		m_Sprite->SetPos(startX, startY);
 }
 
 void Entity::FrameRangeAction(std::string name)
 {
-	m_Sprite->SetFilm(m_films[name]);
-	m_Sprite->SetFrame(((FrameRangeAnimator*)m_animators[name])->GetCurrFrame());
+
+	uint32_t currFrame = ((FrameRangeAnimator*)m_animators[name])->GetCurrFrame();
+	m_Sprite->SetFrame(currFrame);
+
+	ENGINE_CORE_TRACE("{0}", currFrame);
+
+	if (m_lookingAt == "left")
+	{
+		if ((m_state == "attacking" && currFrame == 2) || 
+			(m_state == "crouch_attacking" && currFrame == 1))
+			Reposition(name);
+	}
 }
 
 void Entity::InitializeAnimators()
 {
 	for (auto i : m_animators) {
+		i.second->SetOnStart(
+			[this,i](Animator* animator) { return this->FrameRangeStart(i.first); }
+		);
+
 		i.second->SetOnAction(
 			[this,i](Animator* animator, const Animation& anim) { return this->FrameRangeAction(i.first); }
 		);
