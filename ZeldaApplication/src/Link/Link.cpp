@@ -23,7 +23,7 @@ Link::Link()
     EmplaceAnimation(new FrameRangeAnimation("attacking_right", 0, m_films["attacking_right"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("crouch_attack_left", 0, m_films["crouch_attack_left"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("crouch_attack_right", 0, m_films["crouch_attack_right"]->GetTotalFrames(), 1, 0, 0, 100));
-
+    EmplaceAnimation(new MovingAnimation("jumping", 5, 0, 5, 50));
 
     EmplaceAnimator("moving_right", new FrameRangeAnimator());
     EmplaceAnimator("moving_left", new FrameRangeAnimator());
@@ -33,6 +33,7 @@ Link::Link()
     EmplaceAnimator("attacking_right", new FrameRangeAnimator());
     EmplaceAnimator("crouch_attack_left", new FrameRangeAnimator());
     EmplaceAnimator("crouch_attack_right", new FrameRangeAnimator());
+    EmplaceAnimator("jumping", new MovingAnimator());
 
     InitializeAnimators();  //initializes the onAction and OnFinish of all inserted animations in the entity
                             //fully dynamic 
@@ -56,16 +57,6 @@ int Link::getMagicPoints() const
 int Link::getLives() const 
 {
     return lives;
-}
-
-void Link::SetState(std::string _state)
-{
-    m_state = _state;
-}
-
-void Link::SetLookingAt(std::string _lookingAt)
-{
-    m_lookingAt = _lookingAt;
 }
 
 void Link::setHealth(int newHealth)

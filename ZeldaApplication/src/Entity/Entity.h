@@ -22,7 +22,10 @@ public:
 	void EmplaceFilm(std::string id, AnimationFilm* film);
 	void EmplaceAnimator(std::string id, Animator* animator);
 	void SetSprite(Sprite s);
-	void Reposition(std::string name);
+	void LeftAttackPosUpdate(std::string name);
+
+	void SetState(std::string _state);
+	void SetLookingAt(std::string _loookingAt);
 	std::string GetState();
 	std::string GetLookingAt();
 

@@ -21,10 +21,7 @@ public:
     int getDamage() const;
     int getMagicPoints() const;
     int getLives() const;
-
     
-    void SetState(std::string _state);
-    void SetLookingAt(std::string _loookingAt);
     void setHealth(int newHealth);
     void setDamage(int newDamage);
     void setMagicPoints(int newMagicPoints);
@@ -34,6 +31,7 @@ public:
     void heal(int amount);
     void castSpell(int spellCost);
     void loseLife();
+
 };
 
 #endif 

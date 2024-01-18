@@ -1,13 +1,17 @@
 #pragma once 
 
 #include <Engine.h>
+#include <json.hpp>
 #include "../Link/Link.h"
 
+using json = nlohmann::json;
 using namespace Engine;
 
 class Layer1 : public Layer
 {
 public:
+    using Teleports = std::vector<std::pair<Sprite,Sprite>>;
+
     Layer1();
     ~Layer1() = default;
 
@@ -23,18 +27,14 @@ public:
 
     void move(Time ts);
 
+    void InitializeTeleports();
+
+    void CanTeleport(); 
+
 public:
     Ref<Scene> m_Scene;
-    Ref<AnimationSheet> m_linkSheet;
     Link* link;
-
-    std::unordered_map < std::string, Ref<AnimationFilm> > animationFilmsMap;
-    std::unordered_map < std::string, Ref<FrameRangeAnimation> > frameRangeAnimationsMap;
-    std::unordered_map < std::string, Ref<FrameRangeAnimator> > frameRangeAnimatorsMap;
-
-    Ref<MovingAnimator> m_movingLink;
-    Ref<MovingAnimator> m_CamLeft;
-    Ref<MovingAnimator> m_CamRight;
+    Teleports m_teleports;
 
     int wdx = 100;
     int wdy = 100;
