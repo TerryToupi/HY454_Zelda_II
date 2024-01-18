@@ -35,7 +35,6 @@ DLLbuildDir["SDL2"] = "%{wks.location}/ZeldaEngine/vendor/SDL2/Binaries"
 group "Dependencies"
 	include "vendor/premake5"
 	include "ZeldaEngine/vendor/SDL2/SDL2.lua"
-	include "ZeldaEngine/vendor/SDL2/SDL2main.lua"
 	include "ZeldaEngine/vendor/Glad"
 group ""
 
