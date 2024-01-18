@@ -18,14 +18,14 @@ project "ZeldaEngine"
 	{  
 		"src",
 		"vendor/spdlog/include",
-		"%{IncludeDir.SDL3}",
+		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.json}"
 	} 
 
 	links
 	{ 
-		 "SDL3",
+		 "SDL2",
 		 "Glad",
 		 "opengl32.lib"
 	}  
