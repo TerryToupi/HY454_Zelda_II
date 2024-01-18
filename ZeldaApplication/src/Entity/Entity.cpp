@@ -50,7 +50,7 @@ void Entity::SetSprite(Sprite s)
 	m_Sprite = s;
 }
 
-void Entity::Reposition(std::string name)
+void Entity::LeftAttackPosUpdate(std::string name)
 {
 	uint32_t offset = 0;
 	uint32_t w = 0;
@@ -70,7 +70,6 @@ void Entity::FrameRangeStart(std::string name)
 {
 	startX = m_Sprite->GetPosX();
 	startY = m_Sprite->GetPosY();
-	m_Sprite->SetFilm(m_films[name]);
 }
 
 void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
@@ -81,18 +80,20 @@ void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
 
 void Entity::FrameRangeAction(std::string name)
 {
+	if (name != "jumping") 
+	{	
+		m_Sprite->SetFilm(m_films[name]);
+		uint32_t currFrame = ((FrameRangeAnimator*)m_animators[name])->GetCurrFrame();
+		m_Sprite->SetFrame(currFrame);
 
-	uint32_t currFrame = ((FrameRangeAnimator*)m_animators[name])->GetCurrFrame();
-	m_Sprite->SetFrame(currFrame);
-
-	ENGINE_CORE_TRACE("{0}", currFrame);
-
-	if (m_lookingAt == "left")
-	{
-		if ((m_state == "attacking" && currFrame == 2) || 
-			(m_state == "crouch_attacking" && currFrame == 1))
-			Reposition(name);
+		if (m_lookingAt == "left")
+		{
+			if ((m_state == "attacking" && currFrame == 2) ||
+				(m_state == "crouch_attacking" && currFrame == 1))
+				LeftAttackPosUpdate(name);
+		}
 	}
+
 }
 
 void Entity::InitializeAnimators()
@@ -111,4 +112,14 @@ void Entity::InitializeAnimators()
 		);
 
 	}
+}
+
+void Entity::SetState(std::string _state)
+{
+	m_state = _state;
+}
+
+void Entity::SetLookingAt(std::string _lookingAt)
+{
+	m_lookingAt = _lookingAt;
 }
