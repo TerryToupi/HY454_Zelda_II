@@ -4,14 +4,13 @@
 
 using namespace Engine;
 
-class Entity {
+class Entity : public LatelyDestroyable{
 public:
 	using Films = std::unordered_map<std::string, AnimationFilm*>;
 	using Animations = std::unordered_map<std::string, Animation*>;
 	using Animators = std::unordered_map<std::string, Animator*>;
 
 	Entity() = default;
-	~Entity() = default;
 
 	Animation* GetAnimation(std::string name);
 	AnimationFilm* GetFilm(std::string name);
@@ -28,6 +27,8 @@ public:
 	void SetLookingAt(std::string _loookingAt);
 	std::string GetState();
 	std::string GetLookingAt();
+
+	void EntityDestroy();
 
 public:
 	void FrameRangeFinish(Animator* animator, const Animation& anim);
