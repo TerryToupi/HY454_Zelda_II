@@ -26,11 +26,21 @@ const Clipper TeleportPointClipper(TileLayer* layer)
 
 void Layer1::InitializeTeleports()
 {
-	Sprite origin	= m_Scene->CreateSprite("tp1", 300, 10 * 16, NONPRINTABLE,"");
-	origin->SetColiderBox(16, 32);
-	Sprite dest		= m_Scene->CreateSprite("tp2", 250, 10 * 16, NONPRINTABLE, "");
-	dest->SetColiderBox(16, 32);
-	m_teleports.push_back(std::make_pair(origin, dest));
+	std::ifstream file("Assets/Config/TeleportPoints/TeleportPoints.json");
+	json Points = json::parse(file);
+	Sprite origin, dest;
+	char id = 'A';
+
+	for (auto p : Points["points"])
+	{	
+		origin = m_Scene->CreateSprite("tp_1" + id, p["origin"]["x"] * 16, p["origin"]["y"] * 16, NONPRINTABLE, "");
+		origin->SetColiderBox(32, 32);
+		dest = m_Scene->CreateSprite("tp_2" + id, p["destination"]["x"] * 16, p["destination"]["y"] * 16, NONPRINTABLE, "");
+		dest->SetColiderBox(32, 32);
+		m_teleports.push_back(std::make_pair(origin, dest));
+		id++;
+	}
+
 }
 
 void Layer1::onStart()
