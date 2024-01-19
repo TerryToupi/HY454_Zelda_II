@@ -79,7 +79,8 @@ void Layer1::move(Time ts)
 		{
 			m_Scene->GetTiles()->Scroll(-SPEED, 0);
 		}
-		m_Scene->GetSprite("Link")->Move(-SPEED, 0);
+	//	m_Scene->GetSprite("Link")->Move(-SPEED, 0);
+	
 		TeleportCheck();
 
 	}
@@ -89,10 +90,11 @@ void Layer1::move(Time ts)
 		{
 			m_Scene->GetTiles()->Scroll(0, -SPEED);
 		}
-		//m_Scene->GetSprite("Link")->SetMotionQuantizerUse(true); 
-		//m_Scene->GetSprite("Link")->SetQuanntizerHeightVelocity(5, 5);
+
+	//	m_Scene->GetSprite("Link")->SetMotionQuantizerUse(true); 
+	//	m_Scene->GetSprite("Link")->SetQuanntizerHeightVelocity(1, 1);	
 		m_Scene->GetSprite("Link")->Move(0, -SPEED);
-		//m_Scene->GetSprite("Link")->SetMotionQuantizerUse(false); 
+	//	m_Scene->GetSprite("Link")->SetMotionQuantizerUse(false); 
 	}
 	else if (KeyboardInput::IsPressed(SCANCODE_D))
 	{
@@ -100,20 +102,22 @@ void Layer1::move(Time ts)
 		{
 			m_Scene->GetTiles()->Scroll(+SPEED, 0);
 		}
-		m_Scene->GetSprite("Link")->Move(+SPEED, 0);
+	//	m_Scene->GetSprite("Link")->SetMotionQuantizerUse(true); 
+	//	m_Scene->GetSprite("Link")->SetQuanntizerHeightVelocity(1, 1);	
+	//	m_Scene->GetSprite("Link")->Move(+5, 0);
+	//	m_Scene->GetSprite("Link")->SetMotionQuantizerUse(false); 
 		TeleportCheck();
 	}
 	else if ((KeyboardInput::IsPressed(SCANCODE_S)))
 	{
 		m_Scene->GetSprite("Link")->Move(0, +SPEED);
 	}
-	//else if (KeyboardInput::IsPressed(SCANCODE_SPACE))
-	//{
-	//	link->GetSprite()->SetMotionQuantizerUse(true);
-	//	link->GetSprite()->SetQuanntizerHeightVelocity(5,2*16);
-	//	link->GetSprite()->Move(0, -5);
-	//	link->GetSprite()->SetMotionQuantizerUse(false);
-	//}
+	
+	if (KeyboardInput::IsPressed(SCANCODE_SPACE))
+	{
+		MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("mov_jumping");
+		tmp->Start((MovingAnimation*)link->GetAnimation("mov_jumping"), curr);
+	}
 }
 
 void Layer1::onUpdate(Time ts)
@@ -148,74 +152,76 @@ bool Layer1::mover(Event& e)
 		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{
-			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("moving_right");
-			tmp->Start((FrameRangeAnimation*)link->GetAnimation("moving_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("moving_right"))->GetStartFrame());
-
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_moving_right");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
+			
 			link->SetState("moving");
 			link->SetLookingAt("right");
+			((MovingAnimator*)link->GetAnimator("mov_moving_right"))->Start((MovingAnimation*)link->GetAnimation("mov_moving_right"), curr);
 
 			ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
 
 		}
-		else if (event->GetKey() == InputKey::a)
+		if (event->GetKey() == InputKey::a)
 		{
-			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("moving_left");
-			tmp->Start((FrameRangeAnimation*)link->GetAnimation("moving_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("moving_left"))->GetStartFrame());
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_moving_left");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"))->GetStartFrame());
 
 			link->SetState("moving");
 			link->SetLookingAt("left");
+			((MovingAnimator*)link->GetAnimator("mov_moving_left"))->Start((MovingAnimation*)link->GetAnimation("mov_moving_left"), curr);
 
 			ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
 
 		}
-		else if (event->GetKey() == InputKey::s)
+		if (event->GetKey() == InputKey::s)
 		{
 			if (link->GetLookingAt() == "right") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_right");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_right"))->GetStartFrame());
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_crouch_right");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
 				
 				link->SetState("crouch");
 			}
 			else if (link->GetLookingAt() == "left") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_left");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_left"))->GetStartFrame());
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_crouch_left");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
 				
 				link->SetState("crouch");
 			}
 		}
-		else if (event->GetKey() == InputKey::q)
+		if (event->GetKey() == InputKey::q)
 		{
 			if (link->GetLookingAt() == "right" && (link->GetState() == "crouch" || link->GetState() == "crouch_attacking")) {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_attack_right");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_attack_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_attack_right"))->GetStartFrame());
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_crouch_attack_right");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"))->GetStartFrame());
 
 				link->SetState("crouch_attacking");
 			}
 			else if (link->GetLookingAt() == "left" && (link->GetState() == "crouch" || link->GetState() == "crouch_attacking")) {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("crouch_attack_left");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("crouch_attack_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("crouch_attack_left"))->GetStartFrame());
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_crouch_attack_left");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
 
 				link->SetState("crouch_attacking");
 			}
 			else if (link->GetLookingAt() == "right"){
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("attacking_right");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("attacking_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("attacking_right"))->GetStartFrame());
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_attacking_right");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"), curr, ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"))->GetStartFrame());
 
 				link->SetState("attacking");
 			}
 			else if (link->GetLookingAt() == "left") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("attacking_left");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("attacking_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("attacking_left"))->GetStartFrame());
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_attacking_left");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"), curr, ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"))->GetStartFrame());
 
 				link->SetState("attacking");
 			}
 		}
-		else if (event->GetKey() == InputKey::SPACE)
-		{
-			MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("jumping");
-			tmp->Start((MovingAnimation*)link->GetAnimation("jumping"), curr);
-			link->SetState("jumping");
-		}
+		//else if (event->GetKey() == InputKey::SPACE)
+		//{
+		//	MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("mov_jumping");
+		//	tmp->Start((MovingAnimation*)link->GetAnimation("mov_jumping"), curr);
+		//	link->SetState("jumping");
+		//}
 	}
 
 	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
@@ -223,15 +229,17 @@ bool Layer1::mover(Event& e)
 		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{	
-			((FrameRangeAnimator*)link->GetAnimator("moving_right"))->Stop();
-
+			((FrameRangeAnimator*)link->GetAnimator("frame_moving_right"))->Stop();
+			((MovingAnimator*)link->GetAnimator("mov_moving_right"))->Stop();
 		}
-		else if (event->GetKey() == InputKey::a)
+
+		if (event->GetKey() == InputKey::a)
 		{
-			((FrameRangeAnimator*)link->GetAnimator("moving_left"))->Stop();
-
+			((FrameRangeAnimator*)link->GetAnimator("frame_moving_left"))->Stop();
+			((MovingAnimator*)link->GetAnimator("mov_moving_left"))->Stop();
 		}
-		else if (event->GetKey() == InputKey::s)
+
+		if (event->GetKey() == InputKey::s)
 		{
 			if (link->GetLookingAt() == "right") {
 				Sprite link_sprite = m_Scene->GetSprite("Link");
@@ -250,8 +258,6 @@ bool Layer1::mover(Event& e)
 
 	return true;
 }
-
-
 
 
 void Layer1::TeleportCheck()

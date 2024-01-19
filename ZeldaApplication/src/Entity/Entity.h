@@ -34,6 +34,9 @@ public:
 	void FrameRangeFinish(Animator* animator, const Animation& anim);
 	void FrameRangeAction(std::string name);
 	void FrameRangeStart(std::string name);
+
+	void MovingAction(std::string name);
+
 	void InitializeAnimators();
 
 protected:

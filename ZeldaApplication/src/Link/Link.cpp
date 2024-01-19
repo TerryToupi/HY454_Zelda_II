@@ -15,25 +15,31 @@ Link::Link()
     EmplaceFilm("crouch_attack_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/crouch_attack_left.json"));
     EmplaceFilm("crouch_attack_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/crouch_attack_right.json"));
 
-    EmplaceAnimation(new FrameRangeAnimation("moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
-    EmplaceAnimation(new FrameRangeAnimation("moving_left", 0, m_films["moving_left"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
-    EmplaceAnimation(new FrameRangeAnimation("crouch_left", 0, m_films["crouch_left"]->GetTotalFrames(), 1, 0, 0, 50));
-    EmplaceAnimation(new FrameRangeAnimation("crouch_right", 0, m_films["crouch_right"]->GetTotalFrames(), 1, 0, 0, 50));
-    EmplaceAnimation(new FrameRangeAnimation("attacking_left", 0, m_films["attacking_left"]->GetTotalFrames(), 1, 0, 0, 100));
-    EmplaceAnimation(new FrameRangeAnimation("attacking_right", 0, m_films["attacking_right"]->GetTotalFrames(), 1, 0, 0, 100));
-    EmplaceAnimation(new FrameRangeAnimation("crouch_attack_left", 0, m_films["crouch_attack_left"]->GetTotalFrames(), 1, 0, 0, 100));
-    EmplaceAnimation(new FrameRangeAnimation("crouch_attack_right", 0, m_films["crouch_attack_right"]->GetTotalFrames(), 1, 0, 0, 100));
-    EmplaceAnimation(new MovingAnimation("jumping", 5, 0, 5, 50));
+    EmplaceAnimation(new FrameRangeAnimation("frame_moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
+    EmplaceAnimation(new FrameRangeAnimation("frame_moving_left", 0, m_films["moving_left"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
+    EmplaceAnimation(new FrameRangeAnimation("frame_crouch_left", 0, m_films["crouch_left"]->GetTotalFrames(), 1, 0, 0, 50));
+    EmplaceAnimation(new FrameRangeAnimation("frame_crouch_right", 0, m_films["crouch_right"]->GetTotalFrames(), 1, 0, 0, 50));
+    EmplaceAnimation(new FrameRangeAnimation("frame_attacking_left", 0, m_films["attacking_left"]->GetTotalFrames(), 1, 0, 0, 100));
+    EmplaceAnimation(new FrameRangeAnimation("frame_attacking_right", 0, m_films["attacking_right"]->GetTotalFrames(), 1, 0, 0, 100));
+    EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_left", 0, m_films["crouch_attack_left"]->GetTotalFrames(), 1, 0, 0, 100));
+    EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_right", 0, m_films["crouch_attack_right"]->GetTotalFrames(), 1, 0, 0, 100));
+    EmplaceAnimation(new MovingAnimation("mov_jumping", 5, 0, 5, 20));
+    EmplaceAnimation(new MovingAnimation("mov_moving_left", 0, 0, 0, 20));
+    EmplaceAnimation(new MovingAnimation("mov_moving_right", 0, 0, 0, 20));
 
-    EmplaceAnimator("moving_right", new FrameRangeAnimator());
-    EmplaceAnimator("moving_left", new FrameRangeAnimator());
-    EmplaceAnimator("crouch_left", new FrameRangeAnimator());
-    EmplaceAnimator("crouch_right", new FrameRangeAnimator());
-    EmplaceAnimator("attacking_left", new FrameRangeAnimator());
-    EmplaceAnimator("attacking_right", new FrameRangeAnimator());
-    EmplaceAnimator("crouch_attack_left", new FrameRangeAnimator());
-    EmplaceAnimator("crouch_attack_right", new FrameRangeAnimator());
-    EmplaceAnimator("jumping", new MovingAnimator());
+
+    EmplaceAnimator("frame_moving_right", new FrameRangeAnimator());
+    EmplaceAnimator("frame_moving_left", new FrameRangeAnimator());
+    EmplaceAnimator("frame_crouch_left", new FrameRangeAnimator());
+    EmplaceAnimator("frame_crouch_right", new FrameRangeAnimator());
+    EmplaceAnimator("frame_attacking_left", new FrameRangeAnimator());
+    EmplaceAnimator("frame_attacking_right", new FrameRangeAnimator());
+    EmplaceAnimator("frame_crouch_attack_left", new FrameRangeAnimator());
+    EmplaceAnimator("frame_crouch_attack_right", new FrameRangeAnimator());
+    EmplaceAnimator("mov_jumping", new MovingAnimator());
+    EmplaceAnimator("mov_moving_left", new MovingAnimator());
+    EmplaceAnimator("mov_moving_right", new MovingAnimator());
+
 
     InitializeAnimators();  //initializes the onAction and OnFinish of all inserted animations in the entity
                             //fully dynamic 
