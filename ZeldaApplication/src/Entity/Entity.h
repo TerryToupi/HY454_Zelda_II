@@ -11,6 +11,7 @@ public:
 	using Animators = std::unordered_map<std::string, Animator*>;
 
 	Entity() = default;
+	Entity(std::string type);
 
 	Animation* GetAnimation(std::string name);
 	AnimationFilm* GetFilm(std::string name);
@@ -35,7 +36,7 @@ public:
 	void FrameRangeAction(std::string name);
 	void FrameRangeStart(std::string name);
 
-	void MovingAction(std::string name);
+	void MovingAction(std::string name, MovingAnimator* animator);
 
 	void InitializeAnimators();
 
