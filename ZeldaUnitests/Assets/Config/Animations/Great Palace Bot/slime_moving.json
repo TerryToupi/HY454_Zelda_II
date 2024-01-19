@@ -1,0 +1,20 @@
+{
+  "animation": "slime_moving",
+  "total_frames" : 2,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 7,
+      "y": 300,
+      "h": 16,
+      "w": 16
+    },
+    {
+      "frame": 2,
+      "x": 30,
+      "y": 300,
+      "h": 16,
+      "w": 16
+    }
+  ]
+}

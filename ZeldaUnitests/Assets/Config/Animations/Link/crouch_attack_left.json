@@ -1,0 +1,28 @@
+{
+  "animation": "crouch_attack_left",
+  "total_frames" : 3,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 48,
+      "y": 40,
+      "h": 32,
+      "w": 16
+    },
+    {
+      "frame": 2,
+      "x": 0,
+      "y": 40,
+      "h": 32,
+      "w": 32
+    },
+    {
+      "frame": 3,
+      "x": 48,
+      "y": 40,
+      "h": 32,
+      "w": 16
+    }
+  ]
+}
+

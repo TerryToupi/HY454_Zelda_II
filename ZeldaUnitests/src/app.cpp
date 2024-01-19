@@ -3,7 +3,8 @@
 #include <Engine/EngineHook.h>
 
 // Game application include 
-#include "skoupidi.h"  
+#include "layer0.h"   
+#include "layer1.h"
 
 // STD::LIB include
 #include <string>
@@ -17,7 +18,8 @@ public:
 	Zelda(const Engine::ApplicationConfig& config)
 		: Engine::Application(config)
 	{
-		pushLayer(new skoupidi());
+		pushLayer(new layer0());
+		pushLayer(new layer1());
 	} 
 
 	~Zelda() 

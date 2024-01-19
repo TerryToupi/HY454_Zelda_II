@@ -32,5 +32,15 @@ namespace Engine
 	uint64_t SystemClock::GetTime(void) const
 	{
 		return SystemClock::milli_sec();
+	} 
+
+	Time SystemClock::GetDeltaTime(void)
+	{
+		return s_Instance.delta;
+	}
+
+	void SystemClock::SetDeltaTime(Time t)
+	{ 
+		s_Instance.delta = t;
 	}
 }
