@@ -42,7 +42,7 @@ namespace Engine
 		void		 SetColiderBox(unsigned _w, unsigned _h);
 		auto		 GetBoundingArea() const -> BoundingArea* { return m_boundingArea; }  
 		void		 SetMotionQuantizerUse(bool v);
-		void	     SetQuanntizerHeightVelocity(int v, int h);
+		void	     SetQuanntizerVertHorz(int v, int h);
 		
 		const std::string&	GetTypeId();
 		void				SetVisibility(bool v);

@@ -101,7 +101,7 @@ namespace Engine
 		m_quantizer.SetUsed(v);
 	}
 
-	void SpriteClass::SetQuanntizerHeightVelocity(int v, int h)
+	void SpriteClass::SetQuanntizerVertHorz(int v, int h)
 	{ 
 		m_quantizer.SetRange(h, v);
 	}
