@@ -1,5 +1,14 @@
 #include "Entity.h"
 
+//Entity::Entity(std::string type)
+//{
+//	m_sheet = new AnimationSheet("misc_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp");
+//	if (type == "elevator")
+//	{
+//
+//	}
+//}
+
 Animation* Entity::GetAnimation(std::string name)
 {
 	return m_animations.at(name);
@@ -82,6 +91,7 @@ void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
 {
 	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attacking"))
 		m_Sprite->SetPos(startX, startY);
+	m_Sprite->SetFrame(0);
 }
 
 void Entity::FrameRangeAction(std::string name)
@@ -96,13 +106,15 @@ void Entity::FrameRangeAction(std::string name)
 		if ((m_state == "attacking" && currFrame == 2) ||
 			(m_state == "crouch_attacking" && currFrame == 1))
 			LeftAttackPosUpdate(film);
+		else if (m_state == "attacking" || m_state == "crouch_attacking")
+			m_Sprite->SetPos(startX, startY);
 	}
 }
 
-void Entity::MovingAction(std::string name)
+void Entity::MovingAction(std::string name, MovingAnimator* animator)
 {
 	if (name == "mov_jumping") {
-		m_Sprite->Move(0, -5);
+		m_Sprite->Move(0, -4);
 	}
 	else if (name.find("moving") != std::string::npos) {
 		if (m_lookingAt == "left") {
@@ -110,8 +122,12 @@ void Entity::MovingAction(std::string name)
 		}
 		else if (m_lookingAt == "right")
 		{
-			m_Sprite->Move(2, 0);
+			m_Sprite->Move(+2, 0);
 		}
+	}
+	else if (name == "mov_gravity")
+	{
+		m_Sprite->Move(0, 1);
 	}
 }
 
@@ -134,22 +150,54 @@ void Entity::InitializeAnimators()
 				[this,i](Animator* animator) { return this->FrameRangeFinish(animator, *(this->GetAnimation(i.first))); }
 			);
 		}
-		else if (i.first.find("mov") != std::string::npos)
+		else if (i.first.find("mov_") != std::string::npos)
 		{
+			if (i.first == "mov_jumping") {
+				i.second->SetOnStart(
+					[this](Animator* animator) {
+						this->m_Sprite->GetGravityHandler().SetGravityAddicted(false);
+					}
+				);
+				
+				i.second->SetOnFinish(
+					[this](Animator* animator) {
+						this->m_Sprite->GetGravityHandler().SetGravityAddicted(true);
+						this->SetState("idle");
+					}
+				);
+
+			}
+			else
+			{
+				i.second->SetOnFinish(
+					[this](Animator* animator) { this->SetState("idle"); }
+				);
+			}
+
 			i.second->SetOnAction(
-				[this,i](Animator* animator, const Animation& anim) { return this->MovingAction(i.first);  }
+				[this,i](Animator* animator, const Animation& anim) { return this->MovingAction(i.first, (MovingAnimator*)i.second);  }
 			);
+
+
 		}
-		else if (i.first.find("flash") != std::string::npos)
+		else if (i.first.find("flash_") != std::string::npos)
 		{
 
 		}
+		
 	}
 }
 
 void Entity::SetState(std::string _state)
 {
 	m_state = _state;
+
+	if (m_state == "idle")
+	{	
+		Rect rect = m_Sprite->GetBox();
+		m_Sprite->GetGravityHandler().Check(rect);
+	}
+
 }
 
 void Entity::SetLookingAt(std::string _lookingAt)
