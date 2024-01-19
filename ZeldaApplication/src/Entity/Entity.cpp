@@ -50,6 +50,12 @@ void Entity::SetSprite(Sprite s)
 	m_Sprite = s;
 }
 
+void Entity::EntityDestroy()
+{
+	m_Sprite->Destroy();
+	this->Destroy();
+}
+
 void Entity::LeftAttackPosUpdate(std::string name)
 {
 	uint32_t offset = 0;

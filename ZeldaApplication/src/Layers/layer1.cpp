@@ -54,6 +54,7 @@ void Layer1::onStart()
 	link->SetSprite(m_Scene->CreateSprite("Link", 210, 10 * 16, link->GetFilm("moving_right"), ""));
 	ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
 	
+
 	InitializeTeleports();
 	GridLayer* grid = m_Scene->GetTiles()->GetGrid();
 	link->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), link->GetSprite()));
@@ -79,7 +80,7 @@ void Layer1::move(Time ts)
 			m_Scene->GetTiles()->Scroll(-SPEED, 0);
 		}
 		m_Scene->GetSprite("Link")->Move(-SPEED, 0);
-		CanTeleport();
+		TeleportCheck();
 
 	}
 	else if (KeyboardInput::IsPressed(SCANCODE_W))
@@ -100,7 +101,7 @@ void Layer1::move(Time ts)
 			m_Scene->GetTiles()->Scroll(+SPEED, 0);
 		}
 		m_Scene->GetSprite("Link")->Move(+SPEED, 0);
-		CanTeleport();
+		TeleportCheck();
 	}
 	else if ((KeyboardInput::IsPressed(SCANCODE_S)))
 	{
@@ -253,7 +254,7 @@ bool Layer1::mover(Event& e)
 
 
 
-void Layer1::CanTeleport()
+void Layer1::TeleportCheck()
 {
 	Rect d1;
 	Rect d2;
@@ -271,9 +272,9 @@ void Layer1::CanTeleport()
 				link_sprite->SetPos(dest->GetPosX(), dest->GetPosY()); 
 				
 				int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
-
-				//if (tilelayer->CanScrollHoriz(dx))
-				//	tilelayer->Scroll(dx,0);
+				ENGINE_TRACE("Teleport Pos: {0}, {1}", dest->GetPosX()/16, dest->GetPosY()/16);
+				if (tilelayer->CanScrollHoriz(dx))
+					tilelayer->Scroll(dx,0);
 				});
 
 			m_Scene->GetColider().Check();

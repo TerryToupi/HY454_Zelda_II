@@ -29,7 +29,7 @@ public:
 
     void InitializeTeleports();
 
-    void CanTeleport(); 
+    void TeleportCheck(); 
 
 public:
     Ref<Scene> m_Scene;
