@@ -121,7 +121,7 @@ namespace Engine
 		ENGINE_CORE_ASSERT(!status); 
 	
 		Uint32 WindowFalgs =  SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | SDL_WINDOW_OPENGL;
-		Uint32 RendererFlags = SDL_RENDERER_ACCELERATED;
+		Uint32 RendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 
 		m_Window = SDL_CreateWindow(
 			m_Data.TitleBar.c_str(),

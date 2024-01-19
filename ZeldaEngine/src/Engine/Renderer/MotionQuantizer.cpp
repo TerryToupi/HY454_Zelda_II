@@ -33,7 +33,8 @@ namespace Engine
 		else
 		{
 			do
-			{
+			{ 
+				ENGINE_CORE_TRACE("active quantizer");
 				auto sign_x = number_sign(*dx);
 				auto sign_y = number_sign(*dy); 
 				auto dxFinal = sign_x * std::min(m_Hmax, sign_x * (*dx));

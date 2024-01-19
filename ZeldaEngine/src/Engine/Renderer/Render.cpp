@@ -79,15 +79,16 @@ namespace Engine
 
 	void Renderer::DisplaySprites()
 	{
-		auto& ib = s_Instance->InterBufferInstance();
+		auto& ib = s_Instance->InterBufferInstance(); 
+		Rect viewPort = s_Instance->m_ActiveScene->GetTiles()->GetViewWindow();
 
 		for (auto sprite : s_Instance->m_ActiveScene->GetSpriteManager().GetDisplayList())
 		{
 			if (sprite && sprite->GetFilm())
 			{ 
 				sprite->Display(
-					ib, 
-					{0, 0, (int)ib.GetWidth(), (int)ib.GetHeight()}, 
+					ib,
+					{0, 0, viewPort.w, viewPort.h},
 					MakeTileLayerClipper(s_Instance->m_ActiveScene->GetTiles().get())
 				);
 			}
