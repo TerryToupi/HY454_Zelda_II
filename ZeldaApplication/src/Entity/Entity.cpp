@@ -85,38 +85,65 @@ void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
 }
 
 void Entity::FrameRangeAction(std::string name)
-{
-	if (name != "jumping") 
-	{	
-		m_Sprite->SetFilm(m_films[name]);
-		uint32_t currFrame = ((FrameRangeAnimator*)m_animators[name])->GetCurrFrame();
-		m_Sprite->SetFrame(currFrame);
+{	
+	std::string film = name.substr(name.find_first_of('_')+1);
+	m_Sprite->SetFilm(m_films[film]);
+	uint32_t currFrame = ((FrameRangeAnimator*)m_animators[name])->GetCurrFrame();
+	m_Sprite->SetFrame(currFrame);
 
-		if (m_lookingAt == "left")
+	if (m_lookingAt == "left")
+	{
+		if ((m_state == "attacking" && currFrame == 2) ||
+			(m_state == "crouch_attacking" && currFrame == 1))
+			LeftAttackPosUpdate(film);
+	}
+}
+
+void Entity::MovingAction(std::string name)
+{
+	if (name == "mov_jumping") {
+		m_Sprite->Move(0, -5);
+	}
+	else if (name.find("moving") != std::string::npos) {
+		if (m_lookingAt == "left") {
+			m_Sprite->Move(-2, 0);
+		}
+		else if (m_lookingAt == "right")
 		{
-			if ((m_state == "attacking" && currFrame == 2) ||
-				(m_state == "crouch_attacking" && currFrame == 1))
-				LeftAttackPosUpdate(name);
+			m_Sprite->Move(2, 0);
 		}
 	}
-
 }
 
 void Entity::InitializeAnimators()
 {
 	for (auto i : m_animators) {
-		i.second->SetOnStart(
-			[this,i](Animator* animator) { return this->FrameRangeStart(i.first); }
-		);
+	
 
-		i.second->SetOnAction(
-			[this,i](Animator* animator, const Animation& anim) { return this->FrameRangeAction(i.first); }
-		);
+		if (i.first.find("frame_") != std::string::npos)
+		{
+			i.second->SetOnStart(
+				[this,i](Animator* animator) { return this->FrameRangeStart(i.first); }
+			);
 
-		i.second->SetOnFinish(
-			[this,i](Animator* animator) { return this->FrameRangeFinish(animator, *(this->GetAnimation(i.first))); }
-		);
+			i.second->SetOnAction(
+				[this,i](Animator* animator, const Animation& anim) { return this->FrameRangeAction(i.first); }
+			);
 
+			i.second->SetOnFinish(
+				[this,i](Animator* animator) { return this->FrameRangeFinish(animator, *(this->GetAnimation(i.first))); }
+			);
+		}
+		else if (i.first.find("mov") != std::string::npos)
+		{
+			i.second->SetOnAction(
+				[this,i](Animator* animator, const Animation& anim) { return this->MovingAction(i.first);  }
+			);
+		}
+		else if (i.first.find("flash") != std::string::npos)
+		{
+
+		}
 	}
 }
 
