@@ -38,7 +38,8 @@ namespace Engine
 				auto sign_x = number_sign(*dx);
 				auto sign_y = number_sign(*dy); 
 				auto dxFinal = sign_x * std::min(m_Hmax, sign_x * (*dx));
-				auto dyFinal = sign_y * std::min(m_Vmax, sign_y * (*dy)); 
+				auto dyFinal = sign_y * std::min(m_Vmax, sign_y * (*dy));  
+				ENGINE_CORE_TRACE("quantizer dxFinal: {0}, dyFinal:{1}", dxFinal, dyFinal);
 
 				m_Mover(r, &dxFinal, &dyFinal);
 

@@ -45,12 +45,11 @@ namespace Engine
 	}
 
 	void Renderer::DisplaySceneTiles()
-	{
-		int width = (int)s_Instance->InterBufferInstance().GetWidth();
-		int height = (int)s_Instance->InterBufferInstance().GetHeight();
+	{ 
+		Rect viewPort = s_Instance->m_ActiveScene->GetTiles()->GetViewWindow();
 		s_Instance->m_ActiveScene->GetTiles()->Display(
 			s_Instance->InterBufferInstance(),
-			{ 0, 0, width, height }
+			{ 0, 0, viewPort.w, viewPort.h }
 		);
 	}
 
