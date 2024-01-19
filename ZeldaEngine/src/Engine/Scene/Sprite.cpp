@@ -25,7 +25,6 @@ namespace Engine
 
 	SpriteClass& SpriteClass::Move(int dx, int dy)
 	{   
-		Rect r = GetBox();
 		if (m_directMotion)
 		{  
 			m_x += dx; 
@@ -33,8 +32,9 @@ namespace Engine
 		} 
 		else
 		{
+			Rect r = GetBox();
 			m_quantizer.Move(r, &dx, &dy);
-			//m_gravity.Check(r);
+			m_gravity.Check(r);
 		} 
 
 		return *this;

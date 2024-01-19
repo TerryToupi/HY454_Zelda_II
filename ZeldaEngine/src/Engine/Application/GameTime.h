@@ -14,15 +14,18 @@ namespace Engine
 		static auto Get(void) -> SystemClock& 
 							{ return s_Instance; }  
 		
-		uint64_t milli_sec(void) const;
-		uint64_t micro_sec(void) const;
-		uint64_t nano_sec(void) const;  
-		uint64_t sec(void) const;
+		Time milli_sec(void) const;
+		Time micro_sec(void) const;
+		Time nano_sec(void) const;  
+		Time sec(void) const;
 
-		uint64_t GetTime(void) const;
+		Time GetTime(void) const; 
+		static Time GetDeltaTime(void); 
+		static void SetDeltaTime(Time t);
 
-	public:
+	private:
 		std::chrono::high_resolution_clock m_Clock;  
+		Time delta;
 
 	private:
 		static SystemClock s_Instance;

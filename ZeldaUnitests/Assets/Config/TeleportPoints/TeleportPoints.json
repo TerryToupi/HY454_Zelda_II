@@ -1,0 +1,145 @@
+{
+  "amount": 14,
+  "points": [
+    {
+      "origin": {
+        "x": 41,
+        "y": 15
+      },
+      "destination": {
+        "x": 168,
+        "y": 5
+      }
+    },
+    {
+      "origin": {
+        "x": 168,
+        "y": 1
+      },
+      "destination": {
+        "x": 41,
+        "y": 12
+      }
+    },
+    {
+      "origin": {
+        "x": 272,
+        "y": 15
+      },
+      "destination": {
+        "x": 540,
+        "y": 3
+      }
+    },
+    {
+      "origin": {
+        "x": 540,
+        "y": 1
+      },
+      "destination": {
+        "x": 272,
+        "y": 12
+      }
+    },
+    {
+      "origin": {
+        "x": 340,
+        "y": 15
+      },
+      "destination": {
+        "x": 687,
+        "y": 3
+      }
+    },
+    {
+      "origin": {
+        "x": 687,
+        "y": 1
+      },
+      "destination": {
+        "x": 340,
+        "y": 12
+      }
+    },
+    {
+      "origin": {
+        "x": 340,
+        "y": 1
+      },
+      "destination": {
+        "x": 556,
+        "y": 12
+      }
+    },
+    {
+      "origin": {
+        "x": 556,
+        "y": 15
+      },
+      "destination": {
+        "x": 340,
+        "y": 3
+      }
+    },
+    {
+      "origin": {
+        "x": 429,
+        "y": 11
+      },
+      "destination": {
+        "x": 427,
+        "y": 9
+      }
+    },
+    {
+      "origin": {
+        "x": 427,
+        "y": 9
+      },
+      "destination": {
+        "x": 429,
+        "y": 11
+      }
+    },
+    {
+      "origin": {
+        "x": 612,
+        "y": 5
+      },
+      "destination": {
+        "x": 614,
+        "y": 11
+      }
+    },
+    {
+      "origin": {
+        "x": 614,
+        "y": 11
+      },
+      "destination": {
+        "x": 612,
+        "y": 5
+      }
+    },
+    {
+      "origin": {
+        "x": 739,
+        "y": 5
+      },
+      "destination": {
+        "x": 741,
+        "y": 11
+      }
+    },
+    {
+      "origin": {
+        "x": 741,
+        "y": 11
+      },
+      "destination": {
+        "x": 739,
+        "y": 5
+      }
+    }
+  ]
+}
