@@ -2,7 +2,9 @@
 #include <algorithm>
 
 namespace Engine
-{
+{ 
+	AudioManager AudioManager::s_instance;
+
 	Uint32 AudioManager::LoadSound(std::string _path)
 	{ 
 		AudioData* data = new AudioData(); 
@@ -32,11 +34,13 @@ namespace Engine
 	}
 
 	void AudioManager::DeleteSound(int _deviceID)
-	{ 
-		auto itr = find(_deviceID);  
+	{  
+		auto itr = find(_deviceID); 
+		AudioData* data = (AudioData*)(*itr);
 		SDL_CloseAudioDevice((*itr)->deviceID);
 		SDL_FreeWAV((*itr)->wavBuffer); 
-		m_data.erase(itr);
+		m_data.erase(itr); 
+		delete data;
 	}
 
 	auto AudioManager::find(int _deviceID) -> std::list<AudioData*>::iterator
