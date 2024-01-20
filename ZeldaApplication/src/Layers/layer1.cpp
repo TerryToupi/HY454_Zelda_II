@@ -8,11 +8,11 @@ Layer1::Layer1()
 {
 }
 
-bool cameraInStageBounds(int cameraPosition, int stageMaxLeft, int stageMaxRight) {
+bool cameraInStageBounds(int cameraPosition, int cameraWidth, int stageMaxLeft, int stageMaxRight) {
 	ENGINE_TRACE(cameraPosition);
 	ENGINE_TRACE(stageMaxLeft);
 	ENGINE_TRACE(stageMaxRight);
-	return (cameraPosition > stageMaxLeft) && (cameraPosition < stageMaxRight);
+	return (cameraPosition > stageMaxLeft) && (cameraPosition + cameraWidth < stageMaxRight);
 }
 
 SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite) {
@@ -62,8 +62,8 @@ void Layer1::InitializeStages()
 
 	for (auto s : Stages["stages"])
 	{
-		max_left = s["max-left"].get<int>();
-		max_right = s["max-right"].get<int>();
+		max_left = s["max-left"].get<int>()*16;
+		max_right = s["max-right"].get<int>()*16;
 		
 		m_stages.push_back(std::make_pair(max_left, max_right));
 	}
@@ -119,12 +119,11 @@ void Layer1::move(Time ts)
 		int linkX = link->GetSprite()->GetPosX();
 
 		if (m_Scene->GetTiles()->CanScrollHoriz((linkX - windowX - windowWidth / 2)) 
-			&& cameraInStageBounds(windowX, m_stages.at(m_currStage).first, m_stages.at(m_currStage).second))
+			&& cameraInStageBounds(linkX - windowWidth / 2, windowWidth, m_stages.at(m_currStage-1).first, m_stages.at(m_currStage-1).second))
 		{
 			m_Scene->GetTiles()->Scroll(linkX - windowX - windowWidth / 2, 0);
 
 		}
-		//ENGINE_TRACE(m_Scene->GetTiles()->GetViewWindow().x);
 
 	}
 	else if (KeyboardInput::IsPressed(SCANCODE_W))
@@ -143,7 +142,7 @@ void Layer1::move(Time ts)
 		int linkX = link->GetSprite()->GetPosX();
 
 		if (m_Scene->GetTiles()->CanScrollHoriz((linkX - windowX - windowWidth / 2))
-			&& cameraInStageBounds(windowX, m_stages.at(m_currStage).first, m_stages.at(m_currStage).second))
+			&& cameraInStageBounds(linkX - windowWidth/2, windowWidth, m_stages.at(m_currStage-1).first, m_stages.at(m_currStage-1).second))
 		{
 			m_Scene->GetTiles()->Scroll(linkX - windowX - windowWidth/2, 0);
 		}
@@ -308,6 +307,7 @@ void Layer1::TeleportCheck()
 			m_Scene->GetColider().Register(link_sprite, i.origin, [link_sprite, dest, tilelayer, this, i](Sprite s1, Sprite s2) {
 				link_sprite->SetPos(dest->GetPosX(), dest->GetPosY()); 
 				m_currStage = i.stage;
+				ENGINE_TRACE(i.stage);
 				int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
 				ENGINE_TRACE("Teleport Pos: {0}, {1}", dest->GetPosX()/16, dest->GetPosY()/16);
 				if (tilelayer->CanScrollHoriz(dx))
