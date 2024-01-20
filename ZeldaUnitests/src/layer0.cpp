@@ -1,6 +1,6 @@
 #include "layer0.h"
 
-#define THE_GREATES_MPAMPIS "Mpampis"
+#define THE_GREATES_MPAMPIS "Mpampis" 
 
 using namespace Engine;
 
@@ -12,7 +12,12 @@ layer0::layer0()
 void layer0::onStart()
 {
 	m_Scene = MakeReference<Scene>(0);
-	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp"); 
+	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");  
+
+	AudioID id = AudioManager::Get().LoadSound("path"); 
+	AudioManager::Get().PauseSound(id); 
+	AudioManager::Get().PlaySound(id);  
+	AudioManager::Get().DeleteSound(id);
 }
 
 void layer0::onDelete()

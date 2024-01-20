@@ -117,7 +117,7 @@ namespace Engine
 		m_Data.Width = config.Width;
 		m_Data.TitleBar = config.WindowName;  
 
-		int status = SDL_Init(SDL_INIT_VIDEO);
+		int status = SDL_Init(SDL_INIT_EVERYTHING);
 		ENGINE_CORE_ASSERT(!status); 
 	
 		Uint32 WindowFalgs =  SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | SDL_WINDOW_OPENGL;
@@ -150,7 +150,7 @@ namespace Engine
 	{  
 		SDL_DestroyWindow(m_Window); 
 		ENGINE_CORE_WARN("Shutting down SDL_Window"); 
-		SDL_Delay(10); 
+		SDL_Delay(100); 
 		SDL_Quit();
 	}
 }
