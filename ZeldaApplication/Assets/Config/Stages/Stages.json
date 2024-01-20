@@ -1,0 +1,37 @@
+{
+  "amount": 8,
+  "stages": [
+    {
+      "max-left": 1,
+      "max-right": 58
+    },
+    {
+      "max-left": 65,
+      "max-right": 367
+    },
+    {
+      "max-left": 429,
+      "max-right": 554
+    },
+    {
+      "max-left": 360,
+      "max-right": 427
+    },
+    {
+      "max-left": 546,
+      "max-right": 612
+    },
+    {
+      "max-left": 613,
+      "max-right": 680
+    },
+    {
+      "max-left": 677,
+      "max-right": 735
+    },
+    {
+      "max-left": 740,
+      "max-right": 842
+    }
+  ]
+}

@@ -91,7 +91,8 @@ void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
 {
 	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attacking"))
 		m_Sprite->SetPos(startX, startY);
-	m_Sprite->SetFrame(0);
+	else if(m_state == "moving")
+		m_Sprite->SetFrame(0);
 }
 
 void Entity::FrameRangeAction(std::string name)
