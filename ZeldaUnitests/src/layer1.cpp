@@ -47,7 +47,10 @@ void layer1::onStart()
 	link->GetGravityHandler().SetOnStopFalling([anim,down]() {  
 		anim->Stop();
 	}); 
-	link->GetGravityHandler().SetGravityAddicted(true);
+	link->GetGravityHandler().SetGravityAddicted(true); 
+
+
+	hit	= AudioManager::Get().LoadSound("Assets/Sounds/Sound Effect (1).wav");
 }
 
 void layer1::onDelete()
@@ -114,6 +117,10 @@ bool layer1::mover(Event& e)
 			m_animator2->Start(m_walkRightAnim.get(), curr, m_walkLeftAnim.get()->GetStartFrame());
 		else if (event->GetKey() == InputKey::a)
 			m_animator1->Start(m_walkLeftAnim.get(), curr, m_walkLeftAnim.get()->GetStartFrame());
+		else if (event->GetKey() == InputKey::q)
+			AudioManager::Get().PlaySound(hit);
+		else if (event->GetKey() == InputKey::m)
+			AudioManager::Get().DeleteSound(hit);
 	}  
 	
 	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
