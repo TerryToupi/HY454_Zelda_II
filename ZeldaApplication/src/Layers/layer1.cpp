@@ -8,6 +8,13 @@ Layer1::Layer1()
 {
 }
 
+bool cameraInStageBounds(int cameraPosition, int stageMaxLeft, int stageMaxRight) {
+	ENGINE_TRACE(cameraPosition);
+	ENGINE_TRACE(stageMaxLeft);
+	ENGINE_TRACE(stageMaxRight);
+	return (cameraPosition > stageMaxLeft) && (cameraPosition < stageMaxRight);
+}
+
 SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite) {
 	return [gridLayer, sprite](Rect& r, int* dx, int* dy) {
 		// the r is actually awlays the sprite->GetBox(): 
@@ -34,12 +41,31 @@ void Layer1::InitializeTeleports()
 
 	for (auto p : Points["points"])
 	{	
-		origin = m_Scene->CreateSprite("tp_1" + id, p["origin"]["x"] * 16, p["origin"]["y"] * 16, NONPRINTABLE, "");
-		origin->SetColiderBox(32, 32);
-		dest = m_Scene->CreateSprite("tp_2" + id, p["destination"]["x"] * 16, p["destination"]["y"] * 16, NONPRINTABLE, "");
-		dest->SetColiderBox(32, 32);
-		m_teleports.push_back(std::make_pair(origin, dest));
+		Teleports tmp;
+
+		tmp.origin = m_Scene->CreateSprite("tp_1" + id, p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
+		tmp.origin->SetColiderBox(16, 16);
+		tmp.dest = m_Scene->CreateSprite("tp_2" + id, p["destination"]["x"].get<int>() * 16, p["destination"]["y"].get<int>() * 16, NONPRINTABLE, "");
+		tmp.dest->SetColiderBox(16, 16);
+		tmp.stage = p["stage"].get<int>();
+		m_teleports.push_back(tmp);
 		id++;
+	}
+
+}
+
+void Layer1::InitializeStages()
+{
+	std::ifstream stagesfile("Assets/Config/Stages/Stages.json");
+	json Stages = json::parse(stagesfile);
+	int max_left, max_right;
+
+	for (auto s : Stages["stages"])
+	{
+		max_left = s["max-left"].get<int>();
+		max_right = s["max-right"].get<int>();
+		
+		m_stages.push_back(std::make_pair(max_left, max_right));
 	}
 
 }
@@ -54,9 +80,12 @@ void Layer1::onStart()
 	link = new Link();
 //	elevator = new Entity();
 //	elevator->SetSprite(m_Scene->CreateSprite("Elevator", 40*16, 12*16, elevator->))
-	link->SetSprite(m_Scene->CreateSprite("Link", 210, 10 * 16, link->GetFilm("moving_right"), ""));
+	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
+	m_Scene->GetTiles()->Scroll(20 * 16, 0);
 
 	InitializeTeleports();
+	InitializeStages();
+	m_currStage = 1;
 	GridLayer* grid = m_Scene->GetTiles()->GetGrid();
 	link->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), link->GetSprite()));
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
@@ -85,10 +114,17 @@ void Layer1::move(Time ts)
 
 	if (KeyboardInput::IsPressed(SCANCODE_A))
 	{
-		if (m_Scene->GetTiles()->CanScrollHoriz(-SPEED))
+		int windowX = m_Scene->GetTiles()->GetViewWindow().x;
+		int windowWidth = m_Scene->GetTiles()->GetViewWindow().w;
+		int linkX = link->GetSprite()->GetPosX();
+
+		if (m_Scene->GetTiles()->CanScrollHoriz((linkX - windowX - windowWidth / 2)) 
+			&& cameraInStageBounds(windowX, m_stages.at(m_currStage).first, m_stages.at(m_currStage).second))
 		{
-			m_Scene->GetTiles()->Scroll(-SPEED, 0);
-		}	
+			m_Scene->GetTiles()->Scroll(linkX - windowX - windowWidth / 2, 0);
+
+		}
+		//ENGINE_TRACE(m_Scene->GetTiles()->GetViewWindow().x);
 
 	}
 	else if (KeyboardInput::IsPressed(SCANCODE_W))
@@ -102,10 +138,17 @@ void Layer1::move(Time ts)
 	}
 	else if (KeyboardInput::IsPressed(SCANCODE_D))
 	{
-		if (m_Scene->GetTiles()->CanScrollHoriz(+SPEED))
+		int windowX = m_Scene->GetTiles()->GetViewWindow().x;
+		int windowWidth = m_Scene->GetTiles()->GetViewWindow().w;
+		int linkX = link->GetSprite()->GetPosX();
+
+		if (m_Scene->GetTiles()->CanScrollHoriz((linkX - windowX - windowWidth / 2))
+			&& cameraInStageBounds(windowX, m_stages.at(m_currStage).first, m_stages.at(m_currStage).second))
 		{
-			m_Scene->GetTiles()->Scroll(+SPEED, 0);
+			m_Scene->GetTiles()->Scroll(linkX - windowX - windowWidth/2, 0);
 		}
+		//ENGINE_TRACE(m_Scene->GetTiles()->GetViewWindow().x);
+
 	}
 	else if ((KeyboardInput::IsPressed(SCANCODE_S)))
 	{
@@ -252,19 +295,19 @@ void Layer1::TeleportCheck()
 {
 	Rect d1;
 	Rect d2;
-	Rect tmpBox = m_teleports.at(0).first->GetBox();
+	Rect tmpBox = m_teleports.at(0).origin->GetBox();
 	Sprite link_sprite = link->GetSprite();
 	TileLayer* tilelayer = m_Scene->GetTiles().get();
 
 	for (auto i : m_teleports)
 	{	
-		tmpBox = i.first->GetBox();
+		tmpBox = i.origin->GetBox();
 		if (teleportClipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 		{	
-			Sprite dest = i.second;
-			m_Scene->GetColider().Register(link_sprite, i.first, [link_sprite, dest, tilelayer](Sprite s1, Sprite s2) {
+			Sprite dest = i.dest;
+			m_Scene->GetColider().Register(link_sprite, i.origin, [link_sprite, dest, tilelayer, this, i](Sprite s1, Sprite s2) {
 				link_sprite->SetPos(dest->GetPosX(), dest->GetPosY()); 
-				
+				m_currStage = i.stage;
 				int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
 				ENGINE_TRACE("Teleport Pos: {0}, {1}", dest->GetPosX()/16, dest->GetPosY()/16);
 				if (tilelayer->CanScrollHoriz(dx))
@@ -272,9 +315,11 @@ void Layer1::TeleportCheck()
 				});
 
 			m_Scene->GetColider().Check();
-			m_Scene->GetColider().Cancel(link_sprite, i.first);
+			m_Scene->GetColider().Cancel(link_sprite, i.origin);
 
 		}
 	}
 
 }
+
+
