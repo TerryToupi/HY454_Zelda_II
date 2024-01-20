@@ -14,8 +14,6 @@ namespace Engine
 
 		SDL_AudioDeviceID id = SDL_OpenAudioDevice(NULL, 0, &data->wavSpec, NULL, 0); 
 		data->deviceID = id;
-		int success = SDL_QueueAudio(data->deviceID, data->wavBuffer, data->wavLength); 
-		ENGINE_CORE_ASSERT(success);  
 
 		SDL_PauseAudioDevice(id, 1);
 		
@@ -24,7 +22,10 @@ namespace Engine
 	} 
 
 	void AudioManager::PlaySound(int _deviceID)
-	{ 
+	{  
+		auto itr = find(_deviceID);
+		int success = SDL_QueueAudio((*itr)->deviceID, (*itr)->wavBuffer, (*itr)->wavLength);
+		ENGINE_CORE_ASSERT(success == 0);  
 		SDL_PauseAudioDevice(_deviceID, 0);
 	} 
 

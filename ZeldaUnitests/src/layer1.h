@@ -40,5 +40,6 @@ private:
 	int wdx = 100; 
 	int wdy = 100; 
 
-	Time curr = 0;
+	Time curr = 0; 
+	AudioID hit;
 };

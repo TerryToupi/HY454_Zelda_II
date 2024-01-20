@@ -13,11 +13,6 @@ void layer0::onStart()
 {
 	m_Scene = MakeReference<Scene>(0);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");  
-
-	AudioID id = AudioManager::Get().LoadSound("path"); 
-	AudioManager::Get().PauseSound(id); 
-	AudioManager::Get().PlaySound(id);  
-	AudioManager::Get().DeleteSound(id);
 }
 
 void layer0::onDelete()
