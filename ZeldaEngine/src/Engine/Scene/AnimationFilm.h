@@ -28,7 +28,6 @@ namespace Engine
 
 	private:
 		void		Generate(std::string configPath);
-		
 		void		Append(const Rect& r) { m_boxes.push_back(r); }
 
 	private: 

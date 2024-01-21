@@ -57,7 +57,7 @@ namespace Engine
 		AudioData* data = new AudioData();  
 
 		if (SDL_LoadWAV(_path.c_str(), &data->wavSpec, &data->wavBuffer, &data->wavLength) == nullptr)
-			ENGINE_CORE_ERROR("Not valid Dummy file for sound settings"); 
+			ENGINE_CORE_ERROR("Incorrect audio file source"); 
 		
 		data->id = UUID::GenerateUUID();  
 		m_data[data->id] = data;
