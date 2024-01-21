@@ -2,7 +2,7 @@
 #include <Engine/Application/Core.h>
 #include <Engine/Application/Application.h>
 
-#include <string.h>
+#include <string.h> 
 #include <SDL.h>
 
 #ifdef ENGINE_PLATFORM_WINDOWS
@@ -13,7 +13,7 @@ extern Engine::Application* Engine::CreateApplication();
 
 int main(int argc, char** argv)
 { 
-	Engine::Log::Init(); 
+	Engine::Log::Init();  
 
 	auto app = Engine::CreateApplication();
 	app->Run();

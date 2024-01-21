@@ -50,7 +50,8 @@ void layer1::onStart()
 	link->GetGravityHandler().SetGravityAddicted(true); 
 
 
-	hit	= AudioManager::Get().LoadSound("Assets/Sounds/Sound Effect (1).wav");
+	hit	= AudioManager::Get().LoadSound("Assets/Sounds/Sound Effect (1).wav"); 
+	hit2 = AudioManager::Get().LoadSound("Assets/Sounds/Sound Effect (2).wav");
 }
 
 void layer1::onDelete()
@@ -114,13 +115,12 @@ bool layer1::mover(Event& e)
 	{ 
 		KeyPressEvent *event = dynamic_cast<KeyPressEvent*>(&e); 
 		if (event->GetKey() == InputKey::d)
-			m_animator2->Start(m_walkRightAnim.get(), curr, m_walkLeftAnim.get()->GetStartFrame());
+		{
+			m_animator2->Start(m_walkRightAnim.get(), curr, m_walkLeftAnim.get()->GetStartFrame()); 
+			AudioManager::Get().PlaySound(hit2);
+		}
 		else if (event->GetKey() == InputKey::a)
 			m_animator1->Start(m_walkLeftAnim.get(), curr, m_walkLeftAnim.get()->GetStartFrame());
-		else if (event->GetKey() == InputKey::q)
-			AudioManager::Get().PlaySound(hit);
-		else if (event->GetKey() == InputKey::m)
-			AudioManager::Get().DeleteSound(hit);
 	}  
 	
 	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
@@ -145,7 +145,7 @@ void layer1::FrameRangeActionRight()
 	Sprite link = m_Scene->GetSprite("Link"); 
 	
 	link->SetFilm(m_WalkRight.get());
-	link->SetFrame(m_animator2->GetCurrFrame());  
+	link->SetFrame(m_animator2->GetCurrFrame());   
 	//layer.m_WalkRight->DisplayFrame(
 	//	interbuff,
 	//	layer.m_WalkRight->GetFrameBox(layer.m_animator2->GetCurrFrame()),

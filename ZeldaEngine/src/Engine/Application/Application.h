@@ -4,7 +4,8 @@
 #include <Engine/Window/Window.h> 
 #include <Engine/Events/ApplicationEvents.h>
 #include <Engine/Application/GameTime.h> 
-#include <Engine/Scene/LatelyDestroyable.h>
+#include <Engine/Scene/LatelyDestroyable.h> 
+#include <Engine/Audio/Audio.h>
 
 #include <string>
 
@@ -36,10 +37,11 @@ namespace Engine
 		void popLayer();  
 		void popOverLay(); 
 
-	private: 
 		void Run();
+
+	protected: 
 		bool OnWindowClose(WindowCloseEvent& e); 
-		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e); 
 
 	private: 
 		ApplicationConfig m_AppConfig;
@@ -49,7 +51,6 @@ namespace Engine
 
 	private: 
 		static Application* s_Instance; 
-		friend int ::main(int agc, char** argv);
 	};
 
 	Application* CreateApplication();

@@ -1,58 +1,88 @@
 #include "Audio.h" 
-#include <algorithm>
+#include <algorithm> 
+
+#define MAX_AVAILABLE_AUDIO_DEVICES 8
 
 namespace Engine
-{ 
-	AudioManager AudioManager::s_instance;
+{   
+	AudioManager AudioManager::s_instance; 
 
-	Uint32 AudioManager::LoadSound(std::string _path)
+	void AudioManager::Init()
+	{     
+		AudioData dummy;
+		if (SDL_LoadWAV("Assets/Sounds/DummySound/dummy.wav", &dummy.wavSpec, &dummy.wavBuffer, &dummy.wavLength) == nullptr)
+			ENGINE_CORE_ERROR("Not valid Dummy file for sound settings");
+
+		s_instance.m_head = new DeviceChain();
+		s_instance.m_head->deviceID = SDL_OpenAudioDevice(NULL, 0, &dummy.wavSpec, NULL, 0); 
+		s_instance.m_head->next = nullptr; 
+		s_instance.m_itr = s_instance.m_head;
+
+		for (int i = 0; i < MAX_AVAILABLE_AUDIO_DEVICES; ++i)
+		{ 
+			DeviceChain* next = new DeviceChain();  
+			next->deviceID = SDL_OpenAudioDevice(NULL, 0, &dummy.wavSpec, NULL, 0); 
+			next->next = nullptr; 
+			s_instance.m_itr->next = next;
+			s_instance.m_itr = next; 
+		} 
+
+		s_instance.m_itr->next = s_instance.m_head; 
+		SDL_FreeWAV(dummy.wavBuffer);
+	}
+
+	void AudioManager::Shutdown()
+	{  
+		DeviceChain* curr;
+		for (int i = 0; i < MAX_AVAILABLE_AUDIO_DEVICES; ++i)
+		{
+			SDL_CloseAudioDevice(s_instance.m_itr->deviceID);  
+			curr = s_instance.m_itr->next;
+			delete m_itr;
+			m_itr = curr;
+		}
+
+		for (auto& data : m_data)
+		{ 
+			if (data.second)
+			{
+				SDL_FreeWAV(data.second->wavBuffer);
+				delete data.second;
+			}
+		}
+	}
+
+	AudioID AudioManager::LoadSound(std::string _path)
 	{ 
-		AudioData* data = new AudioData(); 
+		AudioData* data = new AudioData();  
 
 		if (SDL_LoadWAV(_path.c_str(), &data->wavSpec, &data->wavBuffer, &data->wavLength) == nullptr)
-			ENGINE_CORE_ERROR("Not valid .wav file or path error"); 
-
-		SDL_AudioDeviceID id = SDL_OpenAudioDevice(NULL, 0, &data->wavSpec, NULL, 0); 
-		data->deviceID = id;
-
-		SDL_PauseAudioDevice(id, 1);
+			ENGINE_CORE_ERROR("Not valid Dummy file for sound settings"); 
 		
-		m_data.push_back(data); 
-		return id;
+		data->id = UUID::GenerateUUID();  
+		m_data[data->id] = data;
+
+		return data->id;
 	} 
 
-	void AudioManager::PlaySound(int _deviceID)
-	{  
-		auto itr = find(_deviceID);
-		int success = SDL_QueueAudio((*itr)->deviceID, (*itr)->wavBuffer, (*itr)->wavLength);
-		ENGINE_CORE_ASSERT(success == 0);  
-		SDL_PauseAudioDevice(_deviceID, 0);
-	} 
-
-	void AudioManager::PauseSound(int _deviceID)
-	{ 
-		SDL_PauseAudioDevice(_deviceID, 1);
+	void AudioManager::PlaySound(AudioID _id)
+	{	
+		if (m_data.find(_id) != m_data.end())
+		{ 
+			SDL_QueueAudio(m_itr->deviceID, m_data[_id]->wavBuffer, m_data[_id]->wavLength); 
+			SDL_PauseAudioDevice(m_itr->deviceID, 0); 
+			m_itr = m_itr->next;
+		}
 	}
 
-	void AudioManager::DeleteSound(int _deviceID)
-	{  
-		auto itr = find(_deviceID); 
-		AudioData* data = (AudioData*)(*itr);
-		SDL_CloseAudioDevice((*itr)->deviceID);
-		SDL_FreeWAV((*itr)->wavBuffer); 
-		m_data.erase(itr); 
-		delete data;
-	}
-
-	auto AudioManager::find(int _deviceID) -> std::list<AudioData*>::iterator
+	void AudioManager::DeleteSound(AudioID _id)
 	{
-		return std::find_if( 
-			m_data.begin(), 
-			m_data.end(), 
-			[_deviceID](const AudioData* _d) {
-				return _d->deviceID == _deviceID;
-			}
-		);
+		if (m_data.find(_id) != m_data.end())
+		{
+			SDL_FreeWAV(m_data[_id]->wavBuffer); 
+			delete m_data[_id]; 
+			m_data[_id] = nullptr;
+		}
 	}
 }
 

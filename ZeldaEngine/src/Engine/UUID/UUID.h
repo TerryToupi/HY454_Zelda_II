@@ -10,7 +10,8 @@ namespace Engine {
 	public: 
 		UUID();  
 		UUID(ID id);
-		UUID(const UUID& other) = default; 
+		UUID(const UUID& other) = default;  
+		static ID GenerateUUID();
 		
 		operator ID() const { return m_ID; }
 	private: 

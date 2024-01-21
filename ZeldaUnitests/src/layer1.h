@@ -41,5 +41,6 @@ private:
 	int wdy = 100; 
 
 	Time curr = 0; 
-	AudioID hit;
+	AudioID hit; 
+	AudioID hit2;
 };

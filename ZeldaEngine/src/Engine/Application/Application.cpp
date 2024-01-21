@@ -21,17 +21,22 @@ namespace Engine {
 		m_Window = Window::Create(WindowConfig(m_AppConfig.appName, default_w, default_h));  
 		m_Window->SetEventCallBack(EVENT_FUNCTION_BIND(Application::onEvent));
 		
-		m_Running = true; 
-		ENGINE_CORE_INFO("Application successfully initialized!"); 
+		m_Running = true;  
+
+		AudioManager::Get().Init();
 	
 		RendererConfig rConfig; 
 		rConfig.fb_height = default_h;
 		rConfig.fb_width = default_w; 
-		Renderer::Init(rConfig);
+		Renderer::Init(rConfig); 
+		ENGINE_CORE_INFO("Application successfully initialized!");  
 	} 
 
 	Application::~Application()
 	{ 
+		ENGINE_CORE_WARN("Shutting down AudioManager"); 
+		AudioManager::Get().Shutdown();
+
 		ENGINE_CORE_WARN("Shutting down Renderer"); 
 		Renderer::Shutdown(); 
 

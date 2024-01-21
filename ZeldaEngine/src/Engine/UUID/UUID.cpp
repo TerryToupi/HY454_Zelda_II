@@ -15,4 +15,9 @@ namespace Engine {
 	{
 		this->m_ID = id;
 	} 
+
+	ID UUID::GenerateUUID()
+	{
+		return s_UniformDistribution(s_Engine);
+	}
 };

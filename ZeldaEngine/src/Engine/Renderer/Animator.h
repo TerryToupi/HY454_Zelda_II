@@ -1,7 +1,8 @@
 #pragma once 
 
 #include<Engine/Application/Core.h>  
-#include<Engine/Application/GameTime.h> 
+#include<Engine/Application/GameTime.h>  
+#include<Engine/Scene/LatelyDestroyable.h>
 
 namespace Engine
 {
@@ -16,7 +17,7 @@ namespace Engine
 	class AnimatorManager; 
 	class Scene;
 
-	class Animator
+	class Animator : public LatelyDestroyable
 	{
 	public:
 		using OnFinish	= std::function<void(Animator*)>;
