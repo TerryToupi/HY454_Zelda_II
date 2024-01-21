@@ -1,12 +1,12 @@
 {
-  "animation": "elevator_bottom",
+  "animation": "elevator",
   "total_frames" : 1,
   "frames": [
     {
       "frame": 1,
-      "x": 120,
-      "y": 300,
-      "h": 8,
+      "x": 151,
+      "y": 267,
+      "h": 48,
       "w": 24
     }
   ]

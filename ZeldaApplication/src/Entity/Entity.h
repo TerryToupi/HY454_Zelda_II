@@ -12,8 +12,10 @@ public:
 
 	Entity() = default;
 	Entity(std::string type);
+	
 
 	Animation* GetAnimation(std::string name);
+	AnimationFilm* GetFilm();
 	AnimationFilm* GetFilm(std::string name);
 	Animator* GetAnimator(std::string name);
 	Sprite GetSprite();
@@ -47,6 +49,9 @@ protected:
 	Films m_films;
 	Animations m_animations;
 	Animators m_animators;
+
+	Animation* m_singleAnim;
+	AnimationFilm* m_singleFilm;
 
 	std::string m_state;
 	std::string m_lookingAt;

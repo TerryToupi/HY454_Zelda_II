@@ -1,13 +1,19 @@
 #include "Entity.h"
 
-//Entity::Entity(std::string type)
-//{
-//	m_sheet = new AnimationSheet("misc_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp");
-//	if (type == "elevator")
-//	{
-//
-//	}
-//}
+Entity::Entity(std::string type)
+{
+	m_sheet = new AnimationSheet("misc_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp");
+	m_singleFilm = new AnimationFilm(m_sheet, "Assets/Config/Animations/Misc/elevator.json");
+	
+}
+
+AnimationFilm* Entity::GetFilm()
+{
+	if (m_singleFilm != nullptr)
+		return m_singleFilm;
+
+	ENGINE_ASSERT(false);
+}
 
 Animation* Entity::GetAnimation(std::string name)
 {
