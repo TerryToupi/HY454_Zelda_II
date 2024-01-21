@@ -3,35 +3,35 @@
   "stages": [
     {
       "max-left": 1,
-      "max-right": 45
+      "max-right": 52
     },
     {
       "max-left": 65,
-      "max-right": 367
+      "max-right": 365
     },
     {
       "max-left": 445,
-      "max-right": 554
+      "max-right": 582
     },
     {
       "max-left": 365,
-      "max-right": 427
+      "max-right": 437
     },
     {
-      "max-left": 546,
-      "max-right": 612
+      "max-left": 566,
+      "max-right": 643
     },
     {
-      "max-left": 613,
-      "max-right": 680
+      "max-left": 674,
+      "max-right": 740
     },
     {
-      "max-left": 677,
-      "max-right": 735
+      "max-left": 737,
+      "max-right": 814
     },
     {
-      "max-left": 740,
-      "max-right": 842
+      "max-left": 820,
+      "max-right": 964
     }
   ]
 }
