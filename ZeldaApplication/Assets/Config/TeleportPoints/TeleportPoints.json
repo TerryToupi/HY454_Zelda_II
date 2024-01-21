@@ -29,14 +29,14 @@
         "y": 15
       },
       "destination": {
-        "x": 540,
+        "x": 571,
         "y": 3
       },
       "stage": 3
     },
     {
       "origin": {
-        "x": 540,
+        "x": 571,
         "y": 1
       },
       "destination": {
@@ -51,14 +51,14 @@
         "y": 15
       },
       "destination": {
-        "x": 687,
+        "x": 748,
         "y": 3
       },
       "stage": 7
     },
     {
       "origin": {
-        "x": 687,
+        "x": 748,
         "y": 1
       },
       "destination": {
@@ -73,14 +73,14 @@
         "y": 1
       },
       "destination": {
-        "x": 556,
+        "x": 587,
         "y": 12
       },
       "stage": 5
     },
     {
       "origin": {
-        "x": 556,
+        "x": 587,
         "y": 15
       },
       "destination": {
@@ -91,66 +91,66 @@
     },
     {
       "origin": {
-        "x": 446,
-        "y": 11
+        "x": 448,
+        "y": 13
       },
       "destination": {
-        "x": 423,
+        "x": 424,
         "y": 10
       },
       "stage": 4
     },
     {
       "origin": {
-        "x": 425,
-        "y": 10
+        "x": 435,
+        "y": 11
       },
       "destination": {
-        "x": 447,
+        "x": 460,
         "y": 12
       },
       "stage": 3
     },
     {
       "origin": {
-        "x": 612,
-        "y": 5
+        "x": 642,
+        "y": 6
       },
       "destination": {
-        "x": 616,
+        "x": 690,
         "y": 12
       },
       "stage": 6
     },
     {
       "origin": {
-        "x": 614,
-        "y": 11
+        "x": 676,
+        "y": 12
       },
       "destination": {
-        "x": 611,
+        "x": 631,
         "y": 6
       },
       "stage": 5
     },
     {
       "origin": {
-        "x": 738,
-        "y": 5
+        "x": 813,
+        "y": 6
       },
       "destination": {
-        "x": 744,
+        "x": 830,
         "y": 12
       },
       "stage": 8
     },
     {
       "origin": {
-        "x": 741,
-        "y": 11
+        "x": 824,
+        "y": 12
       },
       "destination": {
-        "x": 736,
+        "x": 804,
         "y": 6
       },
       "stage": 7

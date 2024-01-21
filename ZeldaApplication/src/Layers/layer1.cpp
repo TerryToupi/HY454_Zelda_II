@@ -1,6 +1,7 @@
 #include "Layer1.h"
 
 Clipper teleportClipper;
+std::pair<int, int>* bounds;
 //Entity elevator;
 
 Layer1::Layer1()
@@ -8,19 +9,33 @@ Layer1::Layer1()
 {
 }
 
-bool cameraInStageBounds(int cameraPosition, int cameraWidth, int stageMaxLeft, int stageMaxRight) {
-	ENGINE_TRACE(cameraPosition);
+bool Layer1::cameraInStageBounds(int cameraPosition, int cameraWidth, int stageMaxLeft, int stageMaxRight) {
+//	ENGINE_TRACE(cameraPosition);
 	ENGINE_TRACE(stageMaxLeft);
 	ENGINE_TRACE(stageMaxRight);
 	return (cameraPosition > stageMaxLeft) && (cameraPosition + cameraWidth < stageMaxRight);
 }
 
-SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite) {
-	return [gridLayer, sprite](Rect& r, int* dx, int* dy) {
+SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite, TileLayer *tiles, std::pair<int,int> *bounds) {		//link
+	return [gridLayer, sprite, tiles, bounds](Rect& r, int* dx, int* dy) {
 		// the r is actually awlays the sprite->GetBox(): 
+		//ENGINE_TRACE("{0}, {1}", bounds->first, bounds->second);
+		int windowX = tiles->GetViewWindow().x;
+		int windowWidth = tiles->GetViewWindow().w;
+		int linkX = sprite->GetPosX();
+
+		bool cameraCheck = ((linkX - windowWidth / 2 > bounds->first) && ((linkX + windowWidth / 2) < bounds->second));
+	//	ENGINE_TRACE("Camera Check: {0}", cameraCheck);
 		gridLayer->FilterGridMotion(r, dx, dy);
-		if (*dx || *dy)
+		if (*dx || *dy) 
+		{
 			sprite->SetHasDirectMotion(true).Move(*dx, *dy).SetHasDirectMotion(false);
+			if (tiles->CanScrollHoriz(*dx) && cameraCheck)
+			{	
+				tiles->Scroll(linkX - windowX - windowWidth / 2, 0);
+			}
+
+		}
 		};
 }
 
@@ -81,13 +96,18 @@ void Layer1::onStart()
 //	elevator = new Entity();
 //	elevator->SetSprite(m_Scene->CreateSprite("Elevator", 40*16, 12*16, elevator->))
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
-	m_Scene->GetTiles()->Scroll(20 * 16, 0);
 
+	Rect r = m_Scene->GetTiles()->GetViewWindow();
+	r.x = link->GetSprite()->GetPosX() - (r.w / 2);
+	m_Scene->GetTiles()->SetViewWindow(r);
+	
 	InitializeTeleports();
 	InitializeStages();
 	m_currStage = 1;
+	bounds = new std::pair<int, int>;
+	*bounds = m_stages.at(0);
 	GridLayer* grid = m_Scene->GetTiles()->GetGrid();
-	link->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), link->GetSprite()));
+	link->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), link->GetSprite(), (m_Scene.get()->GetTiles()).get(), bounds));
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	link->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
 
@@ -111,49 +131,28 @@ void Layer1::onDelete()
 void Layer1::move(Time ts)
 {
 	float SPEED = 1;
-
-	if (KeyboardInput::IsPressed(SCANCODE_A))
-	{
-		int windowX = m_Scene->GetTiles()->GetViewWindow().x;
-		int windowWidth = m_Scene->GetTiles()->GetViewWindow().w;
-		int linkX = link->GetSprite()->GetPosX();
-
-		if (m_Scene->GetTiles()->CanScrollHoriz((linkX - windowX - windowWidth / 2)) 
-			&& cameraInStageBounds(linkX - windowWidth / 2, windowWidth, m_stages.at(m_currStage-1).first, m_stages.at(m_currStage-1).second))
-		{
-			m_Scene->GetTiles()->Scroll(linkX - windowX - windowWidth / 2, 0);
-
-		}
-
-	}
-	else if (KeyboardInput::IsPressed(SCANCODE_W))
-	{
-		if (m_Scene->GetTiles()->CanScrollVert(-SPEED))
-		{
-			m_Scene->GetTiles()->Scroll(0, -SPEED);
-		}
-
-		m_Scene->GetSprite("Link")->Move(0, -SPEED);
-	}
-	else if (KeyboardInput::IsPressed(SCANCODE_D))
-	{
-		int windowX = m_Scene->GetTiles()->GetViewWindow().x;
-		int windowWidth = m_Scene->GetTiles()->GetViewWindow().w;
-		int linkX = link->GetSprite()->GetPosX();
-
-		if (m_Scene->GetTiles()->CanScrollHoriz((linkX - windowX - windowWidth / 2))
-			&& cameraInStageBounds(linkX - windowWidth/2, windowWidth, m_stages.at(m_currStage-1).first, m_stages.at(m_currStage-1).second))
-		{
-			m_Scene->GetTiles()->Scroll(linkX - windowX - windowWidth/2, 0);
-		}
-		//ENGINE_TRACE(m_Scene->GetTiles()->GetViewWindow().x);
-
-	}
-	else if ((KeyboardInput::IsPressed(SCANCODE_S)))
-	{
-		m_Scene->GetSprite("Link")->Move(0, +SPEED);
-	}
 	
+	//if (KeyboardInput::IsPressed(SCANCODE_D))
+	//{
+	//	int windowX = this->m_Scene->GetTiles()->GetViewWindow().x;
+	//	int windowWidth = this->m_Scene->GetTiles()->GetViewWindow().w;
+	//	int linkX = link->GetSprite()->GetPosX();
+
+	//	if (this->m_Scene->GetTiles()->CanScrollHoriz((linkX - windowX - windowWidth / 2))
+	//		&& this->cameraInStageBounds(linkX - windowWidth / 2, windowWidth, m_stages.at(m_currStage - 1).first, m_stages.at(m_currStage - 1).second))
+	//		this->m_Scene.get()->GetTiles()->Scroll(linkX - windowX - windowWidth / 2, 0);
+	//}
+	//else if (KeyboardInput::IsPressed(SCANCODE_A))
+	//{
+	//	int windowX = this->m_Scene->GetTiles()->GetViewWindow().x;
+	//	int windowWidth = this->m_Scene->GetTiles()->GetViewWindow().w;
+	//	int linkX = link->GetSprite()->GetPosX();
+
+	//	if (this->m_Scene->GetTiles()->CanScrollHoriz((linkX - windowX - windowWidth / 2))
+	//		&& this->cameraInStageBounds(linkX - windowWidth / 2, windowWidth, m_stages.at(m_currStage - 1).first, m_stages.at(m_currStage - 1).second))
+	//		this->m_Scene.get()->GetTiles()->Scroll(linkX - windowX - windowWidth / 2, 0);
+	//}
+
 	if (KeyboardInput::IsPressed(SCANCODE_SPACE))
 	{
 		MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("mov_jumping");
@@ -165,6 +164,7 @@ void Layer1::onUpdate(Time ts)
 {
 	curr = ts;
 	move(ts);
+	*bounds = m_stages.at(m_currStage - 1);
 	
 	TeleportCheck();
 
@@ -189,6 +189,7 @@ bool Layer1::mover(Event& e)
 		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{
+
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_moving_right");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
 			
@@ -196,19 +197,20 @@ bool Layer1::mover(Event& e)
 			link->SetLookingAt("right");
 			((MovingAnimator*)link->GetAnimator("mov_moving_right"))->Start((MovingAnimation*)link->GetAnimation("mov_moving_right"), SystemClock::GetDeltaTime());
 
-			//ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
+		//	m_CameraRight->Start(m_CameraRightAnim, SystemClock::GetDeltaTime());
 
 		}
 		if (event->GetKey() == InputKey::a)
-		{
+		{	
+
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_moving_left");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"))->GetStartFrame());
-
+			
 			link->SetState("moving");
 			link->SetLookingAt("left");
 			((MovingAnimator*)link->GetAnimator("mov_moving_left"))->Start((MovingAnimation*)link->GetAnimation("mov_moving_left"), SystemClock::GetDeltaTime());
 
-			//ENGINE_TRACE(link->GetLookingAt() + " " + link->GetState());
+		//	m_CameraLeft->Start(m_CameraLeftAnim, SystemClock::GetDeltaTime());
 
 		}
 		if (event->GetKey() == InputKey::s)
@@ -262,12 +264,14 @@ bool Layer1::mover(Event& e)
 		{	
 			((FrameRangeAnimator*)link->GetAnimator("frame_moving_right"))->Stop();
 			((MovingAnimator*)link->GetAnimator("mov_moving_right"))->Stop();
+		//	m_CameraRight->Stop();
 		}
 
 		if (event->GetKey() == InputKey::a)
 		{
 			((FrameRangeAnimator*)link->GetAnimator("frame_moving_left"))->Stop();
 			((MovingAnimator*)link->GetAnimator("mov_moving_left"))->Stop();
+		//	m_CameraLeft->Stop();
 		}
 
 		if (event->GetKey() == InputKey::s)

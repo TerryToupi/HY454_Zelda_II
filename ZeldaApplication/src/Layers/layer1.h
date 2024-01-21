@@ -39,12 +39,21 @@ public:
 
     void TeleportCheck();
 
+    void InitializeCamera();
+
+    bool cameraInStageBounds(int cameraPosition, int cameraWidth, int stageMaxLeft, int stageMaxRight);
+
 public:
     Ref<Scene> m_Scene;
     Link* link;
     std::vector<Teleports> m_teleports;
     Stages m_stages;
     uint32_t m_currStage;
+
+    MovingAnimator* m_CameraLeft;
+    MovingAnimator* m_CameraRight;
+    MovingAnimation* m_CameraLeftAnim;
+    MovingAnimation* m_CameraRightAnim;
 
     int wdx = 100;
     int wdy = 100;
