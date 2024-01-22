@@ -15,6 +15,8 @@ Link::Link()
     EmplaceFilm("attacking_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/attacking_right.json"));
     EmplaceFilm("crouch_attack_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/crouch_attack_left.json"));
     EmplaceFilm("crouch_attack_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/crouch_attack_right.json"));
+    EmplaceFilm("damage_from_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/damage_from_left.json"));
+    EmplaceFilm("damage_from_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/damage_from_right.json"));
 
     EmplaceAnimation(new FrameRangeAnimation("frame_moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
     EmplaceAnimation(new FrameRangeAnimation("frame_moving_left", 0, m_films["moving_left"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
@@ -24,6 +26,8 @@ Link::Link()
     EmplaceAnimation(new FrameRangeAnimation("frame_attacking_right", 0, m_films["attacking_right"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_left", 0, m_films["crouch_attack_left"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_right", 0, m_films["crouch_attack_right"]->GetTotalFrames(), 1, 0, 0, 100));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 1, 0, 0, 10));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 1, 0, 0, 10));
     EmplaceAnimation(new MovingAnimation("mov_jumping", 8, 0, 0, 20));
     EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, 20));
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
