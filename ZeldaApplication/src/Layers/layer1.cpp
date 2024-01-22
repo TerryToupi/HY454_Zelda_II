@@ -373,18 +373,44 @@ void Layer1::EnemyHandler()
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, tilelayer, this, i](Sprite s1, Sprite s2) {
 				int32_t dx = (link->GetLookingAt() == "right") ? -16 : 16;
 				FrameRangeAnimator* anim = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				
+				if (link->GetState() != "attacking")
+				{
+					link->SetState("damage_from");
 
-				link->SetState("damage_from");
+					if (!anim->HasFinished())
+						anim->Stop();
 
-				if (!anim->HasFinished())
-					anim->Stop();
+					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+					link->GetSprite()->Move(dx, -5);
+				}
+				else
+				{
+					i.second->TakeDamage(8);
+				}
 
-				anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
-				link->GetSprite()->Move(dx, -5);
 			});
 
 			m_Scene->GetColider().Check();
 			m_Scene->GetColider().Cancel(link_sprite, i.second->GetSprite());
+		}
+
+		if (i.second->GetHealth() == 0)
+		{
+			FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
+			MovingAnimator* mov = (MovingAnimator*)i.second->GetAnimator("mov_moving");
+			i.second->SetLookingAt("");
+			i.second->SetState("death");
+
+			if (!mov->HasFinished())
+				mov->Stop();
+
+			if (!anim->HasFinished())
+				anim->Stop();
+
+			anim->Start((FrameRangeAnimation*)i.second->GetAnimation("frame_death"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)i.second->GetAnimation("frame_death"))->GetStartFrame());
+		//	i.second->EntityDestroy();
+		//	m_enemies.erase(i.second->GetID());
 		}
 	}
 }

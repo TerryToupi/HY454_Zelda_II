@@ -1,6 +1,6 @@
 {
   "animation": "damage_from_right",
-  "total_frames" : 13,
+  "total_frames" : 14,
   "frames": [
     {
       "frame": 1,
@@ -90,6 +90,13 @@
       "frame": 13,
       "x": 288,
       "y": 320,
+      "h": 32,
+      "w": 16
+    },
+    {
+      "frame": 14,
+      "x": 168,
+      "y": 0,
       "h": 32,
       "w": 16
     }

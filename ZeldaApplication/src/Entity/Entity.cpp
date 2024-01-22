@@ -72,6 +72,25 @@ void Entity::SetSprite(Sprite s)
 void Entity::EntityDestroy()
 {
 	m_Sprite->Destroy();
+
+	for (auto i : m_animators)
+	{
+		i.second->Destroy();
+		m_animators.erase(i.first);
+	};
+
+	for (auto i : m_films)
+	{
+		i.second->Destroy();
+		m_films.erase(i.first);
+	}
+
+	for (auto i : m_animations)
+	{
+		i.second->Destroy();
+		m_animations.erase(i.first);
+	}
+
 	this->Destroy();
 }
 

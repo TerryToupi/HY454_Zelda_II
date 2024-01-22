@@ -36,10 +36,8 @@ void Enemy::Attack() {
 
 void Enemy::TakeDamage(int amount) {
     health -= amount;
-
-    if (health <= 0) {
-        Disapear();
-    }
+    if (health < 0)
+        health = 0;
 }
 
 void Enemy::Disapear() {
