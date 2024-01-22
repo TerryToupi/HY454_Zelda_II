@@ -90,9 +90,19 @@ namespace Engine
 	}
 
 	void SpriteClass::SetColiderBox(unsigned _w, unsigned _h) 
-	{
-		m_hitBox.w = _w;
-		m_hitBox.h = _h;
+	{ 
+		if (m_currFilm)
+		{
+			m_hitBox.w = _w;
+			m_hitBox.h = _h;
+		} 
+		else
+		{
+			m_hitBox.w = _w;
+			m_frameBox.w = _w; 
+			m_hitBox.h = _h;
+			m_frameBox.h = _h;
+		}
 	}
 
 	void SpriteClass::SetMotionQuantizerUse(bool v)
