@@ -26,7 +26,7 @@ class Layer1 : public Layer
 {
 public:
     using Stages = std::vector<std::pair<int, int>>;
-    using Enemies = std::unordered_map<uint32_t, Enemy*>;
+    using Enemies = std::unordered_map<ID, Enemy*>;
     using Sounds = std::unordered_map<std::string, AudioID>;
 
     Layer1();
@@ -55,4 +55,6 @@ public:
     uint32_t m_currStage;                               // stage tracker
     Sounds m_sounds;  // sound files
     Enemies m_enemies;
+
+    Wosu* wosu;
 };

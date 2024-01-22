@@ -8,7 +8,7 @@ Layer1::Layer1()
 {
 }
 
-SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite, TileLayer *tiles, std::pair<int,int> *bounds) {		//link
+SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite sprite, TileLayer *tiles, std::pair<int,int> *bounds) {
 	return [gridLayer, sprite, tiles, bounds](Rect& r, int* dx, int* dy) {
 		int windowX = tiles->GetViewWindow().x;
 		int windowWidth = tiles->GetViewWindow().w;
@@ -23,6 +23,16 @@ SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite,
 			{	
 				tiles->Scroll(linkX - windowX - windowWidth / 2, 0);
 			}
+		}
+	};
+}
+
+SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite) {
+	return [gridLayer, sprite](Rect& r, int* dx, int* dy) {
+		gridLayer->FilterGridMotion(r, dx, dy);
+		if (*dx || *dy)
+		{
+			sprite->SetHasDirectMotion(true).Move(*dx, *dy).SetHasDirectMotion(false);
 		}
 	};
 }
@@ -88,6 +98,7 @@ void Layer1::onStart()
 
 	link = new Link();
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
+	link->GetSprite()->SetColiderBox(16, 32);
 
 	Rect r = m_Scene->GetTiles()->GetViewWindow();
 	r.x = link->GetSprite()->GetPosX() - (r.w / 2);
@@ -100,7 +111,7 @@ void Layer1::onStart()
 	bounds = new std::pair<int, int>;
 	*bounds = m_stages.at(0);
 	GridLayer* grid = m_Scene->GetTiles()->GetGrid();
-	link->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), link->GetSprite(), (m_Scene.get()->GetTiles()).get(), bounds));
+	link->GetSprite()->SetMover(MakeSpriteGridLayerMoverLink(m_Scene->GetTiles()->GetGrid(), link->GetSprite(), (m_Scene.get()->GetTiles()).get(), bounds));
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	link->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
 
@@ -114,18 +125,28 @@ void Layer1::onStart()
 		anim->Stop();
 		});
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+	
+//	ID id = UUID::GenerateUUID();
+//	m_enemies.emplace(std::make_pair(id, Wosu(id, "left")));
+	wosu = new Wosu(1, "left");
+	anim = (MovingAnimator*)wosu->GetAnimator("mov_gravity");
+	down = (MovingAnimation*)wosu->GetAnimation("mov_gravity");
 
-	m_enemies.emplace(std::make_pair(1, new Wosu(1, "left")));
-	m_enemies.at(1)->SetSprite(m_Scene->CreateSprite("Wosu" + m_enemies.at(1)->GetID(), 30 * 16, 10 * 16, m_enemies.at(1)->GetFilm("moving_right"), ""));
+	wosu->SetSprite(m_Scene->CreateSprite("Wosu", 30 * 16, 10 * 16, wosu->GetFilm("moving_left"), ""));
 
-	m_enemies.at(1)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+	wosu->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), wosu->GetSprite()));
+	wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+	wosu->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+
+	wosu->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
 		anim->Start(down, SystemClock::GetDeltaTime());
 		});
-	m_enemies.at(1)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+
+	wosu->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
 		anim->Stop();
 		});
-	m_enemies.at(1)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 
+	wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 }
 
 void Layer1::onDelete()
@@ -164,9 +185,12 @@ bool Layer1::mover(Event& e)
 			link->SetLookingAt("right");
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
-			
-
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Start((MovingAnimation*)link->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+			
+			wosu->SetState("moving");
+			tmp = (FrameRangeAnimator*)wosu->GetAnimator("frame_animator");
+			tmp->Start((FrameRangeAnimation*)wosu->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)wosu->GetAnimation("frame_moving_right"))->GetStartFrame());
+			((MovingAnimator*)wosu->GetAnimator("mov_moving"))->Start((MovingAnimation*)wosu->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 		}
 		
 		if (event->GetKey() == InputKey::a)
@@ -192,6 +216,7 @@ bool Layer1::mover(Event& e)
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
 			}
 		}
+
 		if (event->GetKey() == InputKey::q)
 		{
 			if (link->GetLookingAt() == "right" && (link->GetState() == "crouch" || link->GetState() == "crouch_attack")) {
@@ -218,6 +243,7 @@ bool Layer1::mover(Event& e)
 			}
 			AudioManager::Get().PlaySound(m_sounds.at("attacking"));
 		}
+
 		if (event->GetKey() == InputKey::SPACE)
 		{
 			MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("mov_jumping");
@@ -231,14 +257,17 @@ bool Layer1::mover(Event& e)
 		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{
-			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
+			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
+
+			((MovingAnimator*)wosu->GetAnimator("mov_moving"))->Stop();
+			((FrameRangeAnimator*)wosu->GetAnimator("frame_animator"))->Stop();
 		}
 		
 		if (event->GetKey() == InputKey::a)
 		{
-			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
+			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
 		}
 		
 		if (event->GetKey() == InputKey::s)
