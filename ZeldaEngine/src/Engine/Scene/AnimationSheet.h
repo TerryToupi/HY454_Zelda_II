@@ -2,11 +2,12 @@
 
 #include <Engine/Application/Core.h>
 #include <Engine/Renderer/Bitmap.h>  
+#include <Engine/Scene/LatelyDestroyable.h>
 #include <string>
 
 namespace Engine
 {  
-	class AnimationSheet
+	class AnimationSheet : public LatelyDestroyable
 	{ 
 	public:  
 		AnimationSheet(std::string _id, std::string _path) 

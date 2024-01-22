@@ -2,13 +2,14 @@
 
 #include <Engine/Application/Core.h>  
 #include <Engine/Renderer/Bitmap.h> 
-#include <Engine/Scene/AnimationSheet.h>
+#include <Engine/Scene/AnimationSheet.h> 
+#include <Engine/Scene/LatelyDestroyable.h>
 #include <Engine/Math/Math.h> 
 #include <string>
 
 namespace Engine
 {
-	class AnimationFilm
+	class AnimationFilm : public LatelyDestroyable
 	{ 
 	public: 
 		using FrameBoxes = std::vector<Rect>; 
