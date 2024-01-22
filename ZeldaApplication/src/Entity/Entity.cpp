@@ -4,7 +4,6 @@ Entity::Entity(std::string type)
 {
 	m_sheet = new AnimationSheet("misc_sheet", "Assets/AnimationFilms/elevator.bmp");
 	m_singleFilm = new AnimationFilm(m_sheet, "Assets/Config/Animations/Misc/elevator.json");
-	
 }
 
 AnimationFilm* Entity::GetFilm()
@@ -96,6 +95,7 @@ void Entity::FrameRangeStart(std::string name)
 {	
 	std::string film = m_state + "_" + m_lookingAt;
 	m_Sprite->SetFilm(m_films[film]);
+	ENGINE_TRACE(film);
 
 	startX = m_Sprite->GetPosX();
 	startY = m_Sprite->GetPosY();

@@ -1,0 +1,70 @@
+{
+   "name" : "wosu",
+	"data": [
+		{
+			"spawn_pos": {
+				"x": 140,
+				"y": 12
+			},
+			"lookingAt": "right"
+		},
+		{
+			"spawn_pos": {
+				"x": 156,
+				"y": 12
+			},
+			"lookingAt": "right"
+		},
+		{
+			"spawn_pos": {
+				"x": 176,
+				"y": 12
+			},
+			"lookingAt": "left"
+		},
+		{
+			"spawn_pos": {
+				"x": 188,
+				"y": 12
+			},
+			"lookingAt": "left"
+		},
+		{
+			"spawn_pos": {
+				"x": 215,
+				"y": 12
+			},
+			"lookingAt": "right"
+		},
+		{
+			"spawn_pos": {
+				"x": 223,
+				"y": 12
+			},
+			"lookingAt": "right"
+		},
+		{
+			"spawn_pos": {
+				"x": 215,
+				"y": 12
+			},
+			"lookingAt": "right"
+		},
+		{
+			"spawn_pos": {
+				"x": 215,
+				"y": 12
+			},
+			"lookingAt": "right"
+		},
+		{
+			"spawn_pos": {
+				"x": 215,
+				"y": 12
+			},
+			"lookingAt": "right"
+		}
+
+	]
+
+}

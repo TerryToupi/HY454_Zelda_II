@@ -4,6 +4,7 @@ Link::Link()
 {
     m_lookingAt = "right";
     m_state = "moving";
+    m_type = "Link";
 
     m_sheet = new AnimationSheet("link_sheet", "Assets/AnimationFilms/link-sprites.bmp");
     EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_right.json"));
@@ -27,14 +28,12 @@ Link::Link()
     EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, 20));
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
 
-
     EmplaceAnimator("frame_animator", new FrameRangeAnimator());
     EmplaceAnimator("mov_jumping", new MovingAnimator());
     EmplaceAnimator("mov_moving", new MovingAnimator());
     EmplaceAnimator("mov_gravity", new MovingAnimator());
 
     InitializeAnimators();  //initializes the onAction and OnFinish of all inserted animations in the entity
-                            //fully dynamic 
 }
 
 int Link::getHealth() const 
