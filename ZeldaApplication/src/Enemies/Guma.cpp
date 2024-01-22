@@ -1,9 +1,9 @@
 #include "Guma.h"
 
 Guma::Guma() {
-	setHealth(50);
-	setDamage(20);
-	setPoints(64);
+	SetHealth(50);
+	SetDamage(20);
+	SetPoints(64);
 
 }
 

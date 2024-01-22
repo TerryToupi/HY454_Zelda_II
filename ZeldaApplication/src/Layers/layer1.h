@@ -35,6 +35,7 @@ public:
     /*-----INITIALIZERS-----*/
     void InitializeTeleports();
     void InitializeStages();
+    void InitializeEnemies(GridLayer *grid);
     void InitializeAudio();
     
     /*----LAYER FUNCTIONS----*/
@@ -43,9 +44,11 @@ public:
     void onUpdate(Time ts) override;
     void onEvent(Event& e) override;
     bool mover(Event& e);
+    void EnemyMovement();
     
-    /*----CHECKERS----*/
-    void TeleportCheck();
+    /*----HANDLERS---*/
+    void TeleportHandler();
+    void EnemyHandler();
 
 public:
     Ref<Scene> m_Scene;

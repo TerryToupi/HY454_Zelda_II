@@ -1,46 +1,51 @@
 #include "Enemy.h"
 
-int Enemy::getHealth() const {
+int Enemy::GetHealth() const {
     return health;
 }
 
-int Enemy::getDamage() const {
+int Enemy::GetDamage() const {
     return damage;
 }
 
-int Enemy::getPoints() const {
+int Enemy::GetPoints() const {
     return points;
 }
 
+int Enemy::GetStage() const
+{
+    return m_stage;
+}
 
-void Enemy::setHealth(int newHealth) {
+
+void Enemy::SetHealth(int newHealth) {
     health = newHealth;
 }
 
-void Enemy::setDamage(int newDamage) {
+void Enemy::SetDamage(int newDamage) {
     damage = newDamage;
 }
 
-void Enemy::setPoints(int newPoints) {
+void Enemy::SetPoints(int newPoints) {
     points = newPoints;
 }
 
-void Enemy::attack() {
+void Enemy::Attack() {
 
 }
 
-void Enemy::takeDamage(int amount) {
+void Enemy::TakeDamage(int amount) {
     health -= amount;
 
     if (health <= 0) {
-        disapear();
+        Disapear();
     }
 }
 
-void Enemy::disapear() {
+void Enemy::Disapear() {
 
 }
 
-void Enemy::move() {
+void Enemy::Move() {
 
 }

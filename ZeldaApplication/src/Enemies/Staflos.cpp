@@ -1,9 +1,9 @@
 #include "Staflos.h"
 
 Staflos::Staflos(){
-	setHealth(32);
-	setDamage(10);
-	setPoints(30);
+	SetHealth(32);
+	SetDamage(10);
+	SetPoints(30);
 }
 
 void Staflos::apearFromCeiling() {
