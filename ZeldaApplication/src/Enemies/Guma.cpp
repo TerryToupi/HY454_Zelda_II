@@ -5,7 +5,6 @@ Guma::Guma() {
 	setDamage(20);
 	setPoints(64);
 
-	//m_sheet = new AnimationSheet("guma_sheet", "Assets/")
 }
 
 void Guma::throwObject() {

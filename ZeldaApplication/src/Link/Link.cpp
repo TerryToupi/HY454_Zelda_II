@@ -24,22 +24,13 @@ Link::Link()
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_left", 0, m_films["crouch_attack_left"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_right", 0, m_films["crouch_attack_right"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new MovingAnimation("mov_jumping", 8, 0, 0, 20));
-    EmplaceAnimation(new MovingAnimation("mov_moving_left", 0, 0, 0, 20));
-    EmplaceAnimation(new MovingAnimation("mov_moving_right", 0, 0, 0, 20));
+    EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, 20));
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
 
 
-    EmplaceAnimator("frame_moving_right", new FrameRangeAnimator());
-    EmplaceAnimator("frame_moving_left", new FrameRangeAnimator());
-    EmplaceAnimator("frame_crouch_left", new FrameRangeAnimator());
-    EmplaceAnimator("frame_crouch_right", new FrameRangeAnimator());
-    EmplaceAnimator("frame_attacking_left", new FrameRangeAnimator());
-    EmplaceAnimator("frame_attacking_right", new FrameRangeAnimator());
-    EmplaceAnimator("frame_crouch_attack_left", new FrameRangeAnimator());
-    EmplaceAnimator("frame_crouch_attack_right", new FrameRangeAnimator());
+    EmplaceAnimator("frame_animator", new FrameRangeAnimator());
     EmplaceAnimator("mov_jumping", new MovingAnimator());
-    EmplaceAnimator("mov_moving_left", new MovingAnimator());
-    EmplaceAnimator("mov_moving_right", new MovingAnimator());
+    EmplaceAnimator("mov_moving", new MovingAnimator());
     EmplaceAnimator("mov_gravity", new MovingAnimator());
 
     InitializeAnimators();  //initializes the onAction and OnFinish of all inserted animations in the entity

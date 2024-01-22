@@ -3,6 +3,7 @@
 #include <Engine.h>
 #include <json.hpp>
 #include "../Link/Link.h"
+#include "../Enemies/Wosu.h"
 
 using json = nlohmann::json;
 using namespace Engine;
@@ -25,6 +26,8 @@ class Layer1 : public Layer
 {
 public:
     using Stages = std::vector<std::pair<int, int>>;
+    using Enemies = std::unordered_map<uint32_t, Enemy*>;
+    using Sounds = std::unordered_map<std::string, AudioID>;
 
     Layer1();
     ~Layer1() = default;
@@ -50,5 +53,6 @@ public:
     std::vector<Teleports> m_teleports;                 // teleport locations
     Stages m_stages;                                    // map stages
     uint32_t m_currStage;                               // stage tracker
-    std::unordered_map<std::string, AudioID> m_sounds;  // sound files
+    Sounds m_sounds;  // sound files
+    Enemies m_enemies;
 };

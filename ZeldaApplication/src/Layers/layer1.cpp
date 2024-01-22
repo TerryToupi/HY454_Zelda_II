@@ -80,8 +80,8 @@ void Layer1::InitializeAudio()
 }
 
 void Layer1::onStart()
-{
-
+{	
+	
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 	teleportClipper = TeleportPointClipper(m_Scene->GetTiles().get());
@@ -115,6 +115,17 @@ void Layer1::onStart()
 		});
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 
+	m_enemies.emplace(std::make_pair(1, new Wosu(1, "left")));
+	m_enemies.at(1)->SetSprite(m_Scene->CreateSprite("Wosu" + m_enemies.at(1)->GetID(), 30 * 16, 10 * 16, m_enemies.at(1)->GetFilm("moving_right"), ""));
+
+	m_enemies.at(1)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+		anim->Start(down, SystemClock::GetDeltaTime());
+		});
+	m_enemies.at(1)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+		anim->Stop();
+		});
+	m_enemies.at(1)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+
 }
 
 void Layer1::onDelete()
@@ -143,73 +154,67 @@ void Layer1::onEvent(Event& e)
 
 bool Layer1::mover(Event& e)
 {
+
 	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
 	{
 		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{
-
-			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_moving_right");
-			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
-			
 			link->SetState("moving");
 			link->SetLookingAt("right");
-			((MovingAnimator*)link->GetAnimator("mov_moving_right"))->Start((MovingAnimation*)link->GetAnimation("mov_moving_right"), SystemClock::GetDeltaTime());
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
+			
 
-		
+			((MovingAnimator*)link->GetAnimator("mov_moving"))->Start((MovingAnimation*)link->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 		}
+		
 		if (event->GetKey() == InputKey::a)
 		{
-
-			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_moving_left");
-			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"))->GetStartFrame());
-
 			link->SetState("moving");
 			link->SetLookingAt("left");
-			((MovingAnimator*)link->GetAnimator("mov_moving_left"))->Start((MovingAnimation*)link->GetAnimation("mov_moving_left"), SystemClock::GetDeltaTime());
-
-
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"))->GetStartFrame());
+			
+			((MovingAnimator*)link->GetAnimator("mov_moving"))->Start((MovingAnimation*)link->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 		}
+		
 		if (event->GetKey() == InputKey::s)
 		{
 			if (link->GetLookingAt() == "right") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_crouch_right");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
-
 				link->SetState("crouch");
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
 			}
 			else if (link->GetLookingAt() == "left") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_crouch_left");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
-
 				link->SetState("crouch");
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
 			}
 		}
 		if (event->GetKey() == InputKey::q)
 		{
-			if (link->GetLookingAt() == "right" && (link->GetState() == "crouch" || link->GetState() == "crouch_attacking")) {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_crouch_attack_right");
+			if (link->GetLookingAt() == "right" && (link->GetState() == "crouch" || link->GetState() == "crouch_attack")) {
+				link->SetState("crouch_attack");
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"))->GetStartFrame());
-
-				link->SetState("crouch_attacking");
 			}
-			else if (link->GetLookingAt() == "left" && (link->GetState() == "crouch" || link->GetState() == "crouch_attacking")) {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_crouch_attack_left");
+			else if (link->GetLookingAt() == "left" && (link->GetState() == "crouch" || link->GetState() == "crouch_attack")) {
+
+				link->SetState("crouch_attack");
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
 
-				link->SetState("crouch_attacking");
 			}
 			else if (link->GetLookingAt() == "right") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_attacking_right");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"))->GetStartFrame());
-
 				link->SetState("attacking");
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"))->GetStartFrame());
 			}
 			else if (link->GetLookingAt() == "left") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_attacking_left");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"))->GetStartFrame());
-
 				link->SetState("attacking");
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"))->GetStartFrame());
 			}
 			AudioManager::Get().PlaySound(m_sounds.at("attacking"));
 		}
@@ -226,15 +231,16 @@ bool Layer1::mover(Event& e)
 		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
 		if (event->GetKey() == InputKey::d)
 		{
-			((FrameRangeAnimator*)link->GetAnimator("frame_moving_right"))->Stop();
-			((MovingAnimator*)link->GetAnimator("mov_moving_right"))->Stop();
+			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
+			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 		}
-
+		
 		if (event->GetKey() == InputKey::a)
 		{
-			((FrameRangeAnimator*)link->GetAnimator("frame_moving_left"))->Stop();
-			((MovingAnimator*)link->GetAnimator("mov_moving_left"))->Stop();
+			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
+			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 		}
+		
 		if (event->GetKey() == InputKey::s)
 		{
 			if (link->GetLookingAt() == "right") {
@@ -249,11 +255,6 @@ bool Layer1::mover(Event& e)
 				link_sprite->SetFrame(0);
 				link->SetState("moving");
 			}
-		}
-		if (event->GetKey() == InputKey::SPACE)
-		{
-			MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("mov_jumping");
-			tmp->Stop();
 		}
 	}
 
