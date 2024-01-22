@@ -21,6 +21,9 @@ namespace Engine
 
 	class Application
 	{
+	public: 
+		using PauseAction = std::function<void(void)>; 
+
 	public:
 		Application(const ApplicationConfig& config);
 		virtual ~Application(); 
@@ -31,27 +34,40 @@ namespace Engine
 
 		static Application& Instance() { return *s_Instance; }
 
-		void pushLayer(Layer *layer);  
-		void pushOverLay(Layer *Overlay);
+		void static pushLayer(Layer *layer);  
+		void static pushOverLay(Layer *Overlay);
 
-		void popLayer();  
-		void popOverLay(); 
+		void static popLayer();  
+		void static popOverLay(); 
 
 		void Run();
 
-	protected: 
+	protected:   
+		void SetOnPauseFunction(const PauseAction& f);
+		void SetOnResumeFunction(const PauseAction& f);
+		void Pause(Time t);
+		void Resume(void);
+		bool IsPaused(void);
+		Time GetPauseTime(void) const;
+	 
 		bool OnWindowClose(WindowCloseEvent& e); 
-		bool OnWindowResize(WindowResizeEvent& e); 
+		bool OnWindowResize(WindowResizeEvent& e);  
+		bool OnWindowPause(WindowPauseEvent& e);
 
-	private: 
+	private:  
 		ApplicationConfig m_AppConfig;
 		LayerStack m_Layers;  
 		Scope<Window> m_Window;  
-		bool m_Running;
+		PauseAction m_pauseFunction;  
+		PauseAction m_resumeFunction;
+		Time m_pauseTimestamp;
+		bool m_Running = false; 
+		bool m_isPaused = false;
 
 	private: 
 		static Application* s_Instance; 
 	};
 
 	Application* CreateApplication();
-}
+} 
+

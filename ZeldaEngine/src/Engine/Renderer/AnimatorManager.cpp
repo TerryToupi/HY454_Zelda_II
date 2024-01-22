@@ -40,5 +40,11 @@ namespace Engine
 			a->Progress(currTime);
 		} 
 	}
+
+	void AnimatorManager::TimeShift(Time dt)
+	{ 
+		for (auto* a : running)
+			a->TimeShift(dt);
+	}
 }
 

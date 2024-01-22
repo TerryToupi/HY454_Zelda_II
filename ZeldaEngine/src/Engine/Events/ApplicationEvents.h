@@ -8,10 +8,20 @@ namespace Engine
 	public:
 		WindowCloseEvent() = default; 
 
+		static EventType GetEventTypeStatic() { return EventType::WindowPause; } 
+		virtual	EventType GetEventType() const override { return GetEventTypeStatic(); }
+		virtual int GetCategoryFlags() const override { return ApplicationEvents; }
+	};  
+
+	class WindowPauseEvent : public Event
+	{
+	public: 
+		WindowPauseEvent() = default; 
+
 		static EventType GetEventTypeStatic() { return EventType::WindowClose; } 
 		virtual	EventType GetEventType() const override { return GetEventTypeStatic(); }
 		virtual int GetCategoryFlags() const override { return ApplicationEvents; }
-	}; 
+	};
 
 	class WindowResizeEvent : public Event
 	{ 

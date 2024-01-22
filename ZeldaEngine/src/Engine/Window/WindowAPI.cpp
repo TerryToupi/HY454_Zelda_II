@@ -50,10 +50,16 @@ namespace Engine
 					KeyRepeatEvent event(key, repeat);   
 					m_EventCallBack(event);
 				} 
-				else
+				else if ((InputKey)sdlEvent.key.keysym.sym != InputKey::ESCAPE)
 				{ 
 					InputKey key = (InputKey)sdlEvent.key.keysym.sym;
 					KeyTapEvent event(key); 
+					m_EventCallBack(event);
+				} 
+				else
+				{
+					InputKey key = (InputKey)sdlEvent.key.keysym.sym;
+					WindowPauseEvent event;
 					m_EventCallBack(event);
 				}
 			} 
