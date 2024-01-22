@@ -56,6 +56,7 @@ protected:
 
 	std::string m_state;
 	std::string m_lookingAt;
+	std::string m_type;
 	uint32_t m_id;
 
 private:
