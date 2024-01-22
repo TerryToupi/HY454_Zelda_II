@@ -1,9 +1,10 @@
 #include "Wosu.h"
 
-Wosu::Wosu(uint32_t _id, std::string _direction) {
-	setHealth(8);
-	setDamage(10);
-	setPoints(0);
+Wosu::Wosu(uint32_t _id, std::string _direction, uint32_t _stage) {
+	SetHealth(8);
+	SetDamage(10);
+	SetPoints(0);
+	m_stage = _stage;
 	m_state = "none";
 	m_id = _id;
 	m_lookingAt = _direction;
@@ -13,7 +14,7 @@ Wosu::Wosu(uint32_t _id, std::string _direction) {
 
 	EmplaceAnimation(new FrameRangeAnimation("frame_moving_left", 0, m_films["moving_left"]->GetTotalFrames(), 0, 300, 12 * 16, 150));
 	EmplaceAnimation(new FrameRangeAnimation("frame_moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 150));
-	EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, 20));
+	EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, 50));
 	EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
 
 	EmplaceAnimator("frame_animator", new FrameRangeAnimator());

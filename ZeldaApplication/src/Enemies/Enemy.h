@@ -10,22 +10,27 @@ private:
     int damage;
     int points;
 
+protected:
+    uint32_t m_stage;
+
 public:
     Enemy() = default;
     ~Enemy() = default;
-    int getHealth() const;
-    int getDamage() const;
-    int getPoints() const;
+    int GetHealth() const;
+    int GetDamage() const;
+    int GetPoints() const;
+    int GetStage() const;
 
-    void setHealth(int newHealth);
-    void setDamage(int newDamage);
-    void setPoints(int newPoints);
+    void SetHealth(int newHealth);
+    void SetDamage(int newDamage);
+    void SetPoints(int newPoints);
+    
 
  
-    void attack();
-    void takeDamage(int amount);
-    void disapear();
-    void move();
+    void Attack();
+    void TakeDamage(int amount);
+    void Disapear();
+    void Move();
 };
 
 #endif 

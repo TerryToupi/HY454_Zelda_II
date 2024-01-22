@@ -1,9 +1,9 @@
 #include "Bot.h"
 
 Bot::Bot() {
-	setHealth(16);
-	setDamage(15);
-	setPoints(10);
+	SetHealth(16);
+	SetDamage(15);
+	SetPoints(10);
 }
 
 void Bot::jump() {

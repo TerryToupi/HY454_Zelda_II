@@ -1,7 +1,8 @@
 #include "Layer1.h"
 
-Clipper teleportClipper;
+Clipper clipper;
 std::pair<int, int>* bounds;
+
 
 Layer1::Layer1()
 	: Layer("Layer1")
@@ -37,7 +38,7 @@ SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite)
 	};
 }
 
-const Clipper TeleportPointClipper(TileLayer* layer)
+const Clipper InitClipper(TileLayer* layer)
 {
 	return Clipper().SetView(
 		[layer](void) -> const Rect&
@@ -83,6 +84,39 @@ void Layer1::InitializeStages()
 
 }
 
+void Layer1::InitializeEnemies(GridLayer *grid) 
+{
+	std::ifstream wosuFile("Assets/Config/Enemies/wosu_config.json");
+	json Wosus = json::parse(wosuFile);
+
+	for (auto w : Wosus["data"])
+	{
+		ID id = UUID::GenerateUUID();
+		Wosu* wosu = new Wosu(id, w["lookingAt"].get<std::string>(), w["stage"].get<uint32_t>());
+	    wosu->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), w["spawn_pos"]["x"].get<uint32_t>() * 16, w["spawn_pos"]["y"].get<uint32_t>() * 16, wosu->GetFilm("moving_" + w["lookingAt"].get<std::string>()), "")));
+
+		wosu->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), wosu->GetSprite()));
+		wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+		wosu->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+		
+		MovingAnimator* anim = (MovingAnimator*)wosu->GetAnimator("mov_gravity");
+		MovingAnimation* down = (MovingAnimation*)wosu->GetAnimation("mov_gravity");
+	
+		wosu->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+			anim->Start(down, SystemClock::GetDeltaTime());
+			});
+
+		wosu->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+			anim->Stop();
+			});
+
+		wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+
+		m_enemies.emplace(std::make_pair(id, wosu));
+
+	}
+}
+
 void Layer1::InitializeAudio()
 {	
 	AudioID tmp = AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav");
@@ -94,7 +128,7 @@ void Layer1::onStart()
 	
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
-	teleportClipper = TeleportPointClipper(m_Scene->GetTiles().get());
+	clipper = InitClipper(m_Scene->GetTiles().get());
 
 	link = new Link();
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
@@ -126,27 +160,7 @@ void Layer1::onStart()
 		});
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	
-//	ID id = UUID::GenerateUUID();
-//	m_enemies.emplace(std::make_pair(id, Wosu(id, "left")));
-	wosu = new Wosu(1, "left");
-	anim = (MovingAnimator*)wosu->GetAnimator("mov_gravity");
-	down = (MovingAnimation*)wosu->GetAnimation("mov_gravity");
-
-	wosu->SetSprite(m_Scene->CreateSprite("Wosu", 30 * 16, 10 * 16, wosu->GetFilm("moving_left"), ""));
-
-	wosu->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), wosu->GetSprite()));
-	wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
-	wosu->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
-
-	wosu->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
-		anim->Start(down, SystemClock::GetDeltaTime());
-		});
-
-	wosu->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
-		anim->Stop();
-		});
-
-	wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+	InitializeEnemies(grid);
 }
 
 void Layer1::onDelete()
@@ -157,7 +171,8 @@ void Layer1::onUpdate(Time ts)
 {
 	*bounds = m_stages.at(m_currStage - 1);
 	
-	TeleportCheck();
+	TeleportHandler();
+	EnemyMovement();
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
@@ -187,10 +202,6 @@ bool Layer1::mover(Event& e)
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Start((MovingAnimation*)link->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 			
-			wosu->SetState("moving");
-			tmp = (FrameRangeAnimator*)wosu->GetAnimator("frame_animator");
-			tmp->Start((FrameRangeAnimation*)wosu->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)wosu->GetAnimation("frame_moving_right"))->GetStartFrame());
-			((MovingAnimator*)wosu->GetAnimator("mov_moving"))->Start((MovingAnimation*)wosu->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 		}
 		
 		if (event->GetKey() == InputKey::a)
@@ -260,8 +271,6 @@ bool Layer1::mover(Event& e)
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
 
-			((MovingAnimator*)wosu->GetAnimator("mov_moving"))->Stop();
-			((FrameRangeAnimator*)wosu->GetAnimator("frame_animator"))->Stop();
 		}
 		
 		if (event->GetKey() == InputKey::a)
@@ -290,7 +299,7 @@ bool Layer1::mover(Event& e)
 	return true;
 }
 
-void Layer1::TeleportCheck()
+void Layer1::TeleportHandler()
 {
 	Rect d1;
 	Rect d2;
@@ -301,7 +310,7 @@ void Layer1::TeleportCheck()
 	for (auto i : m_teleports)
 	{	
 		tmpBox = i.origin->GetBox();
-		if (teleportClipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 		{	
 			Sprite dest = i.dest;
 			m_Scene->GetColider().Register(link_sprite, i.origin, [link_sprite, dest, tilelayer, this, i](Sprite s1, Sprite s2) {
@@ -316,10 +325,38 @@ void Layer1::TeleportCheck()
 
 			m_Scene->GetColider().Check();
 			m_Scene->GetColider().Cancel(link_sprite, i.origin);
-
 		}
 	}
 
 }
 
+void Layer1::EnemyMovement() {
+	for (auto e : m_enemies)
+	{	
+		MovingAnimator* mov = (MovingAnimator*)e.second->GetAnimator("mov_moving");
+		FrameRangeAnimator* anim = (FrameRangeAnimator*)e.second->GetAnimator("frame_animator");
+		
+		if (e.second->GetStage() == m_currStage)
+		{
+			e.second->SetState("moving");
+			if (anim->HasFinished())
+				anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
+			if(mov->HasFinished())
+				mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+		}
+		else {
+			e.second->SetState("idle");
 
+			if (!mov->HasFinished())
+				mov->Stop();
+			
+			if (!anim->HasFinished())
+				anim->Stop();
+		}
+	}
+}
+
+void Layer1::EnemyHandler() 
+{
+
+}
