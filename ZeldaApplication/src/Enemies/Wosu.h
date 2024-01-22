@@ -5,7 +5,7 @@
 
 class Wosu : public Enemy {
 public:
-	Wosu();
+	Wosu(uint32_t _id, std::string direction);
 	~Wosu() = default;
 };
 

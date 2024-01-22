@@ -30,12 +30,13 @@ public:
 	void SetLookingAt(std::string _loookingAt);
 	std::string GetState();
 	std::string GetLookingAt();
+	uint32_t GetID();
 
 	void EntityDestroy();
 
 public:
-	void FrameRangeFinish(Animator* animator, const Animation& anim);
-	void FrameRangeAction(std::string name);
+	void FrameRangeFinish();
+	void FrameRangeAction(FrameRangeAnimator* animator);
 	void FrameRangeStart(std::string name);
 
 	void MovingAction(std::string name, MovingAnimator* animator);
@@ -43,7 +44,7 @@ public:
 	void InitializeAnimators();
 
 protected:
-
+	
 	Sprite m_Sprite;
 	AnimationSheet* m_sheet;
 	Films m_films;
@@ -55,6 +56,7 @@ protected:
 
 	std::string m_state;
 	std::string m_lookingAt;
+	uint32_t m_id;
 
 private:
 	uint32_t startX;

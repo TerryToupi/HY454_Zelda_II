@@ -2,7 +2,7 @@
 
 Entity::Entity(std::string type)
 {
-	m_sheet = new AnimationSheet("misc_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp");
+	m_sheet = new AnimationSheet("misc_sheet", "Assets/AnimationFilms/elevator.bmp");
 	m_singleFilm = new AnimationFilm(m_sheet, "Assets/Config/Animations/Misc/elevator.json");
 	
 }
@@ -43,6 +43,11 @@ std::string Entity::GetState()
 std::string Entity::GetLookingAt()
 {
 	return m_lookingAt;
+}
+
+uint32_t Entity::GetID()
+{
+	return m_id;
 }
 
 void Entity::EmplaceAnimation(Animation* animation) 
@@ -88,12 +93,15 @@ void Entity::LeftAttackPosUpdate(std::string name)
 }
 
 void Entity::FrameRangeStart(std::string name) 
-{
+{	
+	std::string film = m_state + "_" + m_lookingAt;
+	m_Sprite->SetFilm(m_films[film]);
+
 	startX = m_Sprite->GetPosX();
 	startY = m_Sprite->GetPosY();
 }
 
-void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
+void Entity::FrameRangeFinish()
 {
 	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attacking"))
 		m_Sprite->SetPos(startX, startY);
@@ -101,19 +109,21 @@ void Entity::FrameRangeFinish(Animator* animator, const Animation& anim)
 		m_Sprite->SetFrame(0);
 }
 
-void Entity::FrameRangeAction(std::string name)
-{	
-	std::string film = name.substr(name.find_first_of('_')+1);
-	m_Sprite->SetFilm(m_films[film]);
-	uint32_t currFrame = ((FrameRangeAnimator*)m_animators[name])->GetCurrFrame();
+void Entity::FrameRangeAction(FrameRangeAnimator* animator)
+{
+	uint32_t currFrame = animator->GetCurrFrame();
+	std::string film = m_state + "_" + m_lookingAt;
+
+	ENGINE_TRACE(currFrame);
 	m_Sprite->SetFrame(currFrame);
+
 
 	if (m_lookingAt == "left")
 	{
 		if ((m_state == "attacking" && currFrame == 2) ||
-			(m_state == "crouch_attacking" && currFrame == 1))
+			(m_state == "crouch_attack" && currFrame == 1))
 			LeftAttackPosUpdate(film);
-		else if (m_state == "attacking" || m_state == "crouch_attacking")
+		else if (m_state == "attacking" || m_state == "crouch_attack")
 			m_Sprite->SetPos(startX, startY);
 	}
 }
@@ -143,18 +153,18 @@ void Entity::InitializeAnimators()
 	for (auto i : m_animators) {
 	
 
-		if (i.first.find("frame_") != std::string::npos)
+		if (i.first == "frame_animator")
 		{
 			i.second->SetOnStart(
 				[this,i](Animator* animator) { return this->FrameRangeStart(i.first); }
 			);
 
 			i.second->SetOnAction(
-				[this,i](Animator* animator, const Animation& anim) { return this->FrameRangeAction(i.first); }
+				[this,i](Animator* animator, const Animation& anim) { return this->FrameRangeAction((FrameRangeAnimator*)i.second); }
 			);
 
 			i.second->SetOnFinish(
-				[this,i](Animator* animator) { return this->FrameRangeFinish(animator, *(this->GetAnimation(i.first))); }
+				[this,i](Animator* animator) { return this->FrameRangeFinish(); }
 			);
 		}
 		else if (i.first.find("mov_") != std::string::npos)
