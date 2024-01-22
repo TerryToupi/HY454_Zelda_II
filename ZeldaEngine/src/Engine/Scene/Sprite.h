@@ -59,8 +59,9 @@ namespace Engine
 
 	private:  
 		std::string m_hashName; 
-		byte m_frameNo = 0;
-		Rect m_frameBox; // inside the film
+		byte m_frameNo = 0; 
+		Rect m_frameBox; // inside the film 
+		Rect m_hitBox;
 		int m_x = 0, m_y = 0;
 		bool m_isVisible = false;
 		AnimationFilm* m_currFilm = nullptr;

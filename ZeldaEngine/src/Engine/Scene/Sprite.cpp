@@ -89,11 +89,10 @@ namespace Engine
 		m_boundingArea = area;
 	}
 
-	void SpriteClass::SetColiderBox(unsigned _w, unsigned _h)
+	void SpriteClass::SetColiderBox(unsigned _w, unsigned _h) 
 	{
-		ENGINE_CORE_ASSERT(m_currFilm == nullptr); 
-		m_frameBox.w = _w;
-		m_frameBox.h = _h;
+		m_hitBox.w = _w;
+		m_hitBox.h = _h;
 	}
 
 	void SpriteClass::SetMotionQuantizerUse(bool v)
@@ -123,8 +122,8 @@ namespace Engine
 
 	bool SpriteClass::CollisionCheck(const Sprite s) 
 	{ 
-		SetBoundingArea(new BoundingBox(m_x, m_y, m_frameBox.w + m_x, m_frameBox.h + m_y));  
-		s->SetBoundingArea(new BoundingBox(s->m_x, s->m_y, s->m_frameBox.w + s->m_x, s->m_frameBox.h + s->m_y));
+		SetBoundingArea(new BoundingBox(m_x, m_y, m_hitBox.w + m_x, m_hitBox.h + m_y));  
+		s->SetBoundingArea(new BoundingBox(s->m_x, s->m_y, s->m_hitBox.w + s->m_x, s->m_hitBox.h + s->m_y));
 		bool outcome = m_boundingArea->Intersects(*s->GetBoundingArea()); 
 		m_boundingArea->Destroy(); 
 		s->m_boundingArea->Destroy(); 
