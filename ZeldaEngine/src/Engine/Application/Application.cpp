@@ -119,10 +119,6 @@ namespace Engine {
 				}
 				AnimatorManager::GetInstance().Progress(currTime);
 			}
-			else
-			{
-				AnimatorManager::GetInstance().TimeShift(currTime - m_pauseTimestamp);
-			}
 
 			Renderer::BufferFlip(); 
 		}
@@ -151,7 +147,6 @@ namespace Engine {
 		m_isPaused = false;  
 		if (m_resumeFunction)
 			m_resumeFunction(); 
-		m_pauseTimestamp = 0;
 	}
 
 	bool Application::IsPaused(void)
@@ -179,9 +174,14 @@ namespace Engine {
 	bool Application::OnWindowPause(WindowPauseEvent& e)
 	{ 
 		if (IsPaused())
-			Resume();
+		{
+			AnimatorManager::GetInstance().TimeShift(SystemClock::GetDeltaTime() - GetPauseTime());
+			Resume(); 
+		}
 		else
+		{
 			Pause(SystemClock::GetDeltaTime()); 
+		}
 
 		return true;
 	}

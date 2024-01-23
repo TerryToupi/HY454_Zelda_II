@@ -94,7 +94,7 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 		ID id = UUID::GenerateUUID();
 		Wosu* wosu = new Wosu(id, w["lookingAt"].get<std::string>(), w["stage"].get<uint32_t>());
 	    wosu->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), w["spawn_pos"]["x"].get<uint32_t>() * 16, w["spawn_pos"]["y"].get<uint32_t>() * 16, wosu->GetFilm("moving_" + w["lookingAt"].get<std::string>()), "")));
-
+		wosu->GetSprite()->SetColiderBox(16, 32);
 		wosu->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), wosu->GetSprite()));
 		wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 		wosu->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
@@ -176,6 +176,7 @@ void Layer1::onUpdate(Time ts)
 	
 	TeleportHandler();
 	EnemyMovement();
+	EnemyHandler();
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
@@ -361,5 +362,32 @@ void Layer1::EnemyMovement() {
 
 void Layer1::EnemyHandler() 
 {
+	Rect d1;
+	Rect d2;
+	Rect tmpBox = m_enemies.begin()->second->GetSprite()->GetBox();
+	Sprite link_sprite = link->GetSprite();
+	TileLayer* tilelayer = m_Scene->GetTiles().get();
 
+	for (auto i : m_enemies)
+	{
+		tmpBox = i.second->GetSprite()->GetBox();
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+		{
+			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, tilelayer, this, i](Sprite s1, Sprite s2) {
+				int32_t dx = (link->GetLookingAt() == "right") ? -16 : 16;
+				FrameRangeAnimator* anim = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+
+				link->SetState("damage_from");
+
+				if (!anim->HasFinished())
+					anim->Stop();
+
+				anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+				link->GetSprite()->Move(dx, -5);
+			});
+
+			m_Scene->GetColider().Check();
+			m_Scene->GetColider().Cancel(link_sprite, i.second->GetSprite());
+		}
+	}
 }

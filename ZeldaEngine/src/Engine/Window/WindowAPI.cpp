@@ -43,23 +43,23 @@ namespace Engine
 
 			else if (sdlEvent.type == SDL_KEYDOWN)
 			{
-				if (sdlEvent.key.repeat)
+				if ((InputKey)sdlEvent.key.keysym.sym == InputKey::ESCAPE)
+				{
+					InputKey key = (InputKey)sdlEvent.key.keysym.sym;
+					WindowPauseEvent event;
+					m_EventCallBack(event);
+				} 
+				else if (sdlEvent.key.repeat)
 				{
 					InputKey key = (InputKey)sdlEvent.key.keysym.sym; 
 					bool repeat = sdlEvent.key.repeat;
 					KeyRepeatEvent event(key, repeat);   
 					m_EventCallBack(event);
 				} 
-				else if ((InputKey)sdlEvent.key.keysym.sym != InputKey::ESCAPE)
-				{ 
-					InputKey key = (InputKey)sdlEvent.key.keysym.sym;
-					KeyTapEvent event(key); 
-					m_EventCallBack(event);
-				} 
 				else
 				{
 					InputKey key = (InputKey)sdlEvent.key.keysym.sym;
-					WindowPauseEvent event;
+					KeyTapEvent event(key);
 					m_EventCallBack(event);
 				}
 			} 

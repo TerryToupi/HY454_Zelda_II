@@ -95,7 +95,7 @@ void Entity::FrameRangeStart(std::string name)
 {	
 	std::string film = m_state + "_" + m_lookingAt;
 	m_Sprite->SetFilm(m_films[film]);
-	ENGINE_TRACE(film);
+	//ENGINE_TRACE(film);
 
 	startX = m_Sprite->GetPosX();
 	startY = m_Sprite->GetPosY();
@@ -114,7 +114,7 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 	uint32_t currFrame = animator->GetCurrFrame();
 	std::string film = m_state + "_" + m_lookingAt;
 
-	ENGINE_TRACE(currFrame);
+	//ENGINE_TRACE(currFrame);
 	m_Sprite->SetFrame(currFrame);
 
 
