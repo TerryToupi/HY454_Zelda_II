@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Engine.h>
+#include <json.hpp>
 
+using json = nlohmann::json;
 using namespace Engine;
 
 class Entity : public LatelyDestroyable{
