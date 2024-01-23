@@ -13,6 +13,7 @@ private:
 
 protected:
     uint32_t m_stage;
+    uint32_t m_id;
 
 public:
     Enemy() = default;
@@ -22,6 +23,7 @@ public:
     int GetPoints() const;
     int GetSpeed() const;
     int GetStage() const;
+    uint32_t GetID() const;
 
     void SetHealth(int newHealth);
     void SetDamage(int newDamage);

@@ -44,10 +44,6 @@ std::string Entity::GetLookingAt()
 	return m_lookingAt;
 }
 
-uint32_t Entity::GetID()
-{
-	return m_id;
-}
 
 void Entity::EmplaceAnimation(Animation* animation) 
 {
@@ -71,7 +67,27 @@ void Entity::SetSprite(Sprite s)
 
 void Entity::EntityDestroy()
 {
+	ENGINE_TRACE("Destroy");
 	m_Sprite->Destroy();
+
+	for (auto i : m_animators)
+	{
+		i.second->Destroy();
+		//m_animators.erase(i.first);
+	};
+
+	for (auto i : m_films)
+	{
+		i.second->Destroy();
+		//m_films.erase(i.first);
+	}
+
+	for (auto i : m_animations)
+	{
+		i.second->Destroy();
+	//	m_animations.erase(i.first);
+	}
+
 	this->Destroy();
 }
 
@@ -95,18 +111,23 @@ void Entity::FrameRangeStart(std::string name)
 {	
 	std::string film = m_state + "_" + m_lookingAt;
 	m_Sprite->SetFilm(m_films[film]);
-	//ENGINE_TRACE(film);
+	ENGINE_TRACE("Animation Started");
 
 	startX = m_Sprite->GetPosX();
 	startY = m_Sprite->GetPosY();
 }
 
 void Entity::FrameRangeFinish()
-{
+{	
 	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attacking"))
 		m_Sprite->SetPos(startX, startY);
 	else if(m_state == "moving")
 		m_Sprite->SetFrame(0);
+
+	if (m_state == "death")
+	{
+		EntityDestroy();
+	}
 }
 
 void Entity::FrameRangeAction(FrameRangeAnimator* animator)
@@ -179,7 +200,8 @@ void Entity::InitializeAnimators()
 				i.second->SetOnFinish(
 					[this](Animator* animator) {
 						this->m_Sprite->GetGravityHandler().SetGravityAddicted(true);
-						this->SetState("idle");
+						if (m_state != "death")
+							this->SetState("idle");
 					}
 				);
 
@@ -187,7 +209,7 @@ void Entity::InitializeAnimators()
 			else
 			{
 				i.second->SetOnFinish(
-					[this](Animator* animator) { this->SetState("idle"); }
+					[this](Animator* animator) {}
 				);
 			}
 

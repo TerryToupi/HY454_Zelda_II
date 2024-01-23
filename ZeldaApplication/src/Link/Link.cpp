@@ -38,12 +38,14 @@ Link::Link()
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_left", 0, m_films["crouch_attack_left"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_right", 0, m_films["crouch_attack_right"]->GetTotalFrames(), 1, 0, 0, 100));
 
+
     EmplaceAnimation(new MovingAnimation("mov_jumping", getJumpingForce(), 0, 0, 20));
     EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, getSpeed()));
     EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 1, 0, 0, 10));
     EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 1, 0, 0, 10));
-
+  
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
+    EmplaceAnimation(new MovingAnimation("mov_damage", 4, 0, 0, 20));
 
     EmplaceAnimator("frame_animator", new FrameRangeAnimator());
     EmplaceAnimator("mov_jumping", new MovingAnimator());

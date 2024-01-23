@@ -1,6 +1,6 @@
 {
   "animation": "block_braking",
-  "total_frames" : 1,
+  "total_frames" : 3,
   "frames": [
     {
       "frame": 1,
