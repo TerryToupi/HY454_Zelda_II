@@ -2,9 +2,20 @@
 
 Link::Link()
 {
+    std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
+    json configVars = json::parse(file);
+
+
     m_lookingAt = "right";
     m_state = "moving";
     m_type = "Link";
+
+    setHealth(configVars["Link"]["HP"]);
+    setDamage(configVars["Link"]["Damage"]);
+    setSpeed(100 - configVars["Link"]["Speed"]);
+    setLives(configVars["Link"]["InitialLives"]);
+    setJumpingForce(configVars["Link"]["JumpingForce"]);
+
 
     m_sheet = new AnimationSheet("link_sheet", "Assets/AnimationFilms/link-sprites.bmp");
     EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_right.json"));
@@ -26,10 +37,13 @@ Link::Link()
     EmplaceAnimation(new FrameRangeAnimation("frame_attacking_right", 0, m_films["attacking_right"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_left", 0, m_films["crouch_attack_left"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_right", 0, m_films["crouch_attack_right"]->GetTotalFrames(), 1, 0, 0, 100));
-    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 1, 0, 0, 30));
-    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 1, 0, 0, 30));
-    EmplaceAnimation(new MovingAnimation("mov_jumping", 8, 0, 0, 20));
-    EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, 20));
+
+
+    EmplaceAnimation(new MovingAnimation("mov_jumping", getJumpingForce(), 0, 0, 20));
+    EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, getSpeed()));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 1, 0, 0, 10));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 1, 0, 0, 10));
+  
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
     EmplaceAnimation(new MovingAnimation("mov_damage", 4, 0, 0, 20));
 
@@ -61,6 +75,17 @@ int Link::getLives() const
     return lives;
 }
 
+int Link::getSpeed() const
+{
+    return speed;
+}
+
+int Link::getJumpingForce() const
+{
+    return jumpingForce;
+}
+
+
 void Link::setHealth(int newHealth)
 {
     health = newHealth;
@@ -80,6 +105,17 @@ void Link::setLives(int newLives)
 {
     lives = newLives;
 }
+
+void Link::setSpeed(int newSpeed)
+{
+    speed = newSpeed;
+}
+
+void Link::setJumpingForce(int newJumpingForce)
+{
+    jumpingForce = newJumpingForce;
+}
+
 
 void Link::takeDamage(int amount) 
 {

@@ -8,10 +8,12 @@ using namespace Engine;
 
 class Link : public Entity{
 private:
-    int health = 100;
-    int damage = 8;
-    int magicPoints = 100;
-    int lives = 3;
+    int health;
+    int damage;
+    int magicPoints;
+    int lives;
+    int speed;
+    int jumpingForce;
 
 public:
     Link();
@@ -21,11 +23,17 @@ public:
     int getDamage() const;
     int getMagicPoints() const;
     int getLives() const;
+    int getSpeed() const;
+    int getJumpingForce() const;
     
     void setHealth(int newHealth);
     void setDamage(int newDamage);
     void setMagicPoints(int newMagicPoints);
     void setLives(int newLives);
+    void setSpeed(int newLives);
+    void setJumpingForce(int jumpingForce);
+
+
 
     void takeDamage(int amount);
     void heal(int amount);

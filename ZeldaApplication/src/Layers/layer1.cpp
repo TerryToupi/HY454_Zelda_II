@@ -116,6 +116,7 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 		//m_enemies.emplace(std::make_pair(id, wosu));
 
 		ID id = UUID::GenerateUUID();
+
 		m_enemies.emplace(std::make_pair( i, new Wosu(i, w["lookingAt"].get<std::string>(), w["stage"].get<uint32_t>())));
 	    m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), w["spawn_pos"]["x"].get<uint32_t>() * 16, w["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_" + w["lookingAt"].get<std::string>()), "")));
 		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
@@ -148,7 +149,10 @@ void Layer1::InitializeAudio()
 
 void Layer1::onStart()
 {	
-	
+	//ENGINE_TRACE("vars:");
+	//ENGINE_TRACE(configVars);*/
+
+
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 	clipper = InitClipper(m_Scene->GetTiles().get());

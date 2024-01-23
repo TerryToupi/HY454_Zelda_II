@@ -1,0 +1,90 @@
+{
+  "Link": {
+    "InitialLives": 3,
+    "HP": 100,
+    "MagicPoints": 150,
+    "Damage": 8,
+    "Speed": 90,
+    "JumpingForce": 12
+  },
+  "Enemies": [
+    {
+      "Type": "Bot",
+      "Points": 10,
+      "HP": 16,
+      "Damage": 15,
+      "Speed": 5
+    },
+    {
+      "Type": "Wosu",
+      "Points": 0,
+      "HP": 8,
+      "Damage": 10,
+      "Speed": 60
+    },
+    {
+      "Type": "Guma",
+      "Points": 50,
+      "HP": 64,
+      "Damage": 15,
+      "Speed": 4
+    },
+    {
+      "Type": "Staflos",
+      "Points": 30,
+      "HP": 32,
+      "Damage": 15,
+      "Speed": 4
+    }
+  ],
+  "Spells": [
+    {
+      "Type": "Shield",
+      "Cost": 32,
+      "Duration": 20,
+      "Cooldown": 20
+    },
+    {
+      "Type": "Life",
+      "Cost": 70,
+      "Duration": 0,
+      "Cooldown": 30
+    },
+    {
+      "Type": "Thunder",
+      "Cost": 120,
+      "Duration": 0,
+      "Cooldown": 60
+    }
+  ],
+  "Power-ups": [
+    {
+      "Type": "BluePotion",
+      "Value": "16"
+    },
+    {
+      "Type": "RedPotion",
+      "Value": "128"
+    },
+    {
+      "Type": "BasicPointBag",
+      "Value": "50"
+    },
+    {
+      "Type": "StrongerPointBag",
+      "Value": "200"
+    },
+    {
+      "Type": "Key",
+      "Value": "1"
+    },
+    {
+      "Type": "ExtraLife",
+      "Value": "1"
+    }
+  ],
+  "Audio": {
+    "SoundEffects": [],
+    "MusicTheme": ""
+  }
+}

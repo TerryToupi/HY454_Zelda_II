@@ -12,6 +12,11 @@ int Enemy::GetPoints() const {
     return points;
 }
 
+int Enemy::GetSpeed() const
+{
+    return speed;
+}
+
 int Enemy::GetStage() const
 {
     return m_stage;
@@ -21,6 +26,8 @@ uint32_t Enemy::GetID() const
 {
     return m_id;
 }
+
+
 
 
 void Enemy::SetHealth(int newHealth) {
@@ -33,6 +40,10 @@ void Enemy::SetDamage(int newDamage) {
 
 void Enemy::SetPoints(int newPoints) {
     points = newPoints;
+}
+
+void Enemy::SetSpeed(int newSpeed) {
+    speed = newSpeed;
 }
 
 void Enemy::Attack() {

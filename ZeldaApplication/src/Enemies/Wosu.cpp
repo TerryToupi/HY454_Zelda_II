@@ -1,9 +1,13 @@
 #include "Wosu.h"
 
 Wosu::Wosu(uint32_t _id, std::string _direction, uint32_t _stage) {
-	SetHealth(8);
-	SetDamage(10);
-	SetPoints(0);
+	std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
+	json configVars = json::parse(file);
+
+	SetHealth(configVars["Enemies"][1]["HP"]);
+	SetDamage(configVars["Enemies"][1]["Damage"]);
+	SetPoints(configVars["Enemies"][1]["Points"]);
+	SetSpeed(100 - configVars["Enemies"][1]["Speed"]);
 	m_stage = _stage;
 	m_state = "amblambloubla";
 	m_id = _id;
@@ -15,8 +19,10 @@ Wosu::Wosu(uint32_t _id, std::string _direction, uint32_t _stage) {
 
 	EmplaceAnimation(new FrameRangeAnimation("frame_moving_left", 0, m_films["moving_left"]->GetTotalFrames(), 0, 300, 12 * 16, 150));
 	EmplaceAnimation(new FrameRangeAnimation("frame_moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 150));
+
 	EmplaceAnimation(new FrameRangeAnimation("frame_death", 0, m_films["death_"]->GetTotalFrames(), 1, 300, 12 * 16, 50));
-	EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, 50));
+	EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, GetSpeed()));
+
 	EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
 
 	EmplaceAnimator("frame_animator", new FrameRangeAnimator());
