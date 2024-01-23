@@ -41,16 +41,18 @@ Link::Link()
 
     EmplaceAnimation(new MovingAnimation("mov_jumping", getJumpingForce(), 0, 0, 20));
     EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, getSpeed()));
-    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 1, 0, 0, 10));
-    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 1, 0, 0, 10));
+    EmplaceAnimation(new MovingAnimation("mov_damage", 5, 0, 0, getSpeed()));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 3, 0, 0, 30));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 3, 0, 0, 30));
   
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
-    EmplaceAnimation(new MovingAnimation("mov_damage", 4, 0, 0, 20));
+    EmplaceAnimation(new MovingAnimation("mov_damage", 5, 0, 0, 10));
 
     EmplaceAnimator("frame_animator", new FrameRangeAnimator());
     EmplaceAnimator("mov_jumping", new MovingAnimator());
     EmplaceAnimator("mov_moving", new MovingAnimator());
     EmplaceAnimator("mov_gravity", new MovingAnimator());
+    EmplaceAnimator("mov_damage", new MovingAnimator());
 
     InitializeAnimators();  //initializes the onAction and OnFinish of all inserted animations in the entity
 }

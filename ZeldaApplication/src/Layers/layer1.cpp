@@ -149,9 +149,6 @@ void Layer1::InitializeAudio()
 
 void Layer1::onStart()
 {	
-	//ENGINE_TRACE("vars:");
-	//ENGINE_TRACE(configVars);*/
-
 
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
@@ -407,16 +404,36 @@ void Layer1::EnemyHandler()
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, tilelayer, this, i](Sprite s1, Sprite s2) {
 				int32_t dx = (link->GetLookingAt() == "right") ? -16 : 16;
 				FrameRangeAnimator* anim = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				MovingAnimator* mov = (MovingAnimator*)link->GetAnimator("mov_damage");
 				
-				if (link->GetState() != "attacking")
+				if (link->GetState() != "attacking" && link->GetState() != "crouch_attack")
 				{
-					link->SetState("damage_from");
+					if (link->GetState() == "crouch")
+					{
+						if (link->GetLookingAt() == i.second->GetLookingAt())
+						{
+							link->SetState("damage_from");
 
-					if (!anim->HasFinished())
-						anim->Stop();
+							if (!anim->HasFinished())
+								anim->Stop();
 
-					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
-					link->GetSprite()->Move(dx, -5);
+							anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+						}
+
+					}
+					else
+					{
+						link->SetState("damage_from");
+
+						if (!anim->HasFinished())
+							anim->Stop();
+						
+						anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+					}
+
+					if (mov->HasFinished())
+						mov->Start((MovingAnimation*)link->GetAnimation("mov_damage"), SystemClock::GetDeltaTime());
+
 				}
 				else
 				{
@@ -431,7 +448,6 @@ void Layer1::EnemyHandler()
 
 		if (i.second->GetHealth() == 0)
 		{
-			ENGINE_TRACE("EPETHANE");
 			FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
 			MovingAnimator* mov = (MovingAnimator*)i.second->GetAnimator("mov_moving");
 
