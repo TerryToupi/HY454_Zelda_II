@@ -1,9 +1,13 @@
 #include "Guma.h"
 
 Guma::Guma() {
-	SetHealth(50);
-	SetDamage(20);
-	SetPoints(64);
+	std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
+	json configVars = json::parse(file);
+
+	SetHealth(configVars["Enemies"][2]["HP"]);
+	SetDamage(configVars["Enemies"][2]["Damage"]);
+	SetPoints(configVars["Enemies"][2]["Points"]);
+	SetSpeed(100 - configVars["Enemies"][2]["Speed"]);
 
 }
 

@@ -9,6 +9,7 @@ private:
     int health;
     int damage;
     int points;
+    int speed;
 
 protected:
     uint32_t m_stage;
@@ -19,11 +20,13 @@ public:
     int GetHealth() const;
     int GetDamage() const;
     int GetPoints() const;
+    int GetSpeed() const;
     int GetStage() const;
 
     void SetHealth(int newHealth);
     void SetDamage(int newDamage);
     void SetPoints(int newPoints);
+    void SetSpeed(int newPoints);
     
 
  

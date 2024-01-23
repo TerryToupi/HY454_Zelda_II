@@ -1,9 +1,13 @@
 #include "Bot.h"
 
 Bot::Bot() {
-	SetHealth(16);
-	SetDamage(15);
-	SetPoints(10);
+	std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
+	json configVars = json::parse(file);
+
+	SetHealth(configVars["Enemies"][0]["HP"]);
+	SetDamage(configVars["Enemies"][0]["Damage"]);
+	SetPoints(configVars["Enemies"][0]["Points"]);
+	SetSpeed(100 - configVars["Enemies"][0]["Speed"]);
 }
 
 void Bot::jump() {

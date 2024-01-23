@@ -98,7 +98,7 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 		wosu->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), wosu->GetSprite()));
 		wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 		wosu->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
-		
+		ENGINE_TRACE(wosu->GetHealth());
 		MovingAnimator* anim = (MovingAnimator*)wosu->GetAnimator("mov_gravity");
 		MovingAnimation* down = (MovingAnimation*)wosu->GetAnimation("mov_gravity");
 	
@@ -125,7 +125,10 @@ void Layer1::InitializeAudio()
 
 void Layer1::onStart()
 {	
-	
+	//ENGINE_TRACE("vars:");
+	//ENGINE_TRACE(configVars);*/
+
+
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 	clipper = InitClipper(m_Scene->GetTiles().get());
