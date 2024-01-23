@@ -5,7 +5,7 @@ Wosu::Wosu(uint32_t _id, std::string _direction, uint32_t _stage) {
 	SetDamage(10);
 	SetPoints(0);
 	m_stage = _stage;
-	m_state = "none";
+	m_state = "amblambloubla";
 	m_id = _id;
 	m_lookingAt = _direction;
 	m_sheet = new AnimationSheet("guma_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp");

@@ -88,32 +88,55 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 {
 	std::ifstream wosuFile("Assets/Config/Enemies/wosu_config.json");
 	json Wosus = json::parse(wosuFile);
+	ID i = 0;
 
 	for (auto w : Wosus["data"])
 	{
-		ID id = UUID::GenerateUUID();
-		Wosu* wosu = new Wosu(id, w["lookingAt"].get<std::string>(), w["stage"].get<uint32_t>());
-	    wosu->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), w["spawn_pos"]["x"].get<uint32_t>() * 16, w["spawn_pos"]["y"].get<uint32_t>() * 16, wosu->GetFilm("moving_" + w["lookingAt"].get<std::string>()), "")));
-		wosu->GetSprite()->SetColiderBox(16, 32);
-		wosu->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), wosu->GetSprite()));
-		wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
-		wosu->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
-		
-		MovingAnimator* anim = (MovingAnimator*)wosu->GetAnimator("mov_gravity");
-		MovingAnimation* down = (MovingAnimation*)wosu->GetAnimation("mov_gravity");
+		//ID id = UUID::GenerateUUID();
+		//Wosu* wosu = new Wosu(id, w["lookingAt"].get<std::string>(), w["stage"].get<uint32_t>());
+	 //   wosu->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), w["spawn_pos"]["x"].get<uint32_t>() * 16, w["spawn_pos"]["y"].get<uint32_t>() * 16, wosu->GetFilm("moving_" + w["lookingAt"].get<std::string>()), "")));
+		//wosu->GetSprite()->SetColiderBox(16, 32);
+		//wosu->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), wosu->GetSprite()));
+		//wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+		//wosu->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+		//
+		//MovingAnimator* anim = (MovingAnimator*)wosu->GetAnimator("mov_gravity");
+		//MovingAnimation* down = (MovingAnimation*)wosu->GetAnimation("mov_gravity");
 	
-		wosu->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+		//wosu->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+		//	anim->Start(down, SystemClock::GetDeltaTime());
+		//	});
+
+		//wosu->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+		//	anim->Stop();
+		//	});
+
+		//wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+
+		//m_enemies.emplace(std::make_pair(id, wosu));
+
+		ID id = UUID::GenerateUUID();
+		m_enemies.emplace(std::make_pair( i, new Wosu(i, w["lookingAt"].get<std::string>(), w["stage"].get<uint32_t>())));
+	    m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), w["spawn_pos"]["x"].get<uint32_t>() * 16, w["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_" + w["lookingAt"].get<std::string>()), "")));
+		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
+		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+		
+		MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
+		MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
+
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
 			anim->Start(down, SystemClock::GetDeltaTime());
 			});
 
-		wosu->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
 			anim->Stop();
 			});
 
-		wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 
-		m_enemies.emplace(std::make_pair(id, wosu));
-
+		i++;
 	}
 }
 
@@ -172,8 +195,10 @@ void Layer1::onUpdate(Time ts)
 	*bounds = m_stages.at(m_currStage - 1);
 	
 	TeleportHandler();
+	
 	EnemyMovement();
 	EnemyHandler();
+
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
@@ -271,13 +296,14 @@ bool Layer1::mover(Event& e)
 		{
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
-
+			link->SetState("idle");
 		}
 		
 		if (event->GetKey() == InputKey::a)
 		{
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
+			link->SetState("idle");
 		}
 		
 		if (event->GetKey() == InputKey::s)
@@ -339,11 +365,14 @@ void Layer1::EnemyMovement() {
 		
 		if (e.second->GetStage() == m_currStage)
 		{
-			e.second->SetState("moving");
-			if (anim->HasFinished())
-				anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
-			if(mov->HasFinished())
-				mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+			if (e.second->GetState() != "death") {
+				e.second->SetState("moving");
+
+				if (anim->HasFinished())
+					anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
+				if (mov->HasFinished())
+					mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+			}
 		}
 		else {
 			e.second->SetState("idle");
@@ -364,6 +393,7 @@ void Layer1::EnemyHandler()
 	Rect tmpBox = m_enemies.begin()->second->GetSprite()->GetBox();
 	Sprite link_sprite = link->GetSprite();
 	TileLayer* tilelayer = m_Scene->GetTiles().get();
+	Enemy* dying = nullptr;
 
 	for (auto i : m_enemies)
 	{
@@ -397,10 +427,9 @@ void Layer1::EnemyHandler()
 
 		if (i.second->GetHealth() == 0)
 		{
+			ENGINE_TRACE("EPETHANE");
 			FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
 			MovingAnimator* mov = (MovingAnimator*)i.second->GetAnimator("mov_moving");
-			i.second->SetLookingAt("");
-			i.second->SetState("death");
 
 			if (!mov->HasFinished())
 				mov->Stop();
@@ -408,9 +437,16 @@ void Layer1::EnemyHandler()
 			if (!anim->HasFinished())
 				anim->Stop();
 
+			i.second->SetLookingAt("");
+			i.second->SetState("death");
+			
+
 			anim->Start((FrameRangeAnimation*)i.second->GetAnimation("frame_death"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)i.second->GetAnimation("frame_death"))->GetStartFrame());
-		//	i.second->EntityDestroy();
-		//	m_enemies.erase(i.second->GetID());
+			dying = i.second;
 		}
 	}
+
+	if (dying)
+		m_enemies.erase(m_enemies.find(dying->GetID()));
+
 }

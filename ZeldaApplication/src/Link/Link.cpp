@@ -31,6 +31,7 @@ Link::Link()
     EmplaceAnimation(new MovingAnimation("mov_jumping", 8, 0, 0, 20));
     EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, 20));
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
+    EmplaceAnimation(new MovingAnimation("mov_damage", 4, 0, 0, 20));
 
     EmplaceAnimator("frame_animator", new FrameRangeAnimator());
     EmplaceAnimator("mov_jumping", new MovingAnimator());

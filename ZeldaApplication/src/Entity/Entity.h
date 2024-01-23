@@ -30,7 +30,6 @@ public:
 	void SetLookingAt(std::string _loookingAt);
 	std::string GetState();
 	std::string GetLookingAt();
-	uint32_t GetID();
 
 	void EntityDestroy();
 
@@ -57,7 +56,6 @@ protected:
 	std::string m_state;
 	std::string m_lookingAt;
 	std::string m_type;
-	uint32_t m_id;
 
 private:
 	uint32_t startX;
