@@ -98,7 +98,8 @@ void layer1::onUpdate(Time ts)
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
-	Renderer::DisplaySprites();
+	Renderer::DisplaySprites(); 
+	Renderer::DebugDisplayGrid();
 	Renderer::EndScene();
 }
 

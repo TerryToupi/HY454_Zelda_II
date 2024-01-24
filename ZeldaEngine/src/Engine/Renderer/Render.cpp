@@ -57,7 +57,7 @@ namespace Engine
 	{ 
 		Bitmap red; 
 		Rect r{ x, y, w, h };
-		red.LoadBMP("Assets/Debug/4_tile_red.bmp");
+		red.LoadBMP("Assets/DebugAssets/4_tile_red.bmp");
 		Bitmap::Blit(red, NULL, dest, &r);
 	}
 	
