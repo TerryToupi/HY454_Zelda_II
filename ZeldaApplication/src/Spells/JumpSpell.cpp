@@ -1,12 +1,12 @@
-#include "LifeSpell.h"
+#include "JumpSpell.h"
 
-LifeSpell::LifeSpell() {
+JumpSpell::JumpSpell() {
 	std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
 	json configVars = json::parse(file);
 
-	setCost(configVars["Spells"][1]["Cost"]);
-	setDuration(configVars["Spells"][1]["Duration"]);
-	setCooldown(configVars["Spells"][1]["Cooldown"]);
+	setCost(configVars["Spells"][3]["Cost"]);
+	setDuration(configVars["Spells"][3]["Duration"]);
+	setCooldown(configVars["Spells"][3]["Cooldown"]);
 	setDurationRemainingTime(0);
 	setCooldownRemainingTime(0);
 	setType("jumpspell");

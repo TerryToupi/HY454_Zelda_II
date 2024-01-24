@@ -2,7 +2,7 @@
   "Link": {
     "InitialLives": 3,
     "HP": 100,
-    "MagicPoints": 150,
+    "MagicPoints": 450,
     "Damage": 8,
     "Speed": 90,
     "JumpingForce": 12
@@ -41,20 +41,26 @@
     {
       "Type": "Shield",
       "Cost": 32,
-      "Duration": 20,
-      "Cooldown": 20
+      "Duration": 20000,
+      "Cooldown": 20000
     },
     {
       "Type": "Life",
       "Cost": 70,
       "Duration": 0,
-      "Cooldown": 30
+      "Cooldown": 30000
     },
     {
       "Type": "Thunder",
       "Cost": 120,
       "Duration": 0,
-      "Cooldown": 60
+      "Cooldown": 60000
+    },
+    {
+      "Type": "Jump",
+      "Cost": 48,
+      "Duration": 10000,
+      "Cooldown": 10000
     }
   ],
   "Power-ups": [

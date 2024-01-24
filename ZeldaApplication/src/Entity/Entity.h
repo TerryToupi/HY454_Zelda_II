@@ -25,6 +25,8 @@ public:
 	void EmplaceAnimation(Animation* animation);
 	void EmplaceFilm(std::string id, AnimationFilm* film);
 	void EmplaceAnimator(std::string id, Animator* animator);
+	void EraseAnimation(Animation* animation);
+
 	void SetSprite(Sprite s);
 	void LeftAttackPosUpdate(std::string name);
 

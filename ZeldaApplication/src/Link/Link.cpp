@@ -12,8 +12,9 @@ Link::Link()
 
     setHealth(configVars["Link"]["HP"]);
     setDamage(configVars["Link"]["Damage"]);
-    setSpeed(100 - configVars["Link"]["Speed"]);
+    setMagicPoints(configVars["Link"]["MagicPoints"]);
     setLives(configVars["Link"]["InitialLives"]);
+    setSpeed(100 - configVars["Link"]["Speed"]);
     setJumpingForce(configVars["Link"]["JumpingForce"]);
 
 
@@ -38,8 +39,8 @@ Link::Link()
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_left", 0, m_films["crouch_attack_left"]->GetTotalFrames(), 1, 0, 0, 100));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_attack_right", 0, m_films["crouch_attack_right"]->GetTotalFrames(), 1, 0, 0, 100));
 
-
-    EmplaceAnimation(new MovingAnimation("mov_jumping", getJumpingForce(), 0, 0, 20));
+    jumpAnimation = new MovingAnimation("mov_jumping", getJumpingForce(), 0, 0, 20);
+    EmplaceAnimation(jumpAnimation);
     EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, getSpeed()));
     EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 1, 0, 0, 10));
     EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 1, 0, 0, 10));
@@ -119,7 +120,13 @@ void Link::setJumpingForce(int newJumpingForce)
 
 void Link::takeDamage(int amount) 
 {
+    if (shieldspell.isActive())
+        amount = amount / 2;
+
     health -= amount;
+
+    ENGINE_TRACE(amount);
+    ENGINE_TRACE(health);
 
     if (health <= 0)
         loseLife();
