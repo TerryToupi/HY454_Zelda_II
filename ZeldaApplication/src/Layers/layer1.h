@@ -5,6 +5,7 @@
 #include "../Link/Link.h"
 #include "../Enemies/Wosu.h"
 
+
 using json = nlohmann::json;
 using namespace Engine;
 
@@ -48,6 +49,8 @@ public:
     /*----HANDLERS---*/
     void TeleportHandler();
     void EnemyHandler();
+    void CheckSpells(Time ts);
+    void UpdateSpell(Spell& spell, Time ts);
 
 public:
     Link* link;                                         // main character instance
@@ -56,6 +59,7 @@ public:
     uint32_t m_currStage;                               // stage tracker
     Sounds m_sounds;  // sound files
     Enemies m_enemies;
+
 
     Wosu* wosu;
 };

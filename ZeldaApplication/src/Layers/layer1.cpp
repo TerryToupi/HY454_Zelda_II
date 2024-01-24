@@ -1,4 +1,5 @@
 #include "Layer1.h"
+#include "Layer1.h"
 
 Clipper clipper;
 std::pair<int, int>* bounds;
@@ -149,7 +150,49 @@ void Layer1::InitializeAudio()
 
 void Layer1::onStart()
 {	
+  
+void Layer1::UpdateSpell(Spell& spell, Time ts) {
+	if (!spell.canUse()) {
+		if (spell.getDurationRemainingTime() == 0) {
+			spell.setCooldownRemainingTime(spell.getCooldownRemainingTime() - ts);
 
+			if (spell.getCooldownRemainingTime() <= 0) {
+				spell.setCooldownRemainingTime(0);
+			}
+
+			//ENGINE_TRACE(spell.getCooldownRemainingTime());
+		}
+		else {
+			spell.setDurationRemainingTime(spell.getDurationRemainingTime() - ts);
+
+			if (spell.getDurationRemainingTime() <= 0) {
+				spell.setDurationRemainingTime(0);
+
+				if (spell.getType() == "jumpspell") {
+					link->setJumpingForce(link->getJumpingForce() / 2);
+					link->EraseAnimation(link->jumpAnimation);
+					link->jumpAnimation = new MovingAnimation("mov_jumping", link->getJumpingForce(), 0, 0, 20);
+					link->EmplaceAnimation(link->jumpAnimation);
+				}
+			}
+
+			//ENGINE_TRACE(spell.getDurationRemainingTime());
+		}
+	}
+}
+
+void Layer1::CheckSpells(Time ts) {
+	static Time prevTs;
+
+	UpdateSpell(link->lifespell, ts - prevTs);
+	UpdateSpell(link->jumpspell, ts - prevTs);
+	UpdateSpell(link->shieldspell, ts - prevTs);
+
+	prevTs = ts;
+}
+
+void Layer1::onStart()
+{	
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 	clipper = InitClipper(m_Scene->GetTiles().get());
@@ -184,6 +227,7 @@ void Layer1::onStart()
 		});
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	
+
 	InitializeEnemies(grid); 
 }
 
@@ -200,6 +244,7 @@ void Layer1::onUpdate(Time ts)
 	EnemyMovement();
 	EnemyHandler();
 
+	CheckSpells(ts);
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
@@ -287,6 +332,46 @@ bool Layer1::mover(Event& e)
 			MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("mov_jumping");
 			tmp->Start((MovingAnimation*)link->GetAnimation("mov_jumping"), SystemClock::GetDeltaTime());
 			link->SetState("jumping");
+		}
+
+		if (event->GetKey() == InputKey::NUM_1)
+		{
+
+			if (link->getMagicPoints() >= link->lifespell.getCost() && link->lifespell.canUse()) {
+				link->setMagicPoints(link->getMagicPoints() - link->lifespell.getCost());
+				link->setHealth(link->getHealth() + 50);
+				link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
+				link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
+			}
+		}
+
+		if (event->GetKey() == InputKey::NUM_2)
+		{
+
+			if (link->getMagicPoints() >= link->jumpspell.getCost() && link->jumpspell.canUse()) {
+				link->setMagicPoints(link->getMagicPoints() - link->jumpspell.getCost());
+				link->setJumpingForce(link->getJumpingForce() * 2);
+				link->jumpspell.setDurationRemainingTime(link->jumpspell.getDuration());
+				link->jumpspell.setCooldownRemainingTime(link->jumpspell.getCooldown());
+
+				link->EraseAnimation(link->jumpAnimation);
+				
+				link->jumpAnimation = new MovingAnimation("mov_jumping", link->getJumpingForce(), 0, 0, 12);
+				link->EmplaceAnimation(link->jumpAnimation);
+				
+			}
+
+		}
+
+		if (event->GetKey() == InputKey::NUM_3)
+		{
+
+			if (link->getMagicPoints() >= link->shieldspell.getCost() && link->shieldspell.canUse()) {
+				link->setMagicPoints(link->getMagicPoints() - link->shieldspell.getCost());
+				link->shieldspell.setDurationRemainingTime(link->shieldspell.getDuration());
+				link->shieldspell.setCooldownRemainingTime(link->shieldspell.getCooldown());
+			}
+
 		}
 	}
 
@@ -434,6 +519,9 @@ void Layer1::EnemyHandler()
 					if (mov->HasFinished())
 						mov->Start((MovingAnimation*)link->GetAnimation("mov_damage"), SystemClock::GetDeltaTime());
 
+					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+					link->GetSprite()->Move(dx, -5);
+					link->takeDamage(i.second->GetDamage());
 				}
 				else
 				{

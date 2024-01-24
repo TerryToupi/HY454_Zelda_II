@@ -3,6 +3,10 @@
 
 #include <Engine.h>
 #include "../Entity/Entity.h"
+#include "../Spells/LifeSpell.h"
+#include "../Spells/ShieldSpell.h"
+#include "../Spells/ThunderSpell.h"
+#include "../Spells/JumpSpell.h"
 
 using namespace Engine;
 
@@ -15,9 +19,16 @@ private:
     int speed;
     int jumpingForce;
 
+
 public:
     Link();
     ~Link() = default;
+    Animation* jumpAnimation;
+
+    JumpSpell jumpspell;
+    LifeSpell lifespell;
+    ShieldSpell shieldspell;
+
 
     int getHealth() const;
     int getDamage() const;

@@ -55,6 +55,11 @@ void Entity::EmplaceFilm(std::string id, AnimationFilm* film)
 	m_films.emplace(std::make_pair(id, film));
 }
 
+void Entity::EraseAnimation(Animation* animation)
+{
+	m_animations.erase(animation->GetId());
+}
+
 void Entity::EmplaceAnimator(std::string id, Animator* animator)
 {
 	m_animators.emplace(std::make_pair(id, animator));
