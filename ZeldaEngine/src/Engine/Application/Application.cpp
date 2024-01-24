@@ -33,7 +33,10 @@ namespace Engine {
 	} 
 
 	Application::~Application()
-	{ 
+	{
+		ENGINE_CORE_WARN("Shutting down UserCode");
+		DestructionManager::Get().Commit();
+
 		ENGINE_CORE_WARN("Shutting down AudioManager"); 
 		AudioManager::Get().Shutdown();
 
@@ -72,14 +75,24 @@ namespace Engine {
 		s_Instance->m_Layers.pushBackOverLay(Overlay);
 	}
 
-	void Application::popLayer()
-	{	 
-		s_Instance->m_Layers.popBackLayer();
+	Layer& Application::GetLayer(std::string tag)
+	{
+		return *(s_Instance->m_Layers.GetLayer(tag));
 	}
 
-	void Application::popOverLay()
+	Layer& Application::GetOverlay(std::string tag)
+	{
+		return *(s_Instance->m_Layers.GetOverlay(tag));
+	}
+
+	void Application::popLayer(Layer* layer)
+	{	 
+		s_Instance->m_Layers.popBackLayer(layer);
+	}
+
+	void Application::popOverLay(Layer* overlay)
 	{ 
-		s_Instance->m_Layers.popBackOverLay();
+		s_Instance->m_Layers.popBackOverLay(overlay);
 	}
 
 	void Application::Run()
@@ -110,12 +123,12 @@ namespace Engine {
 				DestructionManager::Get().Commit();
 				for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
 				{
-					(*layer)->onUpdate(currTime);
+					(*layer)->onUpdate(timeStep);
 				}
 
 				for (auto overlay = m_Layers.OverlaysFront(); overlay != m_Layers.OverLaysBack(); overlay++)
 				{
-					(*overlay)->onUpdate(currTime);
+					(*overlay)->onUpdate(timeStep);
 				}
 				AnimatorManager::GetInstance().Progress(currTime);
 			}

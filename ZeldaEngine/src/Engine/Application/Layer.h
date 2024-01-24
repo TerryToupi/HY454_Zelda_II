@@ -3,10 +3,13 @@
 #include <Engine/Application/Core.h> 
 #include <Engine/Events/Event.h>   
 #include <Engine/Application/GameTime.h>
+#include <Engine/Scene/Scene.h>
 
 #include <string> 
 
-namespace Engine {  
+namespace Engine {   
+	class LayerStack;
+
 	class Layer
 	{  
 	public: 
@@ -16,10 +19,16 @@ namespace Engine {
 		virtual void onStart() {}
 		virtual void onDelete() {}
 		virtual void onUpdate(Time ts) {}     
-		virtual void onEvent(Event& e) {}
+		virtual void onEvent(Event& e) {} 
 
-	private: 
-		std::string m_Name;
+	public:
+		Ref<Scene> m_Scene; 
+
+	protected:
+		std::string m_Name;  
+
+	protected:
+		friend class LayerStack;
 	};
 }
 

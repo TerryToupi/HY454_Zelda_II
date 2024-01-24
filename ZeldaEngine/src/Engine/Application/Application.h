@@ -35,10 +35,13 @@ namespace Engine
 		static Application& Instance() { return *s_Instance; }
 
 		void static pushLayer(Layer *layer);  
-		void static pushOverLay(Layer *Overlay);
+		void static pushOverLay(Layer *Overlay); 
 
-		void static popLayer();  
-		void static popOverLay(); 
+		static Layer& GetLayer(std::string tag); 
+		static Layer& GetOverlay(std::string tag);
+
+		void static popLayer(Layer* layer);  
+		void static popOverLay(Layer* overlay); 
 
 		void Run();
 

@@ -16,19 +16,8 @@ namespace Engine {
 	Sprite Scene::GetSprite(std::string _tag)
 	{
 		if (!m_sprites.Get(_tag))
-			ENGINE_CORE_WARN("Sprite: {0}, has null data", m_sprites.Get(_tag)->GetHashName().c_str()); 
+			ENGINE_CORE_WARN("Sprite has null data"); 
 
 		return m_sprites.Get(_tag);
 	}
-
-	//SpriteClass Scene::CreateSprite(std::string tag)
-	//{ 
-	//	m_SpritesMap.emplace(tag, SpriteData(tag)); 
-	//	return { tag, this };
-	//} 
-
-	//SpriteClass Scene::GetSprite(std::string tag)
-	//{
-	//	return { tag, this };
-	//}
 }

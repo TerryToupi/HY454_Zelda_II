@@ -1,6 +1,8 @@
 #include "LayerStack.h"   
 #include "Layer.h"
 
+#include <algorithm>
+
 namespace Engine {
 
 	std::vector<Layer*>::iterator LayerStack::LayersFront() 
@@ -43,6 +45,57 @@ namespace Engine {
 		return m_OverLayStack.rend();
 	}
 
+	auto LayerStack::find_layer(Layer* layer) -> std::vector<Layer*>::iterator
+	{
+		return std::find_if(
+			m_LayerStack.begin(),
+			m_LayerStack.end(),
+			[layer](const Layer* l)
+			{
+				return layer->m_Name == l->m_Name;
+			}
+		);
+	}
+
+	auto LayerStack::find_overlay(Layer* overlay) -> std::vector<Layer*>::iterator
+	{
+		return std::find_if(
+			m_OverLayStack.begin(),
+			m_OverLayStack.end(),
+			[overlay](const Layer* o)
+			{
+				return overlay->m_Name == o->m_Name;
+			}
+		);
+	}
+
+	auto LayerStack::find_by_name(std::string tag, std::vector<Layer*>& stack) -> std::vector<Layer*>::iterator
+	{
+		return std::find_if(  
+				stack.begin(), 
+				stack.end(), 
+				[tag](const Layer* l) 
+				{  
+					return l->m_Name == tag;
+				}
+			); 
+	}
+
+	LayerStack::~LayerStack()
+	{ 
+		for (auto* layer : m_LayerStack)
+		{
+			layer->onDelete();
+			delete layer;
+		} 
+
+		for (auto* overlay : m_OverLayStack)
+		{
+			overlay->onDelete();
+			delete overlay;
+		}
+	}
+
 	void LayerStack::pushBackLayer(Layer* layer)
 	{  
 		m_LayerStack.emplace_back(layer);
@@ -53,17 +106,33 @@ namespace Engine {
 		m_OverLayStack.emplace_back(overLay);
 	} 
 
-	void LayerStack::popBackLayer()
-	{  
-		ENGINE_CORE_ASSERT(!m_LayerStack.empty());  
-		m_LayerStack.back()->onDelete();
-		m_LayerStack.pop_back();
+	void LayerStack::popBackLayer(Layer* layer)
+	{    
+		ENGINE_CORE_ASSERT(!m_LayerStack.empty());   
+
+		auto itr = find_layer(layer); 
+		(*itr)->onDelete(); 
+		m_LayerStack.erase(itr);
+		delete layer;
 	} 
 
-	void LayerStack::popBackOverLay()
+	void LayerStack::popBackOverLay(Layer* overlay)
 	{ 
 		ENGINE_CORE_ASSERT(!m_OverLayStack.empty()); 
-		m_OverLayStack.back()->onDelete();
-		m_OverLayStack.pop_back();
+
+		auto itr = find_overlay(overlay);
+		(*itr)->onDelete();
+		m_LayerStack.erase(itr);
+		delete overlay;
+	} 
+
+	Layer* LayerStack::GetLayer(std::string tag)
+	{
+		return (*find_by_name(tag, m_LayerStack));
+	} 
+
+	Layer* LayerStack::GetOverlay(std::string tag)
+	{
+		return (*find_by_name(tag, m_OverLayStack));
 	}
 }

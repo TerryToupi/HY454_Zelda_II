@@ -64,7 +64,7 @@ void Layer1::InitializeTeleports()
 		tmp.stage = p["stage"].get<int>();
 		m_teleports.push_back(tmp);
 		id++;
-	}
+	} 
 
 }
 
@@ -187,7 +187,7 @@ void Layer1::onStart()
 		});
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	
-	InitializeEnemies(grid);
+	InitializeEnemies(grid); 
 }
 
 void Layer1::onDelete()

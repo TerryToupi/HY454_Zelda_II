@@ -1,6 +1,7 @@
 #pragma once  
 
 #include<vector>
+#include<string>
 
 namespace Engine 
 { 
@@ -8,11 +9,16 @@ namespace Engine
 
 	class LayerStack
 	{  
-	public: 
+	public:  
+		~LayerStack();
+
 		void pushBackLayer(Layer* layer);
 		void pushBackOverLay(Layer* overLay);
-		void popBackLayer();
-		void popBackOverLay();
+		void popBackLayer(Layer* layer);
+		void popBackOverLay(Layer* overlay);
+
+		Layer* GetLayer(std::string tag);
+		Layer* GetOverlay(std::string tag);
 
 		std::vector<Layer*>::iterator LayersFront();
 		std::vector<Layer*>::iterator LayersBack();
@@ -27,6 +33,9 @@ namespace Engine
 	private: 
 		std::vector<Layer*> m_LayerStack;
 		std::vector<Layer*> m_OverLayStack;
+		auto find_layer(Layer* layer) -> std::vector<Layer*>::iterator; 
+		auto find_overlay(Layer* overlay) -> std::vector<Layer*>::iterator; 
+		auto find_by_name(std::string tag, std::vector<Layer*>& stack) -> std::vector<Layer*>::iterator;
 	};
 }
 
