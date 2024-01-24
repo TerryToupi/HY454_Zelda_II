@@ -65,7 +65,7 @@ void Layer1::InitializeTeleports()
 		tmp.stage = p["stage"].get<int>();
 		m_teleports.push_back(tmp);
 		id++;
-	}
+	} 
 
 }
 
@@ -148,10 +148,9 @@ void Layer1::InitializeAudio()
 	m_sounds.emplace(std::make_pair("attacking", tmp));
 }
 
-
-
-
-
+void Layer1::onStart()
+{	
+  
 void Layer1::UpdateSpell(Spell& spell, Time ts) {
 	if (!spell.canUse()) {
 		if (spell.getDurationRemainingTime() == 0) {
@@ -228,9 +227,8 @@ void Layer1::onStart()
 		});
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	
-	InitializeEnemies(grid);
 
-	LifeSpell lifespell;
+	InitializeEnemies(grid); 
 }
 
 void Layer1::onDelete()
@@ -491,13 +489,35 @@ void Layer1::EnemyHandler()
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, tilelayer, this, i](Sprite s1, Sprite s2) {
 				int32_t dx = (link->GetLookingAt() == "right") ? -16 : 16;
 				FrameRangeAnimator* anim = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				MovingAnimator* mov = (MovingAnimator*)link->GetAnimator("mov_damage");
 				
-				if (link->GetState() != "attacking")
+				if (link->GetState() != "attacking" && link->GetState() != "crouch_attack")
 				{
-					link->SetState("damage_from");
+					if (link->GetState() == "crouch")
+					{
+						if (link->GetLookingAt() == i.second->GetLookingAt())
+						{
+							link->SetState("damage_from");
 
-					if (!anim->HasFinished())
-						anim->Stop();
+							if (!anim->HasFinished())
+								anim->Stop();
+
+							anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+						}
+
+					}
+					else
+					{
+						link->SetState("damage_from");
+
+						if (!anim->HasFinished())
+							anim->Stop();
+						
+						anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+					}
+
+					if (mov->HasFinished())
+						mov->Start((MovingAnimation*)link->GetAnimation("mov_damage"), SystemClock::GetDeltaTime());
 
 					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
 					link->GetSprite()->Move(dx, -5);
@@ -516,7 +536,6 @@ void Layer1::EnemyHandler()
 
 		if (i.second->GetHealth() == 0)
 		{
-			ENGINE_TRACE("EPETHANE");
 			FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
 			MovingAnimator* mov = (MovingAnimator*)i.second->GetAnimator("mov_moving");
 

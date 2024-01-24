@@ -8,7 +8,6 @@ class Layer0 : public Layer
 { 
 public:
 	Layer0(); 
-	~Layer0() = default;
 
 	void onStart() override;
 
@@ -20,10 +19,9 @@ public:
 
 	void move();
 
-	bool mover(KeyPressEvent& e); 
-private:
-	Ref<Scene> m_Scene; 	
+	bool mover(KeyPressEvent& e);  
 
+private:
 	Ref<MovingAnimator> m_CamLeft;
 	Ref<MovingAnimator> m_CamRight;
 

@@ -31,7 +31,6 @@ public:
     using Sounds = std::unordered_map<std::string, AudioID>;
 
     Layer1();
-    ~Layer1() = default;
 
     /*-----INITIALIZERS-----*/
     void InitializeTeleports();
@@ -54,7 +53,6 @@ public:
     void UpdateSpell(Spell& spell, Time ts);
 
 public:
-    Ref<Scene> m_Scene;
     Link* link;                                         // main character instance
     std::vector<Teleports> m_teleports;                 // teleport locations
     Stages m_stages;                                    // map stages
