@@ -148,8 +148,6 @@ void Layer1::InitializeAudio()
 	m_sounds.emplace(std::make_pair("attacking", tmp));
 }
 
-void Layer1::onStart()
-{	
   
 void Layer1::UpdateSpell(Spell& spell, Time ts) {
 	if (!spell.canUse()) {
@@ -248,8 +246,8 @@ void Layer1::onUpdate(Time ts)
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
-	//Renderer::DebugDisplayGrid();
 	Renderer::DisplaySprites();
+	//Renderer::DebugDisplayGrid();
 	Renderer::EndScene();
 }
 
