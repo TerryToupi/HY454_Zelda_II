@@ -67,7 +67,6 @@ void Entity::SetSprite(Sprite s)
 
 void Entity::EntityDestroy()
 {
-	ENGINE_TRACE("Destroy");
 	m_Sprite->Destroy();
 
 	for (auto i : m_animators)
@@ -111,7 +110,7 @@ void Entity::FrameRangeStart(std::string name)
 {	
 	std::string film = m_state + "_" + m_lookingAt;
 	m_Sprite->SetFilm(m_films[film]);
-	ENGINE_TRACE("Animation Started");
+
 
 	startX = m_Sprite->GetPosX();
 	startY = m_Sprite->GetPosY();
@@ -135,9 +134,7 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 	uint32_t currFrame = animator->GetCurrFrame();
 	std::string film = m_state + "_" + m_lookingAt;
 
-	//ENGINE_TRACE(currFrame);
 	m_Sprite->SetFrame(currFrame);
-
 
 	if (m_lookingAt == "left")
 	{
@@ -166,6 +163,13 @@ void Entity::MovingAction(std::string name, MovingAnimator* animator)
 	else if (name == "mov_gravity")
 	{
 		m_Sprite->Move(0, 1);
+	}
+	else if (name == "mov_damage")
+	{	
+		if (m_lookingAt == "right")
+			m_Sprite->Move(-3, 1);
+		else if (m_lookingAt == "left")
+			m_Sprite->Move(3, 1);
 	}
 }
 
