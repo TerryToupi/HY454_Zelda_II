@@ -27,8 +27,15 @@ uint32_t Enemy::GetID() const
     return m_id;
 }
 
+uint32_t Enemy::GetMaxX() const
+{
+    return m_maxX;
+}
 
-
+uint32_t Enemy::GetMinX() const
+{
+    return m_minX;
+}
 
 void Enemy::SetHealth(int newHealth) {
     health = newHealth;
@@ -44,6 +51,16 @@ void Enemy::SetPoints(int newPoints) {
 
 void Enemy::SetSpeed(int newSpeed) {
     speed = newSpeed;
+}
+
+void Enemy::SetMinX(uint32_t _minX)
+{
+    m_minX = _minX;
+}
+
+void Enemy::SetMaxX(uint32_t _maxX)
+{
+    m_maxX = _maxX;
 }
 
 void Enemy::Attack() {

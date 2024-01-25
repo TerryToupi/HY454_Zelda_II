@@ -34,6 +34,7 @@ public:
 	void SetLookingAt(std::string _loookingAt);
 	std::string GetState();
 	std::string GetLookingAt();
+	Animators GetAnimators();
 
 	void EntityDestroy();
 

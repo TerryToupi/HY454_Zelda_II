@@ -5,7 +5,7 @@ Link::Link()
     std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
     json configVars = json::parse(file);
 
-
+    m_damageCoolDown = 0;
     m_lookingAt = "right";
     m_state = "moving";
     m_type = "Link";
@@ -43,8 +43,8 @@ Link::Link()
     EmplaceAnimation(jumpAnimation);
     EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, getSpeed()));
     EmplaceAnimation(new MovingAnimation("mov_damage", 5, 0, 0, getSpeed()));
-    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 3, 0, 0, 30));
-    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 3, 0, 0, 30));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 2, 0, 0, 10));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 2, 0, 0, 10));
   
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
     EmplaceAnimation(new MovingAnimation("mov_damage", 5, 0, 0, 10));
@@ -88,6 +88,10 @@ int Link::getJumpingForce() const
     return jumpingForce;
 }
 
+int Link::getDamageCoolDown() const
+{
+    return m_damageCoolDown;
+}
 
 void Link::setHealth(int newHealth)
 {
@@ -119,6 +123,10 @@ void Link::setJumpingForce(int newJumpingForce)
     jumpingForce = newJumpingForce;
 }
 
+void Link::setDamageCoolDown(int _cooldown)
+{
+    m_damageCoolDown = _cooldown;
+}
 
 void Link::takeDamage(int amount) 
 {

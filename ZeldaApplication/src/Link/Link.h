@@ -18,6 +18,7 @@ private:
     int lives;
     int speed;
     int jumpingForce;
+    int m_damageCoolDown;
 
 
 public:
@@ -36,6 +37,7 @@ public:
     int getLives() const;
     int getSpeed() const;
     int getJumpingForce() const;
+    int getDamageCoolDown() const;
     
     void setHealth(int newHealth);
     void setDamage(int newDamage);
@@ -43,8 +45,7 @@ public:
     void setLives(int newLives);
     void setSpeed(int newLives);
     void setJumpingForce(int jumpingForce);
-
-
+    void setDamageCoolDown(int _cooldown);
 
     void takeDamage(int amount);
     void heal(int amount);

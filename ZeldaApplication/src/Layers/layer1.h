@@ -49,7 +49,7 @@ public:
     /*----HANDLERS---*/
     void TeleportHandler();
     void EnemyHandler();
-    void CheckSpells(Time ts);
+    void CheckTimers(Time ts);
     void UpdateSpell(Spell& spell, Time ts);
 
 public:

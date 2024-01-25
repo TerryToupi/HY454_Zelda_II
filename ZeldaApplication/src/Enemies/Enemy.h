@@ -14,6 +14,8 @@ private:
 protected:
     uint32_t m_stage;
     uint32_t m_id;
+    uint32_t m_maxX;
+    uint32_t m_minX;
 
 public:
     Enemy() = default;
@@ -24,14 +26,16 @@ public:
     int GetSpeed() const;
     int GetStage() const;
     uint32_t GetID() const;
+    uint32_t GetMaxX() const;
+    uint32_t GetMinX() const;
 
     void SetHealth(int newHealth);
     void SetDamage(int newDamage);
     void SetPoints(int newPoints);
     void SetSpeed(int newPoints);
+    void SetMaxX(uint32_t _maxX);
+    void SetMinX(uint32_t _minX);
     
-
- 
     void Attack();
     void TakeDamage(int amount);
     void Disapear();

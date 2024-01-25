@@ -93,32 +93,12 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 
 	for (auto w : Wosus["data"])
 	{
-		//ID id = UUID::GenerateUUID();
-		//Wosu* wosu = new Wosu(id, w["lookingAt"].get<std::string>(), w["stage"].get<uint32_t>());
-	 //   wosu->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), w["spawn_pos"]["x"].get<uint32_t>() * 16, w["spawn_pos"]["y"].get<uint32_t>() * 16, wosu->GetFilm("moving_" + w["lookingAt"].get<std::string>()), "")));
-		//wosu->GetSprite()->SetColiderBox(16, 32);
-		//wosu->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), wosu->GetSprite()));
-		//wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
-		//wosu->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
-		//
-		//MovingAnimator* anim = (MovingAnimator*)wosu->GetAnimator("mov_gravity");
-		//MovingAnimation* down = (MovingAnimation*)wosu->GetAnimation("mov_gravity");
-	
-		//wosu->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
-		//	anim->Start(down, SystemClock::GetDeltaTime());
-		//	});
-
-		//wosu->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
-		//	anim->Stop();
-		//	});
-
-		//wosu->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
-
-		//m_enemies.emplace(std::make_pair(id, wosu));
-
 		ID id = UUID::GenerateUUID();
 
 		m_enemies.emplace(std::make_pair( i, new Wosu(i, w["lookingAt"].get<std::string>(), w["stage"].get<uint32_t>())));
+		ENGINE_TRACE(w["max_x"].get<uint32_t>());
+		m_enemies.at(i)->SetMaxX(w["max_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetMinX(w["min_x"].get<uint32_t>() * 16);
 	    m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), w["spawn_pos"]["x"].get<uint32_t>() * 16, w["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_" + w["lookingAt"].get<std::string>()), "")));
 		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
 		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
@@ -179,13 +159,18 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 	}
 }
 
-void Layer1::CheckSpells(Time ts) {
-	static Time prevTs;
+void Layer1::CheckTimers(Time ts) {
+	static Time prevTs = 0;
 
-	UpdateSpell(link->lifespell, ts - prevTs);
-	UpdateSpell(link->jumpspell, ts - prevTs);
-	UpdateSpell(link->shieldspell, ts - prevTs);
+	UpdateSpell(link->lifespell, ts);
+	UpdateSpell(link->jumpspell, ts);
+	UpdateSpell(link->shieldspell, ts);
 
+	if (link->getDamageCoolDown() != 0)
+		link->setDamageCoolDown(link->getDamageCoolDown() - ts);
+	if (link->getDamageCoolDown() < 0)
+		link->setDamageCoolDown(0);
+	
 	prevTs = ts;
 }
 
@@ -231,6 +216,7 @@ void Layer1::onStart()
 
 void Layer1::onDelete()
 {
+
 }
 
 void Layer1::onUpdate(Time ts)
@@ -242,7 +228,8 @@ void Layer1::onUpdate(Time ts)
 	EnemyMovement();
 	EnemyHandler();
 
-	CheckSpells(ts);
+	CheckTimers(ts);
+	//ENGINE_TRACE(link->getDamageCoolDown());
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
@@ -444,13 +431,28 @@ void Layer1::TeleportHandler()
 void Layer1::EnemyMovement() {
 	for (auto e : m_enemies)
 	{	
+		Rect d1;
+		Rect d2;
+		Rect tmpBox = e.second->GetSprite()->GetBox();
 		MovingAnimator* mov = (MovingAnimator*)e.second->GetAnimator("mov_moving");
 		FrameRangeAnimator* anim = (FrameRangeAnimator*)e.second->GetAnimator("frame_animator");
 		
 		if (e.second->GetStage() == m_currStage)
 		{
-			if (e.second->GetState() != "death") {
+			if (e.second->GetState() != "death")
+			{
 				e.second->SetState("moving");
+
+				if (e.second->GetSprite()->GetPosX() > e.second->GetMaxX())
+				{
+					e.second->SetLookingAt("left");
+					anim->Stop();
+				}
+				else if (e.second->GetSprite()->GetPosX() < e.second->GetMinX())
+				{
+					e.second->SetLookingAt("right");
+					anim->Stop();
+				}
 
 				if (anim->HasFinished())
 					anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
@@ -482,15 +484,17 @@ void Layer1::EnemyHandler()
 	for (auto i : m_enemies)
 	{
 		tmpBox = i.second->GetSprite()->GetBox();
-		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && link->getDamageCoolDown() == 0)
 		{
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, tilelayer, this, i](Sprite s1, Sprite s2) {
 				int32_t dx = (link->GetLookingAt() == "right") ? -16 : 16;
 				FrameRangeAnimator* anim = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 				MovingAnimator* mov = (MovingAnimator*)link->GetAnimator("mov_damage");
-				
+
 				if (link->GetState() != "attacking" && link->GetState() != "crouch_attack")
 				{
+
+					link->setDamageCoolDown(2000);
 					if (link->GetState() == "crouch")
 					{
 						if (link->GetLookingAt() == i.second->GetLookingAt())
@@ -510,7 +514,7 @@ void Layer1::EnemyHandler()
 
 						if (!anim->HasFinished())
 							anim->Stop();
-						
+
 						anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
 					}
 
@@ -520,16 +524,18 @@ void Layer1::EnemyHandler()
 					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
 					link->GetSprite()->Move(dx, -5);
 					link->takeDamage(i.second->GetDamage());
+
 				}
 				else
 				{
 					i.second->TakeDamage(8);
 				}
 
-			});
+				});
 
 			m_Scene->GetColider().Check();
 			m_Scene->GetColider().Cancel(link_sprite, i.second->GetSprite());
+
 		}
 
 		if (i.second->GetHealth() == 0)

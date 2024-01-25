@@ -44,6 +44,10 @@ std::string Entity::GetLookingAt()
 	return m_lookingAt;
 }
 
+std::unordered_map<std::string, Animator*> Entity::GetAnimators()
+{
+	return m_animators;
+}
 
 void Entity::EmplaceAnimation(Animation* animation) 
 {
