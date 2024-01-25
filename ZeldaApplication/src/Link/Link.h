@@ -19,10 +19,11 @@ private:
     int speed;
     int jumpingForce;
     int m_damageCoolDown;
+    int m_keys;
 
 
 public:
-    Link();
+    Link(AnimationSheet* _sheet);
     ~Link() = default;
     Animation* jumpAnimation;
 

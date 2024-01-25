@@ -22,11 +22,6 @@ int Enemy::GetStage() const
     return m_stage;
 }
 
-uint32_t Enemy::GetID() const
-{
-    return m_id;
-}
-
 uint32_t Enemy::GetMaxX() const
 {
     return m_maxX;

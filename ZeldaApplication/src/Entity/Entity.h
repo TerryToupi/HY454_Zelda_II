@@ -32,9 +32,11 @@ public:
 
 	void SetState(std::string _state);
 	void SetLookingAt(std::string _loookingAt);
+	void SetSheet(AnimationSheet* _sheet);
 	std::string GetState();
 	std::string GetLookingAt();
 	Animators GetAnimators();
+	uint32_t GetID() const;
 
 	void EntityDestroy();
 
@@ -61,6 +63,7 @@ protected:
 	std::string m_state;
 	std::string m_lookingAt;
 	std::string m_type;
+	uint32_t m_id;
 
 private:
 	uint32_t startX;

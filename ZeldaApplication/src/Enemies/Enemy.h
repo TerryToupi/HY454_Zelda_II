@@ -13,7 +13,6 @@ private:
 
 protected:
     uint32_t m_stage;
-    uint32_t m_id;
     uint32_t m_maxX;
     uint32_t m_minX;
 
@@ -25,7 +24,6 @@ public:
     int GetPoints() const;
     int GetSpeed() const;
     int GetStage() const;
-    uint32_t GetID() const;
     uint32_t GetMaxX() const;
     uint32_t GetMinX() const;
 

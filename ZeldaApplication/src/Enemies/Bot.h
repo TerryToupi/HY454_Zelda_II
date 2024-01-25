@@ -6,7 +6,7 @@
 class Bot : public Enemy {
 
 public:
-    Bot();
+    Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* _sheet);
     ~Bot() = default;
     void jump();
 

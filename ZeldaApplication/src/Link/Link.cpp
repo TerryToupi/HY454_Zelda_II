@@ -1,6 +1,6 @@
 #include "Link.h"
 
-Link::Link()
+Link::Link(AnimationSheet* _sheet)
 {
     std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
     json configVars = json::parse(file);
@@ -17,8 +17,7 @@ Link::Link()
     setSpeed(100 - configVars["Link"]["Speed"]);
     setJumpingForce(configVars["Link"]["JumpingForce"]);
 
-
-    m_sheet = new AnimationSheet("link_sheet", "Assets/AnimationFilms/link-sprites.bmp");
+    m_sheet = _sheet;
     EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_right.json"));
     EmplaceFilm("moving_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_left.json"));
     EmplaceFilm("crouch_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/crouch_left.json"));
