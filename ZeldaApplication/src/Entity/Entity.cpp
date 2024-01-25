@@ -44,6 +44,16 @@ std::string Entity::GetLookingAt()
 	return m_lookingAt;
 }
 
+std::unordered_map<std::string, Animator*> Entity::GetAnimators()
+{
+	return m_animators;
+}
+
+uint32_t Entity::GetID() const
+{
+	return m_id;
+}
+
 
 void Entity::EmplaceAnimation(Animation* animation) 
 {
@@ -68,6 +78,11 @@ void Entity::EmplaceAnimator(std::string id, Animator* animator)
 void Entity::SetSprite(Sprite s)
 {
 	m_Sprite = s;
+}
+
+void Entity::SetSheet(AnimationSheet* _sheet)
+{
+	m_sheet = _sheet;
 }
 
 void Entity::EntityDestroy()
@@ -123,13 +138,14 @@ void Entity::FrameRangeStart(std::string name)
 
 void Entity::FrameRangeFinish()
 {	
-	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attacking"))
+	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attack"))
 		m_Sprite->SetPos(startX, startY);
 	else if(m_state == "moving")
 		m_Sprite->SetFrame(0);
 
+
 	if (m_state == "death")
-	{
+	{ 
 		EntityDestroy();
 	}
 }

@@ -3,8 +3,8 @@
 #include <Engine.h>
 #include <json.hpp>
 #include "../Link/Link.h"
-#include "../Enemies/Wosu.h"
-
+#include "../Enemies/Enemies.h"
+#include "../Door/Door.h"
 
 using json = nlohmann::json;
 using namespace Engine;
@@ -16,6 +16,8 @@ dest    : waypoint of destination
 stage   : stage that the location belongs to
 -----------------------------------
 */
+
+
 
 typedef struct teleportsStruct {
     Sprite origin;
@@ -29,6 +31,10 @@ public:
     using Stages = std::vector<std::pair<int, int>>;
     using Enemies = std::unordered_map<ID, Enemy*>;
     using Sounds = std::unordered_map<std::string, AudioID>;
+    using Sheets = std::unordered_map<std::string, AnimationSheet*>;
+    using Collectibles = std::unordered_map<std::string, Entity*>;
+    using Doors = std::unordered_map<ID, Door*>;
+    using Elevators = std::unordered_map<ID, Entity*>;
 
     Layer1();
 
@@ -36,7 +42,10 @@ public:
     void InitializeTeleports();
     void InitializeStages();
     void InitializeEnemies(GridLayer *grid);
+    void InitializeDoors();
+    void InitialiazeCollectibles();
     void InitializeAudio();
+    void LoadSheets();
     
     /*----LAYER FUNCTIONS----*/
     void onStart() override;
@@ -49,8 +58,10 @@ public:
     /*----HANDLERS---*/
     void TeleportHandler();
     void EnemyHandler();
-    void CheckSpells(Time ts);
+    void CheckTimers(Time ts);
     void UpdateSpell(Spell& spell, Time ts);
+    void DoorHandler();
+    void CollectibleHandler();
 
 public:
     Link* link;                                         // main character instance
@@ -59,6 +70,9 @@ public:
     uint32_t m_currStage;                               // stage tracker
     Sounds m_sounds;  // sound files
     Enemies m_enemies;
+    Sheets m_sheets;
+    Collectibles m_collectibles;
+    Doors m_doors;
 
 
     Wosu* wosu;
