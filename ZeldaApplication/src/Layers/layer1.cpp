@@ -158,7 +158,7 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 				spell.setCooldownRemainingTime(0);
 			}
 
-			//ENGINE_TRACE(spell.getCooldownRemainingTime());
+		//	ENGINE_TRACE(spell.getCooldownRemainingTime());
 		}
 		else {
 			spell.setDurationRemainingTime(spell.getDurationRemainingTime() - ts);
@@ -174,19 +174,15 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 				}
 			}
 
-			//ENGINE_TRACE(spell.getDurationRemainingTime());
+		//	ENGINE_TRACE(spell.getDurationRemainingTime());
 		}
 	}
 }
 
 void Layer1::CheckSpells(Time ts) {
-	static Time prevTs;
-
-	UpdateSpell(link->lifespell, ts - prevTs);
-	UpdateSpell(link->jumpspell, ts - prevTs);
-	UpdateSpell(link->shieldspell, ts - prevTs);
-
-	prevTs = ts;
+	UpdateSpell(link->lifespell, ts);
+	UpdateSpell(link->jumpspell, ts);
+	UpdateSpell(link->shieldspell, ts);
 }
 
 void Layer1::onStart()
@@ -198,6 +194,8 @@ void Layer1::onStart()
 	link = new Link();
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
 	link->GetSprite()->SetColiderBox(16, 32);
+
+	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 20 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
 
 	Rect r = m_Scene->GetTiles()->GetViewWindow();
 	r.x = link->GetSprite()->GetPosX() - (r.w / 2);
@@ -334,12 +332,17 @@ bool Layer1::mover(Event& e)
 
 		if (event->GetKey() == InputKey::NUM_1)
 		{
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("lifespell_animator");
+			tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
+				((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
 
 			if (link->getMagicPoints() >= link->lifespell.getCost() && link->lifespell.canUse()) {
 				link->setMagicPoints(link->getMagicPoints() - link->lifespell.getCost());
 				link->setHealth(link->getHealth() + 50);
 				link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
 				link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
+
+				
 			}
 		}
 
