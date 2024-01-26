@@ -23,6 +23,6 @@ namespace Engine {
 
 	void Scene::RemoveSprite(Sprite _sprite)
 	{ 
-		m_sprites.Remove(_sprite);
+		m_sprites.remove(_sprite);
 	}
 }

@@ -20,7 +20,7 @@ namespace Engine
 	public:
 		void	Add(Sprite s); 
 		Sprite	Get(std::string& _tag);
-		void	Remove(Sprite s);  
+		void	remove(Sprite s);  
 
 		auto GetDisplayList(void) -> SpriteList& 
 				{ return m_dpyList; } 
@@ -34,7 +34,7 @@ namespace Engine
 
 	private:
 		void insert_ascending_zorder(Sprite s); 
-		auto find(Sprite s, std::list<Sprite>& list) -> std::list<Sprite>::iterator;
+		auto find(Sprite s) -> std::list<Sprite>::iterator;
 
 	private:
 		SpriteList	m_dpyList;

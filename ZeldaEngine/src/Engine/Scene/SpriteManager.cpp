@@ -1,5 +1,4 @@
 #include "SpriteManager.h" 
-#include <algorithm>
 
 namespace Engine
 {
@@ -16,14 +15,14 @@ namespace Engine
 		m_dpyList.insert(begin, s);
 	}
 
-	auto SpriteManager::find(Sprite _s, std::list<Sprite>& list) -> std::list<Sprite>::iterator
+	auto SpriteManager::find(Sprite _s)-> std::list<Sprite>::iterator
 	{
 		return std::find_if( 
-			list.begin(), 
-			list.end(),  
+			m_dpyList.begin(),
+			m_dpyList.end(),
 			[_s](const Sprite s)
 			{
-				s->GetHashName() == _s->GetHashName();
+				return s->GetHashName() == _s->GetHashName();
 			}
 		);
 	}
@@ -41,10 +40,10 @@ namespace Engine
 		return m_sprites[_tag];
 	}
 
-	void SpriteManager::Remove(Sprite s)
+	void SpriteManager::remove(Sprite s)
 	{
 		ENGINE_CORE_ASSERT(m_sprites.find(s->GetHashName()) != m_sprites.end());  
-		auto dpySprite = find(s, m_dpyList);
+		auto dpySprite = find(s);
 		m_sprites.erase(s->GetHashName());  
 		m_dpyList.erase(dpySprite);
 		s->Destroy();
