@@ -90,6 +90,7 @@ void Layer1::LoadSheets()
 	m_sheets.emplace(std::make_pair("link_sheet", new AnimationSheet("link_sheet", "Assets/AnimationFilms/link-sprites.bmp")));
 	m_sheets.emplace(std::make_pair("enemy_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp")));
 	m_sheets.emplace(std::make_pair("door_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/door.bmp")));
+	m_sheets.emplace(std::make_pair("collectible_sheet", new AnimationSheet("collectible_sheet", "Assets/AnimationFilms/collectibles.bmp")));
 }
 
 void Layer1::InitializeEnemies(GridLayer *grid) 
@@ -164,7 +165,7 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 
 void Layer1::InitialiazeCollectibles()
 {
-
+	std::ifstream keyFile;
 }
 
 void Layer1::InitializeDoors()
@@ -652,9 +653,11 @@ void Layer1::DoorHandler()
 	for (auto i : m_doors)
 	{
 		tmpBox = i.second->GetSprite()->GetBox();
-		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && i.second->GetState() != "open")
 		{
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i](Sprite s1, Sprite s2) {
+
+				if (l)
 				FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
 
 				if (!anim->HasFinished())
