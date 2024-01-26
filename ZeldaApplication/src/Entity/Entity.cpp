@@ -86,7 +86,8 @@ void Entity::SetSheet(AnimationSheet* _sheet)
 
 void Entity::EntityDestroy()
 {
-	m_Sprite->Destroy();
+	m_scene->RemoveSprite(m_Sprite);
+//	m_Sprite->Destroy();
 
 	for (auto i : m_animators)
 		i.second->Destroy();

@@ -6,6 +6,6 @@
 class Door : public Entity
 {
 public:
-	Door(ID _id, AnimationSheet* _sheet);
+	Door(ID _id, AnimationSheet* _sheet, Ref<Scene> _scene);
 	~Door() = default;
 };

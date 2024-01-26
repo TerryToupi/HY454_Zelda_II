@@ -65,6 +65,8 @@ protected:
 	std::string m_type;
 	uint32_t m_id;
 
+	Ref<Scene> m_scene;
+
 private:
 	uint32_t startX;
 	uint32_t startY;

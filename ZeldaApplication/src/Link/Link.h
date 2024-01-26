@@ -23,7 +23,7 @@ private:
 
 
 public:
-    Link(AnimationSheet* _sheet);
+    Link(AnimationSheet* _sheet, Ref<Scene> _scene);
     ~Link() = default;
     Animation* jumpAnimation;
 
