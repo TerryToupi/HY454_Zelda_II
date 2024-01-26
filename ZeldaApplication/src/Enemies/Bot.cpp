@@ -1,6 +1,6 @@
 #include "Bot.h"
 
-Bot::Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* _sheet) {
+Bot::Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* _sheet, Ref<Scene> _scene) {
 	std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
 	json configVars = json::parse(file);
 
@@ -14,6 +14,7 @@ Bot::Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* 
 	m_id = _id;
 	m_lookingAt = _direction;
 	m_sheet = _sheet;
+	m_scene = _scene;
 	EmplaceFilm("moving_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Great Palace Bot/slime_moving.json"));
 	EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Great Palace Bot/slime_moving.json"));
 	EmplaceFilm("death_", new AnimationFilm(m_sheet, "Assets/Config/Animations/Misc/single_damage.json"));

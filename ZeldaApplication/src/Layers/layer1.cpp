@@ -103,7 +103,7 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 	{
 		ID id = UUID::GenerateUUID();
 
-		m_enemies.emplace(std::make_pair( i, new Wosu(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"])));
+		m_enemies.emplace(std::make_pair( i, new Wosu(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
 		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
 		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
 	    m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Wosu" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_" + e["lookingAt"].get<std::string>()), "E_WOSU")));
@@ -135,7 +135,7 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 	{
 		ID id = UUID::GenerateUUID();
 
-		m_enemies.emplace(std::make_pair(i, new Bot(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"])));
+		m_enemies.emplace(std::make_pair(i, new Bot(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
 		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
 		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
 		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Bot" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_" + e["lookingAt"].get<std::string>()), "E_BOT")));
@@ -178,7 +178,7 @@ void Layer1::InitializeDoors()
 	for (auto d : doors["data"])
 	{	
 		ID id = UUID::GenerateUUID();
-		m_doors.emplace(std::make_pair(i, new Door(i, m_sheets["door_sheet"])));
+		m_doors.emplace(std::make_pair(i, new Door(i, m_sheets["door_sheet"], m_Scene)));
 		m_doors.at(i)->SetSprite(m_Scene->CreateSprite("Door" + std::to_string(id), d["spawn_pos"]["x"].get<uint32_t>() * 16, d["spawn_pos"]["y"].get<uint32_t>() * 16, m_doors.at(i)->GetFilm("open_"), ""));
 		m_doors.at(i)->GetSprite()->SetColiderBox(48, 16);
 		i++;
@@ -244,7 +244,7 @@ void Layer1::onStart()
 	
 	LoadSheets();
 
-	link = new Link(m_sheets["link_sheet"]);
+	link = new Link(m_sheets["link_sheet"], m_Scene);
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
 	link->GetSprite()->SetColiderBox(16, 32);
 
@@ -657,7 +657,7 @@ void Layer1::DoorHandler()
 		{
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i](Sprite s1, Sprite s2) {
 
-				if (l)
+			//	if (l)
 				FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
 
 				if (!anim->HasFinished())

@@ -1,6 +1,6 @@
 #include "Link.h"
 
-Link::Link(AnimationSheet* _sheet)
+Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
 {
     std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
     json configVars = json::parse(file);
@@ -9,6 +9,7 @@ Link::Link(AnimationSheet* _sheet)
     m_lookingAt = "right";
     m_state = "moving";
     m_type = "Link";
+    m_scene = _scene;
 
     setHealth(configVars["Link"]["HP"]);
     setDamage(configVars["Link"]["Damage"]);
