@@ -19,7 +19,7 @@ private:
     int speed;
     int jumpingForce;
     int m_damageCoolDown;
-    int m_keys;
+    bool m_key;
 
 
 public:
@@ -39,6 +39,7 @@ public:
     int getSpeed() const;
     int getJumpingForce() const;
     int getDamageCoolDown() const;
+    bool HasKey() const;
     
     void setHealth(int newHealth);
     void setDamage(int newDamage);
@@ -48,10 +49,12 @@ public:
     void setJumpingForce(int jumpingForce);
     void setDamageCoolDown(int _cooldown);
 
+
     void takeDamage(int amount);
     void heal(int amount);
     void castSpell(int spellCost);
     void loseLife();
+    void SetKey(bool _key);
 
 };
 

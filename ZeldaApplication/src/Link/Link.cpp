@@ -92,6 +92,11 @@ int Link::getDamageCoolDown() const
     return m_damageCoolDown;
 }
 
+bool Link::HasKey() const
+{
+    return m_key;
+}
+
 void Link::setHealth(int newHealth)
 {
     health = newHealth;
@@ -160,3 +165,7 @@ void Link::loseLife()
     lives -= 1;
 }
 
+void Link::SetKey(bool _key)
+{
+    m_key = _key;
+}

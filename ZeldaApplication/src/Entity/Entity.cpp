@@ -54,7 +54,6 @@ uint32_t Entity::GetID() const
 	return m_id;
 }
 
-
 void Entity::EmplaceAnimation(Animation* animation) 
 {
 	m_animations.emplace(std::make_pair(animation->GetId(), animation));
@@ -90,22 +89,22 @@ void Entity::EntityDestroy()
 	m_Sprite->Destroy();
 
 	for (auto i : m_animators)
-	{
 		i.second->Destroy();
-		//m_animators.erase(i.first);
-	};
 
 	for (auto i : m_films)
-	{
 		i.second->Destroy();
-		//m_films.erase(i.first);
-	}
 
 	for (auto i : m_animations)
-	{
 		i.second->Destroy();
-	//	m_animations.erase(i.first);
-	}
+
+	while (!m_animations.empty())
+		m_animations.erase(m_animations.begin());
+
+	while (!m_animators.empty())
+		m_animators.erase(m_animators.begin());
+
+	while (!m_films.empty())
+		m_films.erase(m_films.begin());
 
 	this->Destroy();
 }
@@ -131,7 +130,6 @@ void Entity::FrameRangeStart(std::string name)
 	std::string film = m_state + "_" + m_lookingAt;
 	m_Sprite->SetFilm(m_films[film]);
 
-
 	startX = m_Sprite->GetPosX();
 	startY = m_Sprite->GetPosY();
 }
@@ -156,6 +154,12 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 	std::string film = m_state + "_" + m_lookingAt;
 
 	m_Sprite->SetFrame(currFrame);
+
+	if ((m_state == "attacking" && currFrame == 2) ||
+		(m_state == "crouch_attack" && currFrame == 1))
+		m_Sprite->SetColiderBox(32, 32);
+	else
+		m_Sprite->SetColiderBox(16, 32);
 
 	if (m_lookingAt == "left")
 	{
