@@ -33,7 +33,8 @@ namespace Engine
 				{ return s_Instance; } 
 
 	private:
-		void insert_ascending_zorder(Sprite s);
+		void insert_ascending_zorder(Sprite s); 
+		auto find(Sprite s, std::list<Sprite>& list) -> std::list<Sprite>::iterator;
 
 	private:
 		SpriteList	m_dpyList;

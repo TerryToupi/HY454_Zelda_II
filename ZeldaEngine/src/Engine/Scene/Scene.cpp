@@ -19,5 +19,10 @@ namespace Engine {
 			ENGINE_CORE_WARN("Sprite has null data"); 
 
 		return m_sprites.Get(_tag);
+	} 
+
+	void Scene::RemoveSprite(Sprite _sprite)
+	{ 
+		m_sprites.Remove(_sprite);
 	}
 }
