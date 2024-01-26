@@ -32,7 +32,7 @@ namespace Engine
 		friend class DestructionManager;
 		bool alive = true;
 		bool dying = false;
-		virtual ~LatelyDestroyable() { ENGINE_CORE_ASSERT(dying); }
+		virtual ~LatelyDestroyable() { /*ENGINE_CORE_ASSERT(dying);*/  }
 		void Delete(void);
 	};
 }

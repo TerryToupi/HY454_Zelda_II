@@ -9,7 +9,7 @@
 			"lookingAt": "right",
 			"stage": 2,
 			"min_x": 69,
-			"max_x": 207
+			"max_x": 270
 		},
 		{
 			"spawn_pos": {
@@ -19,7 +19,7 @@
 			"lookingAt": "right",
 			"stage": 2,
 			"min_x": 69,
-			"max_x": 207
+			"max_x": 270
 		},
 		{
 			"spawn_pos": {
@@ -29,7 +29,7 @@
 			"lookingAt": "left",
 			"stage": 2,
 			"min_x": 69,
-			"max_x": 207
+			"max_x": 270
 		},
 		{
 			"spawn_pos": {
@@ -39,7 +39,7 @@
 			"lookingAt": "left",
 			"stage": 2,
 			"min_x": 69,
-			"max_x": 207
+			"max_x": 270
 		},
 		{
 			"spawn_pos": {
@@ -48,7 +48,7 @@
 			},
 			"lookingAt": "left",
 			"stage": 2,
-			"min_x": 210,
+			"min_x": 69,
 			"max_x": 270
 		},
 		{
@@ -58,7 +58,7 @@
 			},
 			"lookingAt": "right",
 			"stage": 2,
-			"min_x": 210,
+			"min_x": 69,
 			"max_x": 270
 		},
 		{
@@ -68,7 +68,7 @@
 			},
 			"lookingAt": "left",
 			"stage": 2,
-			"min_x": 210,
+			"min_x": 69,
 			"max_x": 270
 		},
 		{
@@ -78,7 +78,7 @@
 			},
 			"lookingAt": "right",
 			"stage": 2,
-			"min_x": 210,
+			"min_x": 69,
 			"max_x": 270
 		},
 		{
@@ -88,7 +88,7 @@
 			},
 			"lookingAt": "right",
 			"stage": 2,
-			"min_x": 210,
+			"min_x": 69,
 			"max_x": 270
 		},
 		{
@@ -98,7 +98,7 @@
 			},
 			"lookingAt": "left",
 			"stage": 2,
-			"min_x" :210,
+			"min_x": 69,
 			"max_x": 270
 		},
 		{

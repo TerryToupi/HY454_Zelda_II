@@ -1,14 +1,15 @@
 #include "Link.h"
 
-Link::Link()
+Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
 {
     std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
     json configVars = json::parse(file);
 
-
+    m_damageCoolDown = 0;
     m_lookingAt = "right";
     m_state = "moving";
     m_type = "Link";
+    m_scene = _scene;
 
     setHealth(configVars["Link"]["HP"]);
     setDamage(configVars["Link"]["Damage"]);
@@ -17,8 +18,7 @@ Link::Link()
     setSpeed(100 - configVars["Link"]["Speed"]);
     setJumpingForce(configVars["Link"]["JumpingForce"]);
 
-
-    m_sheet = new AnimationSheet("link_sheet", "Assets/AnimationFilms/link-sprites.bmp");
+    m_sheet = _sheet;
     EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_right.json"));
     EmplaceFilm("moving_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_left.json"));
     EmplaceFilm("crouch_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/crouch_left.json"));
@@ -43,8 +43,8 @@ Link::Link()
     EmplaceAnimation(jumpAnimation);
     EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, getSpeed()));
     EmplaceAnimation(new MovingAnimation("mov_damage", 5, 0, 0, getSpeed()));
-    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 3, 0, 0, 30));
-    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 3, 0, 0, 30));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_left", 0, m_films["damage_from_left"]->GetTotalFrames(), 2, 0, 0, 10));
+    EmplaceAnimation(new FrameRangeAnimation("frame_damage_from_right", 0, m_films["damage_from_right"]->GetTotalFrames(), 2, 0, 0, 10));
   
     EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
     EmplaceAnimation(new MovingAnimation("mov_damage", 5, 0, 0, 10));
@@ -88,6 +88,15 @@ int Link::getJumpingForce() const
     return jumpingForce;
 }
 
+int Link::getDamageCoolDown() const
+{
+    return m_damageCoolDown;
+}
+
+bool Link::HasKey() const
+{
+    return m_key;
+}
 
 void Link::setHealth(int newHealth)
 {
@@ -119,6 +128,10 @@ void Link::setJumpingForce(int newJumpingForce)
     jumpingForce = newJumpingForce;
 }
 
+void Link::setDamageCoolDown(int _cooldown)
+{
+    m_damageCoolDown = _cooldown;
+}
 
 void Link::takeDamage(int amount) 
 {
@@ -153,3 +166,7 @@ void Link::loseLife()
     lives -= 1;
 }
 
+void Link::SetKey(bool _key)
+{
+    m_key = _key;
+}

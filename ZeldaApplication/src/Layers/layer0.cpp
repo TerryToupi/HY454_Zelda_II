@@ -20,7 +20,6 @@ void Layer0::onStart()
 
 void Layer0::onDelete()
 { 
-	
 }
 
 void Layer0::move()

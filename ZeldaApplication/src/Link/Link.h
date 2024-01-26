@@ -18,10 +18,12 @@ private:
     int lives;
     int speed;
     int jumpingForce;
+    int m_damageCoolDown;
+    bool m_key;
 
 
 public:
-    Link();
+    Link(AnimationSheet* _sheet, Ref<Scene> _scene);
     ~Link() = default;
     Animation* jumpAnimation;
 
@@ -36,6 +38,8 @@ public:
     int getLives() const;
     int getSpeed() const;
     int getJumpingForce() const;
+    int getDamageCoolDown() const;
+    bool HasKey() const;
     
     void setHealth(int newHealth);
     void setDamage(int newDamage);
@@ -43,13 +47,14 @@ public:
     void setLives(int newLives);
     void setSpeed(int newLives);
     void setJumpingForce(int jumpingForce);
-
+    void setDamageCoolDown(int _cooldown);
 
 
     void takeDamage(int amount);
     void heal(int amount);
     void castSpell(int spellCost);
     void loseLife();
+    void SetKey(bool _key);
 
 };
 

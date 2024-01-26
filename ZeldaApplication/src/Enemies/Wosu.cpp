@@ -1,6 +1,6 @@
 #include "Wosu.h"
 
-Wosu::Wosu(uint32_t _id, std::string _direction, uint32_t _stage) {
+Wosu::Wosu(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* _sheet, Ref<Scene> _scene) {
 	std::ifstream file("Assets/Config/Variables/ConfigVariables.json");
 	json configVars = json::parse(file);
 
@@ -12,7 +12,8 @@ Wosu::Wosu(uint32_t _id, std::string _direction, uint32_t _stage) {
 	m_state = "amblambloubla";
 	m_id = _id;
 	m_lookingAt = _direction;
-	m_sheet = new AnimationSheet("guma_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp");
+	m_sheet = _sheet;
+	m_scene = _scene;
 	EmplaceFilm("moving_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Wosu/moving_left.json"));
 	EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Wosu/moving_right.json"));
 	EmplaceFilm("death_", new AnimationFilm(m_sheet, "Assets/Config/Animations/Misc/double_damage.json"));
