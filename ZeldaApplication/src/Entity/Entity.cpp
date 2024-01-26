@@ -155,11 +155,11 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 
 	m_Sprite->SetFrame(currFrame);
 
-	if ((m_state == "attacking" && currFrame == 2) ||
-		(m_state == "crouch_attack" && currFrame == 1))
-		m_Sprite->SetColiderBox(32, 32);
-	else
-		m_Sprite->SetColiderBox(16, 32);
+	//if ((m_state == "attacking" && currFrame == 2) ||
+	//	(m_state == "crouch_attack" && currFrame == 1))
+	//	m_Sprite->SetColiderBox(32, 32);
+	//else
+	//	m_Sprite->SetColiderBox(16, 32);
 
 	if (m_lookingAt == "left")
 	{
