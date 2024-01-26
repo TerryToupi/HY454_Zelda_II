@@ -165,7 +165,13 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 
 void Layer1::InitialiazeCollectibles()
 {
-	std::ifstream keyFile;
+	std::ifstream keyFile("Assets/Config/Collectibles/key_config.json");
+	json keys = json::parse(keyFile);
+	ID i = 0;
+
+	for (auto k : keys["data"])
+	{
+	}
 }
 
 void Layer1::InitializeDoors()
