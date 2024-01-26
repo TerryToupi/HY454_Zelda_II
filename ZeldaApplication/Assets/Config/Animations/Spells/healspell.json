@@ -1,0 +1,27 @@
+{
+  "animation": "lifespell_animation",
+  "total_frames": 3,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 0,
+      "y": 0,
+      "h": 32,
+      "w": 32
+    },
+    {
+      "frame": 2,
+      "x": 32,
+      "y": 0,
+      "h": 32,
+      "w": 32
+    },
+    {
+      "frame": 3,
+      "x": 64,
+      "y": 0,
+      "h": 32,
+      "w": 32
+    }
+  ]
+}

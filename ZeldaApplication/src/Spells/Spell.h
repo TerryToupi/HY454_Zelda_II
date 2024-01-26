@@ -1,11 +1,12 @@
 #pragma once
 
 #include<Engine.h>
+#include"../Entity/Entity.h"
 #include <json.hpp>
 
 using json = nlohmann::json;
 
-class Spell{
+class Spell : public Entity {
 private:
     std::string type;
     int cost;
