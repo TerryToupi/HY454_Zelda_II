@@ -19,7 +19,7 @@ LifeSpell::LifeSpell() {
 
 	EmplaceAnimation(new FrameRangeAnimation("lifespell_animation", 0, m_films["lifespell_"]->GetTotalFrames(), 0, 300, 12*36, 150));
 
-	EmplaceAnimator("lifespell_animator", new FrameRangeAnimator());
+	EmplaceAnimator("frame_animator", new FrameRangeAnimator());
 
 	InitializeAnimators();
 }

@@ -3,8 +3,7 @@
 #include <Engine.h>
 #include "../Entity/Entity.h"
 
-enum collectibles
-{
+enum c_type{
 	C_KEY,
 	C_REDPOTION,
 	C_BLUEPOTION,
@@ -15,7 +14,8 @@ enum collectibles
 class Collectible : public Entity
 {
 public:
-
+	Collectible(ID _id, AnimationSheet* _sheet, Ref<Scene> _scene, c_type _type);
+	~Collectible() = default;
 private:
-
+	c_type type;
 };

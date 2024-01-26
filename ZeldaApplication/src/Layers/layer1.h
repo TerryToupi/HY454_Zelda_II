@@ -5,6 +5,7 @@
 #include "../Link/Link.h"
 #include "../Enemies/Enemies.h"
 #include "../Door/Door.h"
+#include "../Collectible/Collectinble.h"
 
 using json = nlohmann::json;
 using namespace Engine;
@@ -32,7 +33,7 @@ public:
     using Enemies = std::unordered_map<ID, Enemy*>;
     using Sounds = std::unordered_map<std::string, AudioID>;
     using Sheets = std::unordered_map<std::string, AnimationSheet*>;
-    using Collectibles = std::unordered_map<std::string, Entity*>;
+    using Collectibles = std::unordered_map<c_type, std::vector<Collectible*>>;
     using Doors = std::unordered_map<ID, Door*>;
     using Elevators = std::unordered_map<ID, Entity*>;
 
