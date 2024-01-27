@@ -17,7 +17,7 @@ LifeSpell::LifeSpell() {
 	m_sheet = new AnimationSheet("spell", "Assets/AnimationFilms/spell_visuals.bmp");
 	EmplaceFilm("lifespell_", new AnimationFilm(m_sheet, "Assets/Config/Animations/Spells/healspell.json"));
 
-	EmplaceAnimation(new FrameRangeAnimation("lifespell_animation", 0, m_films["lifespell_"]->GetTotalFrames(), 0, 300, 12*36, 150));
+	EmplaceAnimation(new FrameRangeAnimation("lifespell_animation", 0, m_films["lifespell_"]->GetTotalFrames(), 1, 300, 12*36, 70));
 
 	EmplaceAnimator("frame_animator", new FrameRangeAnimator());
 

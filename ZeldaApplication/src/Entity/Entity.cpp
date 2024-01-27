@@ -157,6 +157,11 @@ void Entity::FrameRangeFinish()
 	{ 
 		EntityDestroy();
 	}
+
+	if (m_state == "shieldspell")
+	{
+		m_Sprite->SetFrame(0);
+	}
 }
 
 void Entity::FrameRangeAction(FrameRangeAnimator* animator)

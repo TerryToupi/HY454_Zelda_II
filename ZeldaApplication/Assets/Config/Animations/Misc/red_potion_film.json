@@ -1,0 +1,13 @@
+{
+  "animation": "blue_potion",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 36,
+      "y": 0,
+      "h": 16,
+      "w": 16
+    }
+  ]
+}

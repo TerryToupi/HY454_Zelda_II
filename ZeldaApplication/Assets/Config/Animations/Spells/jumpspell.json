@@ -1,5 +1,5 @@
 {
-  "animation": "lifespell_animation",
+  "animation": "jumpspell_animation",
   "total_frames": 8,
   "frames": [
     {
@@ -12,42 +12,42 @@
     {
       "frame": 2,
       "x": 0,
-      "y": 0,
+      "y": 32,
       "h": 32,
       "w": 32
     },
     {
       "frame": 3,
       "x": 32,
-      "y": 0,
+      "y": 32,
       "h": 32,
       "w": 32
     },
     {
       "frame": 4,
       "x": 64,
-      "y": 0,
+      "y": 32,
       "h": 32,
       "w": 32
     },
     {
       "frame": 5,
       "x": 0,
-      "y": 0,
+      "y": 32,
       "h": 32,
       "w": 32
     },
     {
       "frame": 6,
       "x": 32,
-      "y": 0,
+      "y": 32,
       "h": 32,
       "w": 32
     },
     {
       "frame": 7,
       "x": 64,
-      "y": 0,
+      "y": 32,
       "h": 32,
       "w": 32
     },
