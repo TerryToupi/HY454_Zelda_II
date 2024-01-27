@@ -68,6 +68,7 @@ public:
     void DoorHandler();
     void CollectibleHandler();
     void CreateCollectible(std::string json, std::string type, enum c_type);
+    void DropCollectible(Enemy* enemy);
     void SpellFollowLink();
 
 public:
