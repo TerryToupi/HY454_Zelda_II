@@ -102,6 +102,7 @@ void Layer1::LoadSheets()
 	m_sheets.emplace(std::make_pair("enemy_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp")));
 	m_sheets.emplace(std::make_pair("door_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/door.bmp")));
 	m_sheets.emplace(std::make_pair("collectible_sheet", new AnimationSheet("collectible_sheet", "Assets/AnimationFilms/collectibles.bmp")));
+	m_sheets.emplace(std::make_pair("elevator_sheet", new AnimationSheet("elevator_sheet", "Assets/AnimationFilms/elevator.bmp"));
 }
 
 void Layer1::InitializeEnemies(GridLayer *grid) 
@@ -588,7 +589,7 @@ void Layer1::EnemyHandler()
 				if (link->GetState() != "attacking" && link->GetState() != "crouch_attack")
 				{
 
-					link->setDamageCoolDown(2000);
+					link->setDamageCoolDown(500);
 					if (link->GetState() == "crouch")
 					{
 						if (link->GetLookingAt() == i.second->GetLookingAt())

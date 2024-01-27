@@ -4,8 +4,9 @@
 #include <json.hpp>
 #include "../Link/Link.h"
 #include "../Enemies/Enemies.h"
-#include "../Door/Door.h"
-#include "../Collectible/Collectinble.h"
+#include "../Misc/Door/Door.h"
+#include "../Misc/Collectible/Collectinble.h"
+#include "../Misc/Elevator/Elevator.h"
 
 using json = nlohmann::json;
 using namespace Engine;

@@ -154,7 +154,7 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 	uint32_t currFrame = animator->GetCurrFrame();
 	std::string film = m_state + "_" + m_lookingAt;
 
-	ENGINE_TRACE(m_state);
+	//ENGINE_TRACE(m_state);
 	m_Sprite->SetFrame(currFrame);
 
 	//if ((m_state == "attacking" && currFrame == 2) ||

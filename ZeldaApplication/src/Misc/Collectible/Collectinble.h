@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Engine.h>
-#include "../Entity/Entity.h"
+#include "../../Entity/Entity.h"
 
 enum c_type{
 	C_KEY,

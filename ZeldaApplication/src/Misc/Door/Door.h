@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Engine.h>
-#include "../Entity/Entity.h"
+#include "../../Entity/Entity.h"
 
 class Door : public Entity
 {
