@@ -72,30 +72,40 @@ Layer1::Layer1()
 void Layer1::InitializeTeleports()
 {
 	std::ifstream file("Assets/Config/TeleportPoints/TeleportPoints.json");
+	std::ifstream efile(("Assets/Config/TeleportPoints/ElevatorTeleportPoints.json"));
 	json Points = json::parse(file);
+	json ePoints = json::parse(efile);
 	Sprite origin, dest;
 	char id = 'A';
 
 	for (auto p : Points["points"])
 	{	
 		Teleport tmp;
-		Teleport e_tmp;
 
 		tmp.origin = m_Scene->CreateSprite("tp_1" + id, p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
-		tmp.origin->SetColiderBox(16, 16);
+		tmp.origin->SetColiderBox(32, 16);
 		tmp.dest = m_Scene->CreateSprite("tp_2" + id, p["destination"]["x"].get<int>() * 16, p["destination"]["y"].get<int>() * 16, NONPRINTABLE, "");
-		tmp.dest->SetColiderBox(16, 16);
+		tmp.dest->SetColiderBox(32, 16);
 		tmp.stage = p["stage"].get<int>();
 		m_teleports.push_back(tmp);
+		
+		id++;
+	} 
+	
+	id = 'A';
 
-		e_tmp.origin = m_Scene->CreateSprite("etp_1" + id, (p["origin"]["x"].get<int>() - 1) * 16, (p["origin"]["y"].get<int>() - 1) * 16, NONPRINTABLE, "");
-		e_tmp.origin->SetColiderBox(16, 16);
-		e_tmp.dest = m_Scene->CreateSprite("etp_2" + id, (p["destination"]["x"].get<int>() - 1) * 16, (p["destination"]["y"].get<int>() - 1) * 16, NONPRINTABLE, "");
-		e_tmp.dest->SetColiderBox(16, 16);
+	for (auto p : ePoints["points"])
+	{
+		Teleport e_tmp;
+
+		e_tmp.origin = m_Scene->CreateSprite("etp_1" + id, p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
+		e_tmp.origin->SetColiderBox(32, 16);
+		e_tmp.dest = m_Scene->CreateSprite("etp_2" + id, (p["destination"]["x"].get<int>()) * 16, p["destination"]["y"].get<int>() * 16, NONPRINTABLE, "");
+		e_tmp.dest->SetColiderBox(32, 16);
 		e_tmp.stage = p["stage"].get<int>();
 		m_elevator_teleports.push_back(e_tmp);
 		id++;
-	} 
+	}
 
 }
 
@@ -193,7 +203,6 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 
 
 }
-
 
 void Layer1::CreateCollectible(std::string jsonPath, std::string type, enum c_type cType) {
 	std::ifstream file(jsonPath);
@@ -317,8 +326,6 @@ void Layer1::SpellFollowLink() {
 	link->shieldspell.GetSprite()->SetPos(link->GetSprite()->GetPosX()-8, link->GetSprite()->GetPosY());
 	link->thunderspell.GetSprite()->SetPos(link->GetSprite()->GetPosX()-10, link->GetSprite()->GetPosY());
 }
-
-
 
 void Layer1::onStart()
 {	
@@ -632,8 +639,9 @@ void Layer1::TeleportHandler()
 		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 		{
 			Sprite dest = i.dest;
-			m_Scene->GetColider().Register(el_sprite, i.origin, [el_sprite, dest, tilelayer, this, i](Sprite s1, Sprite s2) {
+			m_Scene->GetColider().Register(el_sprite, i.origin, [el_sprite, link_sprite, dest, tilelayer, this, i](Sprite s1, Sprite s2) {
 				el_sprite->SetPos(dest->GetPosX(), dest->GetPosY());
+				link_sprite->SetPos(dest->GetPosX() + 8, dest->GetPosY() + 16);
 				m_currStage = i.stage;
 				ENGINE_TRACE(i.stage);
 				int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
@@ -932,10 +940,17 @@ bool Layer1::ElevatorMovement(Event& e)
 		if (!currElevator)
 			return true;
 
-		if (event->GetKey() == InputKey::g)
+		if (event->GetKey() == InputKey::DOWN)
 		{
 			ENGINE_TRACE("KATWWW");
 			currElevator->SetLookingAt("down");
+			currElevator->SetState("moving");
+			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+		}
+		else if (event->GetKey() == InputKey::UP)
+		{
+			ENGINE_TRACE("PANWWW");
+			currElevator->SetLookingAt("up");
 			currElevator->SetState("moving");
 			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 		}

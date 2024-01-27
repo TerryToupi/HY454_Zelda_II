@@ -1,0 +1,93 @@
+{
+  "amount": 14,
+  "points": [
+    {
+      "origin": {
+        "x": 40,
+        "y": 15
+      },
+      "destination": {
+        "x": 167,
+        "y": 5
+      },
+      "stage": 2
+    },
+    {
+      "origin": {
+        "x": 167,
+        "y": 2
+      },
+      "destination": {
+        "x": 40,
+        "y": 10
+      },
+      "stage": 1
+    },
+    {
+      "origin": {
+        "x": 271,
+        "y": 15
+      },
+      "destination": {
+        "x": 570,
+        "y": 3
+      },
+      "stage": 3
+    },
+    {
+      "origin": {
+        "x": 570,
+        "y": 1
+      },
+      "destination": {
+        "x": 271,
+        "y": 12
+      },
+      "stage": 2
+    },
+    {
+      "origin": {
+        "x": 339,
+        "y": 15
+      },
+      "destination": {
+        "x": 747,
+        "y": 3
+      },
+      "stage": 7
+    },
+    {
+      "origin": {
+        "x": 747,
+        "y": 1
+      },
+      "destination": {
+        "x": 339,
+        "y": 12
+      },
+      "stage": 2
+    },
+    {
+      "origin": {
+        "x": 339,
+        "y": 1
+      },
+      "destination": {
+        "x": 586,
+        "y": 12
+      },
+      "stage": 5
+    },
+    {
+      "origin": {
+        "x": 586,
+        "y": 15
+      },
+      "destination": {
+        "x": 339,
+        "y": 3
+      },
+      "stage": 2
+    }
+  ]
+}
