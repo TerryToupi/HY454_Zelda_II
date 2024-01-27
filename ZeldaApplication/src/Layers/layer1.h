@@ -21,11 +21,12 @@ stage   : stage that the location belongs to
 
 
 
-typedef struct teleportsStruct {
+typedef struct teleportsStruct 
+{
     Sprite origin;
     Sprite dest;
     uint32_t stage;
-}Teleports;
+}Teleport;
 
 class Layer1 : public Layer
 {
@@ -36,7 +37,8 @@ public:
     using Sheets = std::unordered_map<std::string, AnimationSheet*>;
     using Collectibles = std::unordered_map<c_type, std::vector<Collectible*>>;
     using Doors = std::unordered_map<ID, Door*>;
-    using Elevators = std::unordered_map<ID, Entity*>;
+    using Elevators = std::unordered_map<ID, Elevator*>;
+    using Teleports = std::vector<Teleport>;
 
     Layer1();
 
@@ -47,6 +49,7 @@ public:
     void InitializeDoors();
     void InitialiazeCollectibles();
     void InitializeAudio();
+    void InitializeElevators();
     void LoadSheets();
     
     /*----LAYER FUNCTIONS----*/
@@ -66,15 +69,17 @@ public:
     void CollectibleHandler();
 
 public:
-    Link* link;                                         // main character instance
-    std::vector<Teleports> m_teleports;                 // teleport locations
-    Stages m_stages;                                    // map stages
-    uint32_t m_currStage;                               // stage tracker
-    Sounds m_sounds;  // sound files
+    Link* link;                             // main character instance
+    Teleports m_teleports;                  // teleport locations
+    Teleports m_elevator_teleports;
+    Stages m_stages;                        // map stages
+    uint32_t m_currStage;                   // stage tracker
+    Sounds m_sounds;                        // sound files
     Enemies m_enemies;
     Sheets m_sheets;
     Collectibles m_collectibles;
     Doors m_doors;
+    Elevators m_elevators;
 
 
     Wosu* wosu;

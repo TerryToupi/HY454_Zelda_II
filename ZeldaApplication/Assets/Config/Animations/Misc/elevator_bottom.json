@@ -1,0 +1,13 @@
+{
+  "animation": "elevator_bottom",
+  "total_frames" : 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 0,
+      "y": 40,
+      "h": 7,
+      "w": 24
+    }
+  ]
+}

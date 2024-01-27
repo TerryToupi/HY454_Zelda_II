@@ -57,7 +57,6 @@ Layer1::Layer1()
 {
 }
 
-
 void Layer1::InitializeTeleports()
 {
 	std::ifstream file("Assets/Config/TeleportPoints/TeleportPoints.json");
@@ -67,7 +66,7 @@ void Layer1::InitializeTeleports()
 
 	for (auto p : Points["points"])
 	{	
-		Teleports tmp;
+		Teleport tmp;
 
 		tmp.origin = m_Scene->CreateSprite("tp_1" + id, p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
 		tmp.origin->SetColiderBox(16, 16);
@@ -102,7 +101,7 @@ void Layer1::LoadSheets()
 	m_sheets.emplace(std::make_pair("enemy_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp")));
 	m_sheets.emplace(std::make_pair("door_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/door.bmp")));
 	m_sheets.emplace(std::make_pair("collectible_sheet", new AnimationSheet("collectible_sheet", "Assets/AnimationFilms/collectibles.bmp")));
-	m_sheets.emplace(std::make_pair("elevator_sheet", new AnimationSheet("elevator_sheet", "Assets/AnimationFilms/elevator.bmp"));
+	m_sheets.emplace(std::make_pair("elevator_sheet", new AnimationSheet("elevator_sheet", "Assets/AnimationFilms/elevator.bmp")));
 }
 
 void Layer1::InitializeEnemies(GridLayer *grid) 
@@ -187,6 +186,7 @@ void Layer1::InitialiazeCollectibles()
 		tmp.push_back(new Collectible(i, m_sheets["collectible_sheet"], m_Scene, C_KEY));
 		tmp.at(i)->SetSprite(m_Scene->CreateSprite("key" + std::to_string(i), k["spawn_pos"]["x"].get<uint32_t>() * 16, k["spawn_pos"]["y"].get<uint32_t>() * 16, tmp.at(i)->GetFilm("key_film"), ""));
 		tmp.at(i)->GetSprite()->SetColiderBox(16, 16);
+		i++;
 	}
 	m_collectibles.emplace(std::make_pair(C_KEY, tmp));
 	ENGINE_TRACE(m_collectibles.size());
@@ -215,7 +215,13 @@ void Layer1::InitializeAudio()
 	AudioID tmp = AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav");
 	m_sounds.emplace(std::make_pair("attacking", tmp));
 }
- 
+
+void Layer1::InitializeElevators()
+{
+	m_elevators.emplace(std::make_pair(0, new Elevator(0, m_sheets["elevator_sheet"], m_Scene)));
+//	m_elevators.at(0)->SetSprite(m_Scene->CreateSprite("Elevator" + std::to_string(0), ))
+}
+
 void Layer1::UpdateSpell(Spell& spell, Time ts) {
 	if (!spell.canUse()) {
 		if (spell.getDurationRemainingTime() == 0) {
@@ -312,6 +318,7 @@ void Layer1::onUpdate(Time ts)
 	EnemyMovement();
 	EnemyHandler();
 	DoorHandler();
+	CollectibleHandler();
 
 	CheckTimers(ts);
 
@@ -680,14 +687,29 @@ void Layer1::DoorHandler()
 		{
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i](Sprite s1, Sprite s2) {
 
-			//	if (l)
-				FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
+				if (link->HasKey())
+				{
+					link->RemoveKey();
+					FrameRangeAnimator * anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
 
-				if (!anim->HasFinished())
-					anim->Stop();
+					if (!anim->HasFinished())
+						anim->Stop();
 
-				i.second->SetState("open");
-				anim->Start((FrameRangeAnimation*)i.second->GetAnimation("frame_open"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)i.second->GetAnimation("frame_open"))->GetStartFrame());
+					i.second->SetState("open");
+					anim->Start((FrameRangeAnimation*)i.second->GetAnimation("frame_open"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)i.second->GetAnimation("frame_open"))->GetStartFrame());
+				}
+				else
+				{
+					((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
+					if (link->GetLookingAt() == "left")
+					{
+						link->GetSprite()->Move(+2, 0);
+					}
+					else if (link->GetLookingAt() == "right")
+					{
+						link->GetSprite()->Move(-2, 0);
+					}
+				}
 			});
 
 			m_Scene->GetColider().Check();
@@ -708,4 +730,56 @@ void Layer1::DoorHandler()
 		}
 	}
 	
+}
+
+void Layer1::CollectibleHandler()
+{
+	Rect d1;
+	Rect d2;
+	Rect tmpBox = (m_collectibles.begin()->second).front()->GetSprite()->GetBox();
+	Sprite link_sprite = link->GetSprite();
+	TileLayer* tilelayer = m_Scene->GetTiles().get();
+
+	int collected_index = m_collectibles.begin()->second.size();
+	Collectible* collected = nullptr;
+
+	for (auto c : m_collectibles)
+	{
+		int cnt = 0;
+		for (auto i : c.second)
+		{
+			tmpBox = i->GetSprite()->GetBox();
+			if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+			{
+				m_Scene->GetColider().Register(link_sprite, i->GetSprite(), [link_sprite, this, i, c](Sprite s1, Sprite s2) {
+					switch (i->GetType())
+					{
+					case C_KEY: link->AddKey();
+								i->SetState("collected");
+								break;
+					case C_REDPOTION: break;
+					case C_BLUEPOTION: break;
+					case C_LINK: break;
+					case C_POINTS: break;
+					}
+				});
+
+				m_Scene->GetColider().Check();
+				m_Scene->GetColider().Cancel(link_sprite, i->GetSprite());
+			}
+
+			if (i->GetState() == "collected") {
+				collected = i;
+				collected_index = cnt;
+			}
+			cnt++;
+		}
+
+	}
+
+	if (collected) {
+		collected->EntityDestroy();
+		m_collectibles.at(collected->GetType()).erase(m_collectibles.at(collected->GetType()).begin() + collected_index);
+	}
+
 }
