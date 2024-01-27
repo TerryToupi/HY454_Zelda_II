@@ -1,16 +1,19 @@
 #include "Sprite.h" 
 
+#define NO_PRINTABLE_FRAME -1
+
 namespace Engine
 {
 	SpriteClass::SpriteClass(std::string _name, int _x, int _y, AnimationFilm* _film, const std::string& _typeid)
 		: m_hashName(_name), m_x(_x), m_y(_y), m_currFilm(_film), m_typeId(_typeid)
 	{  
 		if (m_currFilm)
+		{
 			m_frameNo = m_currFilm->GetTotalFrames();
+			SetFrame(0);
+		}
 		else
-			m_frameNo = 0;
-
-		SetFrame(0);
+			m_frameNo = NO_PRINTABLE_FRAME;
 	} 
 
 	void SpriteClass::SetMover(const Mover& move)
@@ -57,11 +60,14 @@ namespace Engine
 	}
 
 	void SpriteClass::SetFrame(byte i)
-	{
-		if (i != m_frameNo)
+	{ 
+		if (m_emptyFrameBox == true && i == 0)
 		{
-			m_frameBox = m_currFilm->GetFrameBox(m_frameNo = i);  
+			m_frameBox = m_currFilm->GetFrameBox(i);  
+			m_emptyFrameBox = false;
 		}
+		else if (i != m_frameNo)
+			m_frameBox = m_currFilm->GetFrameBox(m_frameNo = i);  
 	}
 
 	int SpriteClass::GetPosX() const
