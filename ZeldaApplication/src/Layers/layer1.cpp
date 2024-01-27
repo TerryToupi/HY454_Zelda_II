@@ -213,6 +213,16 @@ void Layer1::CreateCollectible(std::string jsonPath, std::string type, enum c_ty
 
 }
 
+void Layer1::DropCollectible(Enemy* enemy) {
+	Collectible* tmp = new Collectible(i, m_sheets["collectible_sheet"], m_Scene, C_BLUEPOTION);
+	ID id = UUID::GenerateUUID();
+
+	tmp->SetSprite(m_Scene->CreateSprite("bluePotion"+std::to_string(id), enemy->GetSprite()->GetPosX(), enemy->GetSprite()->GetPosY(), tmp->GetFilm("bluePotion_film"), ""));
+	tmp->GetSprite()->SetColiderBox(5, 5);
+	
+	m_collectibles[C_BLUEPOTION].push_back(tmp);
+}
+
 void Layer1::InitialiazeCollectibles()
 {
 	CreateCollectible("Assets/Config/Collectibles/key_config.json", "key", C_KEY);
@@ -777,8 +787,10 @@ void Layer1::EnemyHandler()
 		}
 	}
 
-	if (dying)
+	if (dying) {
+		DropCollectible(dying);
 		m_enemies.erase(m_enemies.find(dying->GetID()));
+	}
 
 }
 
@@ -861,7 +873,7 @@ void Layer1::CollectibleHandler()
 		for (auto i : c.second)
 		{
 			tmpBox = i->GetSprite()->GetBox();
-			if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+			if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && (link->GetState() == "attacking") ||(link->GetState() == "crouch_attack"))
 			{
 				m_Scene->GetColider().Register(link_sprite, i->GetSprite(), [link_sprite, this, i, c](Sprite s1, Sprite s2) {
 					switch (i->GetType())
