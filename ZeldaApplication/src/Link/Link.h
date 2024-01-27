@@ -7,19 +7,26 @@
 #include "../Misc/Spells/ShieldSpell.h"
 #include "../Misc/Spells/ThunderSpell.h"
 #include "../Misc/Spells/JumpSpell.h"
+#include "../Misc/PowerUps/Key.h"
+#include "../Misc/PowerUps/RedPotion.h"
+#include "../Misc/PowerUps/BluePotion.h"
+#include "../Misc/PowerUps/BasicPointBag.h"
+#include "../Misc/PowerUps/StrongerPointBag.h"
+#include "../Misc/PowerUps/ExtraLife.h"
 
 using namespace Engine;
 
 class Link : public Entity{
 private:
-    int health;
-    int damage;
-    int magicPoints;
-    int lives;
-    int speed;
-    int jumpingForce;
+    int m_health;
+    int m_damage;
+    int m_magicPoints;
+    int m_lives;
+    int m_speed;
+    int m_jumpingForce;
     int m_damageCoolDown;
     int m_keys;
+    int m_points;
 
 
 public:
@@ -30,7 +37,14 @@ public:
     JumpSpell jumpspell;
     LifeSpell lifespell;
     ShieldSpell shieldspell;
+    ThunderSpell thunderspell;
 
+    Key key;
+    BluePotion bluepotion;
+    RedPotion redpotion;
+    BasicPointBag basicpointbag;
+    StrongerPointBag strongerpointbag;
+    ExtraLife extralife;
 
     int getHealth() const;
     int getDamage() const;
@@ -39,7 +53,8 @@ public:
     int getSpeed() const;
     int getJumpingForce() const;
     int getDamageCoolDown() const;
-    bool HasKey() const;
+    int getPoints() const;
+    int getKeys() const;
     
     void setHealth(int newHealth);
     void setDamage(int newDamage);
@@ -48,6 +63,7 @@ public:
     void setSpeed(int newLives);
     void setJumpingForce(int jumpingForce);
     void setDamageCoolDown(int _cooldown);
+    void setPoints(int _points);
 
 
     void takeDamage(int amount);
@@ -56,6 +72,7 @@ public:
     void loseLife();
     void RemoveKey();
     void AddKey();
+    bool HasKey() const;
 
 };
 

@@ -174,23 +174,33 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 
 }
 
-void Layer1::InitialiazeCollectibles()
-{
-	std::ifstream keyFile("Assets/Config/Collectibles/key_config.json");
-	json keys = json::parse(keyFile);
+
+void Layer1::CreateCollectible(std::string jsonPath, std::string type, enum c_type cType) {
+	std::ifstream file(jsonPath);
+	json collectible = json::parse(file);
+
 	ID i = 0;
 	std::vector<Collectible*> tmp;
 
-	for (auto k : keys["data"])
-	{	
-		tmp.push_back(new Collectible(i, m_sheets["collectible_sheet"], m_Scene, C_KEY));
-		tmp.at(i)->SetSprite(m_Scene->CreateSprite("key" + std::to_string(i), k["spawn_pos"]["x"].get<uint32_t>() * 16, k["spawn_pos"]["y"].get<uint32_t>() * 16, tmp.at(i)->GetFilm("key_film"), ""));
+	for (auto item : collectible["data"])
+	{
+		tmp.push_back(new Collectible(i, m_sheets["collectible_sheet"], m_Scene, cType));
+		tmp.at(i)->SetSprite(m_Scene->CreateSprite(type + std::to_string(i), item["spawn_pos"]["x"].get<uint32_t>() * 16, item["spawn_pos"]["y"].get<uint32_t>() * 16, tmp.at(i)->GetFilm(type + "_film"), ""));
 		tmp.at(i)->GetSprite()->SetColiderBox(16, 16);
 		i++;
 	}
-	m_collectibles.emplace(std::make_pair(C_KEY, tmp));
-	ENGINE_TRACE(m_collectibles.size());
+	m_collectibles.emplace(std::make_pair(cType, tmp));
 
+}
+
+void Layer1::InitialiazeCollectibles()
+{
+	CreateCollectible("Assets/Config/Collectibles/key_config.json", "key", C_KEY);
+	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
+	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
+	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "extraLife", C_LINK);
+	CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
+	CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
 }
 
 void Layer1::InitializeDoors()
@@ -224,6 +234,7 @@ void Layer1::InitializeElevators()
 
 void Layer1::UpdateSpell(Spell& spell, Time ts) {
 	if (!spell.canUse()) {
+
 		if (spell.getDurationRemainingTime() == 0) {
 			spell.setCooldownRemainingTime(spell.getCooldownRemainingTime() - ts);
 
@@ -231,7 +242,7 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 				spell.setCooldownRemainingTime(0);
 			}
 
-		//	ENGINE_TRACE(spell.getCooldownRemainingTime());
+			//ENGINE_TRACE(spell.getCooldownRemainingTime());
 		}
 		else {
 			spell.setDurationRemainingTime(spell.getDurationRemainingTime() - ts);
@@ -245,9 +256,13 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 					link->jumpAnimation = new MovingAnimation("mov_jumping", link->getJumpingForce(), 0, 0, 20);
 					link->EmplaceAnimation(link->jumpAnimation);
 				}
+
+				if (spell.getType() == "shieldspell") {
+					link->shieldspell.GetAnimator("frame_animator")->Stop();
+				}
 			}
 
-		//	ENGINE_TRACE(spell.getDurationRemainingTime());
+			//ENGINE_TRACE(spell.getDurationRemainingTime());
 		}
 	}
 }
@@ -256,12 +271,22 @@ void Layer1::CheckTimers(Time ts) {
 	UpdateSpell(link->lifespell, ts);
 	UpdateSpell(link->jumpspell, ts);
 	UpdateSpell(link->shieldspell, ts);
+	UpdateSpell(link->thunderspell, ts);
 
 	if (link->getDamageCoolDown() != 0)
 		link->setDamageCoolDown(link->getDamageCoolDown() - ts);
 	if (link->getDamageCoolDown() < 0)
 		link->setDamageCoolDown(0);
 }
+
+void Layer1::SpellFollowLink() {
+	link->lifespell.GetSprite()->SetPos(link->GetSprite()->GetPosX() - 10, link->GetSprite()->GetPosY());
+	link->jumpspell.GetSprite()->SetPos(link->GetSprite()->GetPosX()-10, link->GetSprite()->GetPosY());
+	link->shieldspell.GetSprite()->SetPos(link->GetSprite()->GetPosX()-8, link->GetSprite()->GetPosY());
+	link->thunderspell.GetSprite()->SetPos(link->GetSprite()->GetPosX()-10, link->GetSprite()->GetPosY());
+}
+
+
 
 void Layer1::onStart()
 {	
@@ -272,10 +297,24 @@ void Layer1::onStart()
 	InitilizeLayer(this);
 	
 	link = new Link(m_sheets["link_sheet"], m_Scene);
+	
+	link->shieldspell.SetSprite(m_Scene->CreateSprite("Shieldspell", 20 * 16, 10 * 16, link->shieldspell.GetFilm("shieldspell_"), ""));
+	link->shieldspell.GetSprite()->SetZorder(2);
+
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
 	link->GetSprite()->SetColiderBox(16, 32);
+	link->GetSprite()->SetZorder(1);
 
-//	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 20 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
+	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 20 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
+	link->lifespell.GetSprite()->SetZorder(0);
+
+	link->jumpspell.SetSprite(m_Scene->CreateSprite("Jumpspell", 20 * 16, 10 * 16, link->jumpspell.GetFilm("jumpspell_"), ""));
+	link->jumpspell.GetSprite()->SetZorder(0);
+
+
+
+	link->thunderspell.SetSprite(m_Scene->CreateSprite("Thunderspell", 20 * 16, 10 * 16, link->thunderspell.GetFilm("thunderspell_"), ""));
+	link->thunderspell.GetSprite()->SetZorder(0);
 
 	Rect r = m_Scene->GetTiles()->GetViewWindow();
 	r.x = link->GetSprite()->GetPosX() - (r.w / 2);
@@ -314,11 +353,11 @@ void Layer1::onUpdate(Time ts)
 	*bounds = m_stages.at(m_currStage - 1);
 	
 	TeleportHandler();
-	
 	EnemyMovement();
 	EnemyHandler();
 	DoorHandler();
 	CollectibleHandler();
+	SpellFollowLink();
 
 	CheckTimers(ts);
 
@@ -414,10 +453,6 @@ bool Layer1::mover(Event& e)
 
 		if (event->GetKey() == InputKey::NUM_1)
 		{
-			//FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("frame_animator");
-			//ENGINE_TRACE(link->lifespell.GetState());
-			//tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
-			//	((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
 
 			if (link->getMagicPoints() >= link->lifespell.getCost() && link->lifespell.canUse()) {
 				link->setMagicPoints(link->getMagicPoints() - link->lifespell.getCost());
@@ -425,7 +460,10 @@ bool Layer1::mover(Event& e)
 				link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
 				link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
 
-				
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("frame_animator");
+				tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
+					((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
+
 			}
 		}
 
@@ -443,18 +481,40 @@ bool Layer1::mover(Event& e)
 				link->jumpAnimation = new MovingAnimation("mov_jumping", link->getJumpingForce(), 0, 0, 12);
 				link->EmplaceAnimation(link->jumpAnimation);
 				
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->jumpspell.GetAnimator("frame_animator");
+				tmp->Start((FrameRangeAnimation*)link->jumpspell.GetAnimation("jumpspell_animation"), SystemClock::GetDeltaTime(),
+					((FrameRangeAnimation*)link->jumpspell.GetAnimation("jumpspell_animation"))->GetStartFrame());
 			}
 
 		}
 
 		if (event->GetKey() == InputKey::NUM_3)
 		{
-
 			if (link->getMagicPoints() >= link->shieldspell.getCost() && link->shieldspell.canUse()) {
 				link->setMagicPoints(link->getMagicPoints() - link->shieldspell.getCost());
 				link->shieldspell.setDurationRemainingTime(link->shieldspell.getDuration());
 				link->shieldspell.setCooldownRemainingTime(link->shieldspell.getCooldown());
+
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->shieldspell.GetAnimator("frame_animator");
+				tmp->Start((FrameRangeAnimation*)link->shieldspell.GetAnimation("shieldspell_animation"), SystemClock::GetDeltaTime(),
+					((FrameRangeAnimation*)link->shieldspell.GetAnimation("shieldspell_animation"))->GetStartFrame());
 			}
+		}
+
+		if (event->GetKey() == InputKey::NUM_4)
+		{
+			if (link->getMagicPoints() >= link->thunderspell.getCost() && link->thunderspell.canUse()) {
+
+				link->setMagicPoints(link->getMagicPoints() - link->thunderspell.getCost());
+				link->thunderspell.setDurationRemainingTime(link->thunderspell.getDuration());
+				link->thunderspell.setCooldownRemainingTime(link->thunderspell.getCooldown());
+
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->thunderspell.GetAnimator("frame_animator");
+				tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
+					((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"))->GetStartFrame());
+			}
+
+			
 
 		}
 	}
@@ -757,10 +817,26 @@ void Layer1::CollectibleHandler()
 					case C_KEY: link->AddKey();
 								i->SetState("collected");
 								break;
-					case C_REDPOTION: break;
-					case C_BLUEPOTION: break;
-					case C_LINK: break;
-					case C_POINTS: break;
+
+					case C_REDPOTION: link->setMagicPoints(link->getMagicPoints() + link->redpotion.getValue());
+									  i->SetState("collected");
+									  break;
+
+					case C_BLUEPOTION:  link->setMagicPoints(link->getMagicPoints() + link->bluepotion.getValue());
+										i->SetState("collected");
+										break;
+					
+					case C_LINK: link->setLives(link->getLives() + link->extralife.getValue());
+								 i->SetState("collected");
+								 break;
+
+					case C_BASICPOINTS:  link->setPoints(link->getPoints() + link->basicpointbag.getValue());
+										 i->SetState("collected");
+										 break;
+
+					case C_STRONGERPOINTS:  link->setPoints(link->getPoints() + link->strongerpointbag.getValue());
+											i->SetState("collected");
+											break;
 					}
 				});
 

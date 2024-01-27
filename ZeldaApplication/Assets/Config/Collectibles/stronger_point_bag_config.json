@@ -1,0 +1,17 @@
+{
+  "name": "stronger_point_bag",
+  "data": [
+    {
+      "spawn_pos": {
+        "x": 90,
+        "y": 12
+      }
+    },
+    {
+      "spawn_pos": {
+        "x": 95,
+        "y": 12
+      }
+    }
+  ]
+}

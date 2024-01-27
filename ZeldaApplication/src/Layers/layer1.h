@@ -67,6 +67,8 @@ public:
     void UpdateSpell(Spell& spell, Time ts);
     void DoorHandler();
     void CollectibleHandler();
+    void CreateCollectible(std::string json, std::string type, enum c_type);
+    void SpellFollowLink();
 
 public:
     Link* link;                             // main character instance

@@ -8,7 +8,8 @@ enum c_type{
 	C_REDPOTION,
 	C_BLUEPOTION,
 	C_LINK,
-	C_POINTS
+	C_BASICPOINTS,
+	C_STRONGERPOINTS
 };
 
 class Collectible : public Entity

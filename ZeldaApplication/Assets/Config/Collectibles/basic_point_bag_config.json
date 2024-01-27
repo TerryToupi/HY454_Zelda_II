@@ -1,0 +1,17 @@
+{
+  "name": "basic_potion_bag",
+  "data": [
+    {
+      "spawn_pos": {
+        "x": 100,
+        "y": 12
+      }
+    },
+    {
+      "spawn_pos": {
+        "x": 107,
+        "y": 12
+      }
+    }
+  ]
+}
