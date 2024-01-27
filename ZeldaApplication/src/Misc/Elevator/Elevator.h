@@ -7,12 +7,6 @@ using namespace Engine;
 
 class Elevator : public Entity {
 public:
-	Elevator();
+	Elevator(ID _id, AnimationSheet *_sheet, Ref<Scene> _scene);
 	~Elevator() = default;
-
-	void SetSecondary(Sprite _secondary);
-	Sprite GetSecondary();
-
-private:
-	Sprite m_secondary;
 };

@@ -9,3 +9,8 @@ Collectible::Collectible(ID _id, AnimationSheet* _sheet, Ref<Scene> _scene, c_ty
 
 	EmplaceFilm("key_film", new AnimationFilm(m_sheet, "Assets/Config/Animations/Misc/key_film.json"));
 }
+
+c_type Collectible::GetType()
+{
+	return m_type;
+}

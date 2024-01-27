@@ -1,6 +1,6 @@
 {
   "animation": "key",
-  "total_frames": 2,
+  "total_frames": 1,
   "frames": [
     {
       "frame": 1,
@@ -8,13 +8,6 @@
       "y": 0,
       "h": 16,
       "w": 16
-    },
-    {
-      "frame": 2,
-      "x": 75,
-      "y": 0,
-      "h": 0,
-      "w": 0
     }
   ]
 }

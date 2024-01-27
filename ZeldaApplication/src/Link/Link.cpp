@@ -8,8 +8,8 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     m_damageCoolDown = 0;
     m_lookingAt = "right";
     m_state = "moving";
-    m_type = "Link";
     m_scene = _scene;
+    m_keys = 0;
 
     setHealth(configVars["Link"]["HP"]);
     setDamage(configVars["Link"]["Damage"]);
@@ -95,7 +95,7 @@ int Link::getDamageCoolDown() const
 
 bool Link::HasKey() const
 {
-    return m_key;
+    return m_keys > 0;
 }
 
 void Link::setHealth(int newHealth)
@@ -166,7 +166,12 @@ void Link::loseLife()
     lives -= 1;
 }
 
-void Link::SetKey(bool _key)
+void Link::AddKey()
 {
-    m_key = _key;
+    m_keys++;
+}
+
+void Link::RemoveKey()
+{
+    m_keys--;
 }

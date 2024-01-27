@@ -16,6 +16,8 @@ class Collectible : public Entity
 public:
 	Collectible(ID _id, AnimationSheet* _sheet, Ref<Scene> _scene, c_type _type);
 	~Collectible() = default;
+
+	c_type GetType();
 private:
-	c_type type;
+	c_type m_type;
 };

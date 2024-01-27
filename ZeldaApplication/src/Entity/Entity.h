@@ -21,6 +21,7 @@ public:
 	AnimationFilm* GetFilm(std::string name);
 	Animator* GetAnimator(std::string name);
 	Sprite GetSprite();
+	Sprite GetSecondary();
 
 	void EmplaceAnimation(Animation* animation);
 	void EmplaceFilm(std::string id, AnimationFilm* film);
@@ -28,6 +29,7 @@ public:
 	void EraseAnimation(Animation* animation);
 
 	void SetSprite(Sprite s);
+	void SetSecondary(Sprite _secondary);
 	void LeftAttackPosUpdate(std::string name);
 
 	void SetState(std::string _state);
@@ -52,6 +54,7 @@ public:
 protected:
 	
 	Sprite m_Sprite;
+	Sprite m_secondary;
 	AnimationSheet* m_sheet;
 	Films m_films;
 	Animations m_animations;
@@ -62,7 +65,6 @@ protected:
 
 	std::string m_state;
 	std::string m_lookingAt;
-	std::string m_type;
 	uint32_t m_id;
 
 	Ref<Scene> m_scene;

@@ -3,10 +3,10 @@
 
 #include <Engine.h>
 #include "../Entity/Entity.h"
-#include "../Spells/LifeSpell.h"
-#include "../Spells/ShieldSpell.h"
-#include "../Spells/ThunderSpell.h"
-#include "../Spells/JumpSpell.h"
+#include "../Misc/Spells/LifeSpell.h"
+#include "../Misc/Spells/ShieldSpell.h"
+#include "../Misc/Spells/ThunderSpell.h"
+#include "../Misc/Spells/JumpSpell.h"
 
 using namespace Engine;
 
@@ -19,7 +19,7 @@ private:
     int speed;
     int jumpingForce;
     int m_damageCoolDown;
-    bool m_key;
+    int m_keys;
 
 
 public:
@@ -54,7 +54,8 @@ public:
     void heal(int amount);
     void castSpell(int spellCost);
     void loseLife();
-    void SetKey(bool _key);
+    void RemoveKey();
+    void AddKey();
 
 };
 
