@@ -17,6 +17,7 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     setLives(configVars["Link"]["InitialLives"]);
     setSpeed(100 - configVars["Link"]["Speed"]);
     setJumpingForce(configVars["Link"]["JumpingForce"]);
+    setPoints(0);
 
     m_sheet = _sheet;
     EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_right.json"));
@@ -60,38 +61,49 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
 
 int Link::getHealth() const 
 {
-    return health;
+    return m_health;
 }
 
 int Link::getDamage() const 
 {
-    return damage;
+    return m_damage;
 }
 
 int Link::getMagicPoints() const
 {
-    return magicPoints;
+    return m_magicPoints;
 }
 
 int Link::getLives() const 
 {
-    return lives;
+    return m_lives;
 }
 
 int Link::getSpeed() const
 {
-    return speed;
+    return m_speed;
 }
 
 int Link::getJumpingForce() const
 {
-    return jumpingForce;
+    return m_jumpingForce;
 }
 
 int Link::getDamageCoolDown() const
 {
     return m_damageCoolDown;
 }
+
+int Link::getPoints() const
+{
+    return m_points;
+}
+
+int Link::getKeys() const
+{
+    return m_keys;
+}
+
 
 bool Link::HasKey() const
 {
@@ -100,32 +112,32 @@ bool Link::HasKey() const
 
 void Link::setHealth(int newHealth)
 {
-    health = newHealth;
+    m_health = newHealth;
 }
 
 void Link::setDamage(int newDamage) 
 {
-    damage = newDamage;
+    m_damage = newDamage;
 }
 
 void Link::setMagicPoints(int newMagicPoints) 
 {
-    magicPoints = newMagicPoints;
+    m_magicPoints = newMagicPoints;
 }
 
 void Link::setLives(int newLives)
 {
-    lives = newLives;
+    m_lives = newLives;
 }
 
 void Link::setSpeed(int newSpeed)
 {
-    speed = newSpeed;
+    m_speed = newSpeed;
 }
 
 void Link::setJumpingForce(int newJumpingForce)
 {
-    jumpingForce = newJumpingForce;
+    m_jumpingForce = newJumpingForce;
 }
 
 void Link::setDamageCoolDown(int _cooldown)
@@ -133,37 +145,39 @@ void Link::setDamageCoolDown(int _cooldown)
     m_damageCoolDown = _cooldown;
 }
 
+void Link::setPoints(int _points)
+{
+    m_points = _points;
+}
+
 void Link::takeDamage(int amount) 
 {
     if (shieldspell.isActive())
         amount = amount / 2;
 
-    health -= amount;
+    m_health -= amount;
 
-    ENGINE_TRACE(amount);
-    ENGINE_TRACE(health);
-
-    if (health <= 0)
+    if (m_health <= 0)
         loseLife();
 }
 
 void Link::heal(int amount) 
 {
-    health += amount;
+    m_health += amount;
 
-    if (health > 100)
-        health = 100;
+    if (m_health > 100)
+        m_health = 100;
 }
 
 void Link::castSpell(int spellCost)
 {
-    if(magicPoints >= spellCost)
-        magicPoints -= spellCost;
+    if(m_magicPoints >= spellCost)
+        m_magicPoints -= spellCost;
 }
 
 void Link::loseLife() 
 {
-    lives -= 1;
+    m_lives -= 1;
 }
 
 void Link::AddKey()

@@ -1,0 +1,17 @@
+{
+  "name": "blue_potion",
+  "data": [
+    {
+      "spawn_pos": {
+        "x": 77,
+        "y": 12
+      }
+    },
+    {
+      "spawn_pos": {
+        "x": 79,
+        "y": 12
+      }
+    }
+  ]
+}
