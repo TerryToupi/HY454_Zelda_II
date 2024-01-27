@@ -3,7 +3,7 @@
 
 Clipper clipper;
 std::pair<int, int>* bounds;
-
+Elevator* currElevator;
 
 SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite sprite, TileLayer* tiles, std::pair<int, int>* bounds) {
 	return [gridLayer, sprite, tiles, bounds](Rect& r, int* dx, int* dy) {
@@ -34,6 +34,17 @@ SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite)
 		};
 }
 
+SpriteClass::Mover MakeSpriteGridLayerMoverElevator(GridLayer* gridLayer, Sprite sprite)
+{
+	return [gridLayer, sprite](Rect& r, int* dx, int* dy) {
+		gridLayer->FilterGridMotion(r, 0, dy);
+		if (*dy)
+		{
+			sprite->SetHasDirectMotion(true).Move(0, *dy).SetHasDirectMotion(false);
+		}
+	};
+}
+
 const Clipper InitClipper(TileLayer* layer)
 {
 	return Clipper().SetView(
@@ -50,6 +61,7 @@ void InitilizeLayer(Layer1* layer)
 	layer->InitializeDoors();
 	layer->InitializeStages();
 	layer->InitializeTeleports();
+
 }
 
 Layer1::Layer1()
@@ -67,6 +79,7 @@ void Layer1::InitializeTeleports()
 	for (auto p : Points["points"])
 	{	
 		Teleport tmp;
+		Teleport e_tmp;
 
 		tmp.origin = m_Scene->CreateSprite("tp_1" + id, p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
 		tmp.origin->SetColiderBox(16, 16);
@@ -74,6 +87,13 @@ void Layer1::InitializeTeleports()
 		tmp.dest->SetColiderBox(16, 16);
 		tmp.stage = p["stage"].get<int>();
 		m_teleports.push_back(tmp);
+
+		e_tmp.origin = m_Scene->CreateSprite("etp_1" + id, (p["origin"]["x"].get<int>() - 1) * 16, (p["origin"]["y"].get<int>() - 1) * 16, NONPRINTABLE, "");
+		e_tmp.origin->SetColiderBox(16, 16);
+		e_tmp.dest = m_Scene->CreateSprite("etp_2" + id, (p["destination"]["x"].get<int>() - 1) * 16, (p["destination"]["y"].get<int>() - 1) * 16, NONPRINTABLE, "");
+		e_tmp.dest->SetColiderBox(16, 16);
+		e_tmp.stage = p["stage"].get<int>();
+		m_elevator_teleports.push_back(e_tmp);
 		id++;
 	} 
 
@@ -216,10 +236,12 @@ void Layer1::InitializeAudio()
 	m_sounds.emplace(std::make_pair("attacking", tmp));
 }
 
-void Layer1::InitializeElevators()
+void Layer1::InitializeElevators(GridLayer* grid)
 {
 	m_elevators.emplace(std::make_pair(0, new Elevator(0, m_sheets["elevator_sheet"], m_Scene)));
-//	m_elevators.at(0)->SetSprite(m_Scene->CreateSprite("Elevator" + std::to_string(0), ))
+	m_elevators.at(0)->SetSprite(m_Scene->CreateSprite("Elevator" + std::to_string(0), 40 * 16, 10 * 16, m_elevators.at(0)->GetFilm("elevator_film"), ""));
+	m_elevators.at(0)->GetSprite()->SetColiderBox(32, 56);
+	m_elevators.at(0)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_elevators.at(0)->GetSprite()));
 }
 
 void Layer1::UpdateSpell(Spell& spell, Time ts) {
@@ -268,6 +290,7 @@ void Layer1::onStart()
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 	clipper = InitClipper(m_Scene->GetTiles().get());
+	currElevator = nullptr;
 
 	InitilizeLayer(this);
 	
@@ -300,8 +323,9 @@ void Layer1::onStart()
 		});
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	
+	InitializeEnemies(grid);
+	InitializeElevators(grid);
 
-	InitializeEnemies(grid); 
 }
 
 void Layer1::onDelete()
@@ -319,6 +343,7 @@ void Layer1::onUpdate(Time ts)
 	EnemyHandler();
 	DoorHandler();
 	CollectibleHandler();
+	ElevatorHandler();
 
 	CheckTimers(ts);
 
@@ -334,6 +359,7 @@ void Layer1::onEvent(Event& e)
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::mover));
 	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer1::mover));
+	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::ElevatorMovement));
 }
 
 bool Layer1::mover(Event& e)
@@ -522,6 +548,31 @@ void Layer1::TeleportHandler()
 
 			m_Scene->GetColider().Check();
 			m_Scene->GetColider().Cancel(link_sprite, i.origin);
+		}
+	}
+	
+	if (!currElevator)
+		return;
+
+	Sprite el_sprite = currElevator->GetSprite();
+	for (auto i : m_elevator_teleports)
+	{
+		tmpBox = i.origin->GetBox();
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+		{
+			Sprite dest = i.dest;
+			m_Scene->GetColider().Register(el_sprite, i.origin, [el_sprite, dest, tilelayer, this, i](Sprite s1, Sprite s2) {
+				el_sprite->SetPos(dest->GetPosX(), dest->GetPosY());
+				m_currStage = i.stage;
+				ENGINE_TRACE(i.stage);
+				int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
+				ENGINE_TRACE("Teleport Pos: {0}, {1}", dest->GetPosX() / 16, dest->GetPosY() / 16);
+				if (tilelayer->CanScrollHoriz(dx))
+					tilelayer->Scroll(dx, 0);
+				});
+
+			m_Scene->GetColider().Check();
+			m_Scene->GetColider().Cancel(el_sprite, i.origin);
 		}
 	}
 
@@ -780,6 +831,55 @@ void Layer1::CollectibleHandler()
 	if (collected) {
 		collected->EntityDestroy();
 		m_collectibles.at(collected->GetType()).erase(m_collectibles.at(collected->GetType()).begin() + collected_index);
+	}
+
+}
+
+bool Layer1::ElevatorMovement(Event& e)
+{
+	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
+	{
+		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
+		if (!currElevator)
+			return true;
+
+		if (event->GetKey() == InputKey::g)
+		{
+			ENGINE_TRACE("KATWWW");
+			currElevator->SetLookingAt("down");
+			currElevator->SetState("moving");
+			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+		}
+	}
+	return true;
+}
+
+void Layer1::ElevatorHandler()
+{
+	Rect d1;
+	Rect d2;
+	Rect tmpBox = m_elevators.begin()->second->GetSprite()->GetBox();
+	Sprite link_sprite = link->GetSprite();
+	TileLayer* tilelayer = m_Scene->GetTiles().get();
+	
+	Elevator* tmp = nullptr;
+
+	for (auto i : m_elevators)
+	{
+		tmpBox = i.second->GetSprite()->GetBox();
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+		{
+			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i, tmp](Sprite s1, Sprite s2) {
+				i.second->SetState("Selected");
+				link_sprite->SetPos(link_sprite->GetPosX(), i.second->GetSprite()->GetPosY() + 16);
+			});
+			i.second->SetState("");
+			m_Scene->GetColider().Check();
+			m_Scene->GetColider().Cancel(link_sprite, i.second->GetSprite());
+		}
+
+		if (i.second->GetState() == "Selected")
+			currElevator = i.second;
 	}
 
 }
