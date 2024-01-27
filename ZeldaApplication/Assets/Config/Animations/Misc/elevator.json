@@ -1,6 +1,6 @@
 {
   "animation": "elevator",
-  "total_frames" : 1,
+  "total_frames" : 2,
   "frames": [
     {
       "frame": 1,
@@ -8,6 +8,13 @@
       "y": 0,
       "h": 48,
       "w": 24
+    },
+    {
+      "frame": 2,
+      "x": 0,
+      "y": 0,
+      "h": 0,
+      "w": 0 
     }
   ]
 }

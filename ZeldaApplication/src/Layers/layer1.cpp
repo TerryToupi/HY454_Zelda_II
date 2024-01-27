@@ -5,12 +5,7 @@ Clipper clipper;
 std::pair<int, int>* bounds;
 
 
-Layer1::Layer1()
-	: Layer("Layer1")
-{
-}
-
-SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite sprite, TileLayer *tiles, std::pair<int,int> *bounds) {
+SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite sprite, TileLayer* tiles, std::pair<int, int>* bounds) {
 	return [gridLayer, sprite, tiles, bounds](Rect& r, int* dx, int* dy) {
 		int windowX = tiles->GetViewWindow().x;
 		int windowWidth = tiles->GetViewWindow().w;
@@ -18,15 +13,15 @@ SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite spr
 
 		bool cameraCheck = ((linkX - windowWidth / 2 > bounds->first) && ((linkX + windowWidth / 2) < bounds->second));
 		gridLayer->FilterGridMotion(r, dx, dy);
-		if (*dx || *dy) 
+		if (*dx || *dy)
 		{
 			sprite->SetHasDirectMotion(true).Move(*dx, *dy).SetHasDirectMotion(false);
 			if (tiles->CanScrollHoriz(*dx) && cameraCheck)
-			{	
+			{
 				tiles->Scroll(linkX - windowX - windowWidth / 2, 0);
 			}
 		}
-	};
+		};
 }
 
 SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite) {
@@ -36,7 +31,7 @@ SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite)
 		{
 			sprite->SetHasDirectMotion(true).Move(*dx, *dy).SetHasDirectMotion(false);
 		}
-	};
+		};
 }
 
 const Clipper InitClipper(TileLayer* layer)
@@ -46,6 +41,22 @@ const Clipper InitClipper(TileLayer* layer)
 		{ return layer->GetViewWindow(); }
 	);
 }
+
+void InitilizeLayer(Layer1* layer)
+{
+	layer->LoadSheets();
+	layer->InitialiazeCollectibles();
+	layer->InitializeAudio();
+	layer->InitializeDoors();
+	layer->InitializeStages();
+	layer->InitializeTeleports();
+}
+
+Layer1::Layer1()
+	: Layer("Layer1")
+{
+}
+
 
 void Layer1::InitializeTeleports()
 {
@@ -91,6 +102,7 @@ void Layer1::LoadSheets()
 	m_sheets.emplace(std::make_pair("enemy_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/enemies-collectibles-sprites.bmp")));
 	m_sheets.emplace(std::make_pair("door_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/door.bmp")));
 	m_sheets.emplace(std::make_pair("collectible_sheet", new AnimationSheet("collectible_sheet", "Assets/AnimationFilms/collectibles.bmp")));
+	m_sheets.emplace(std::make_pair("elevator_sheet", new AnimationSheet("elevator_sheet", "Assets/AnimationFilms/elevator.bmp"));
 }
 
 void Layer1::InitializeEnemies(GridLayer *grid) 
@@ -168,10 +180,17 @@ void Layer1::InitialiazeCollectibles()
 	std::ifstream keyFile("Assets/Config/Collectibles/key_config.json");
 	json keys = json::parse(keyFile);
 	ID i = 0;
+	std::vector<Collectible*> tmp;
 
 	for (auto k : keys["data"])
-	{
+	{	
+		tmp.push_back(new Collectible(i, m_sheets["collectible_sheet"], m_Scene, C_KEY));
+		tmp.at(i)->SetSprite(m_Scene->CreateSprite("key" + std::to_string(i), k["spawn_pos"]["x"].get<uint32_t>() * 16, k["spawn_pos"]["y"].get<uint32_t>() * 16, tmp.at(i)->GetFilm("key_film"), ""));
+		tmp.at(i)->GetSprite()->SetColiderBox(16, 16);
 	}
+	m_collectibles.emplace(std::make_pair(C_KEY, tmp));
+	ENGINE_TRACE(m_collectibles.size());
+
 }
 
 void Layer1::InitializeDoors()
@@ -243,23 +262,18 @@ void Layer1::onStart()
 	m_Scene = MakeReference<Scene>(1);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 	clipper = InitClipper(m_Scene->GetTiles().get());
-	
-	LoadSheets();
 
+	InitilizeLayer(this);
+	
 	link = new Link(m_sheets["link_sheet"], m_Scene);
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
 	link->GetSprite()->SetColiderBox(16, 32);
 
-	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 20 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
+//	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 20 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
 
 	Rect r = m_Scene->GetTiles()->GetViewWindow();
 	r.x = link->GetSprite()->GetPosX() - (r.w / 2);
 	m_Scene->GetTiles()->SetViewWindow(r);
-	
-	InitializeTeleports();
-	InitializeStages();
-	InitializeAudio();
-	InitializeDoors();
 
 	m_currStage = 1;
 	bounds = new std::pair<int, int>;
@@ -393,9 +407,10 @@ bool Layer1::mover(Event& e)
 
 		if (event->GetKey() == InputKey::NUM_1)
 		{
-			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("lifespell_animator");
-			tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
-				((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
+			//FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("frame_animator");
+			//ENGINE_TRACE(link->lifespell.GetState());
+			//tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
+			//	((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
 
 			if (link->getMagicPoints() >= link->lifespell.getCost() && link->lifespell.canUse()) {
 				link->setMagicPoints(link->getMagicPoints() - link->lifespell.getCost());
@@ -574,7 +589,7 @@ void Layer1::EnemyHandler()
 				if (link->GetState() != "attacking" && link->GetState() != "crouch_attack")
 				{
 
-					link->setDamageCoolDown(2000);
+					link->setDamageCoolDown(500);
 					if (link->GetState() == "crouch")
 					{
 						if (link->GetLookingAt() == i.second->GetLookingAt())
