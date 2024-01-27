@@ -19,3 +19,11 @@ c_type Collectible::GetType()
 {
 	return m_type;
 }
+
+int Collectible::getCooldown() const {
+	return cooldown;
+}
+
+void Collectible::setCooldown(int newCooldown) {
+	cooldown = newCooldown;
+}

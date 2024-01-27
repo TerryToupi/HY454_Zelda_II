@@ -214,13 +214,33 @@ void Layer1::CreateCollectible(std::string jsonPath, std::string type, enum c_ty
 }
 
 void Layer1::DropCollectible(Enemy* enemy) {
-	Collectible* tmp = new Collectible(i, m_sheets["collectible_sheet"], m_Scene, C_BLUEPOTION);
-	ID id = UUID::GenerateUUID();
-
-	tmp->SetSprite(m_Scene->CreateSprite("bluePotion"+std::to_string(id), enemy->GetSprite()->GetPosX(), enemy->GetSprite()->GetPosY(), tmp->GetFilm("bluePotion_film"), ""));
-	tmp->GetSprite()->SetColiderBox(5, 5);
+	ID random = UUID::GenerateUUID() % 3;
 	
-	m_collectibles[C_BLUEPOTION].push_back(tmp);
+	if (random > 2) {
+		return;
+	}
+
+	c_type cType;
+	std::string type;
+
+	switch (random) {
+	case 0:	cType = C_BLUEPOTION;
+			type = "bluePotion";
+			break;
+	case 1:	cType = C_REDPOTION;
+			type = "redPotion";
+			break;
+	case 2:	cType = C_BASICPOINTS;
+			type = "simplePointBag";
+			break;
+	}
+	
+	Collectible* tmp = new Collectible(i, m_sheets["collectible_sheet"], m_Scene, cType);
+	tmp->SetSprite(m_Scene->CreateSprite(type +std::to_string(UUID::GenerateUUID()), enemy->GetSprite()->GetPosX(), enemy->GetSprite()->GetPosY(), tmp->GetFilm(type + "_film"), ""));
+	tmp->GetSprite()->SetColiderBox(16, 16);
+	tmp->setCooldown(700);
+	
+	m_collectibles[cType].push_back(tmp);
 }
 
 void Layer1::InitialiazeCollectibles()
@@ -299,16 +319,45 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 	}
 }
 
+void Layer1::UpdateCollectibleCooldowns(Time ts) {
+	for (auto c : m_collectibles)
+	{
+		int cnt = 0;
+		for (auto i : c.second)
+		{
+			if (i->getCooldown() > 0) {
+				ENGINE_TRACE(i->getCooldown());
+				i->setCooldown(i->getCooldown() - ts);
+			}
+			if (i->getCooldown() < 0) {
+				i->setCooldown(0);
+			}
+
+		}
+	}
+}
+
 void Layer1::CheckTimers(Time ts) {
 	UpdateSpell(link->lifespell, ts);
 	UpdateSpell(link->jumpspell, ts);
 	UpdateSpell(link->shieldspell, ts);
 	UpdateSpell(link->thunderspell, ts);
+	
+	UpdateCollectibleCooldowns(ts);
 
 	if (link->getDamageCoolDown() != 0)
 		link->setDamageCoolDown(link->getDamageCoolDown() - ts);
 	if (link->getDamageCoolDown() < 0)
 		link->setDamageCoolDown(0);
+
+	if (link->getAttackingStateCoolDown() != 0)
+		link->setAttackingStateCoolDown(link->getAttackingStateCoolDown() - ts);
+	if (link->getAttackingStateCoolDown() < 0)
+		link->setAttackingStateCoolDown(0);
+	if(link->getAttackingStateCoolDown() == 0 && link->GetState() == "attacking")
+		link->SetState("moving");
+
+
 }
 
 void Layer1::SpellFollowLink() {
@@ -456,6 +505,8 @@ bool Layer1::mover(Event& e)
 
 		if (event->GetKey() == InputKey::q)
 		{
+			link->setAttackingStateCoolDown(300);
+
 			if (link->GetLookingAt() == "right" && (link->GetState() == "crouch" || link->GetState() == "crouch_attack")) {
 				link->SetState("crouch_attack");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
@@ -872,8 +923,12 @@ void Layer1::CollectibleHandler()
 		int cnt = 0;
 		for (auto i : c.second)
 		{
+			if (i->getCooldown() > 0 ) {
+				continue;
+			}
+
 			tmpBox = i->GetSprite()->GetBox();
-			if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && (link->GetState() == "attacking") ||(link->GetState() == "crouch_attack"))
+			if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && (link->GetState() == "attacking") || (link->GetState() == "crouch_attack"))
 			{
 				m_Scene->GetColider().Register(link_sprite, i->GetSprite(), [link_sprite, this, i, c](Sprite s1, Sprite s2) {
 					switch (i->GetType())

@@ -66,6 +66,7 @@ public:
     void EnemyHandler();
     void CheckTimers(Time ts);
     void UpdateSpell(Spell& spell, Time ts);
+    void UpdateCollectibleCooldowns(Time ts);
     void DoorHandler();
     void CollectibleHandler();
     void ElevatorHandler();

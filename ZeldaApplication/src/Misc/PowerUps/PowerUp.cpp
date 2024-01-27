@@ -4,6 +4,10 @@ int PowerUp::getValue() const {
     return value;
 }
 
+void PowerUp::setValue(int newValue) {
+    value = newValue;
+}
+
 AnimationFilm* PowerUp::getFilm() const {
     return m_singleFilm;
 }
@@ -11,9 +15,8 @@ AnimationFilm* PowerUp::getFilm() const {
 
 
 
-void PowerUp::setValue(int newValue) {
-    value = newValue;
-}
+
+
 
 void PowerUp::setFilm(AnimationFilm* newFilm) {
     m_singleFilm = newFilm;

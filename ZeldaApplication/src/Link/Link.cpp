@@ -94,6 +94,11 @@ int Link::getDamageCoolDown() const
     return m_damageCoolDown;
 }
 
+int Link::getAttackingStateCoolDown() const
+{
+    return m_attackingStateCoolDown;
+}
+
 int Link::getPoints() const
 {
     return m_points;
@@ -143,6 +148,11 @@ void Link::setJumpingForce(int newJumpingForce)
 void Link::setDamageCoolDown(int _cooldown)
 {
     m_damageCoolDown = _cooldown;
+}
+
+void Link::setAttackingStateCoolDown(int _cooldown)
+{
+    m_attackingStateCoolDown = _cooldown;
 }
 
 void Link::setPoints(int _points)
