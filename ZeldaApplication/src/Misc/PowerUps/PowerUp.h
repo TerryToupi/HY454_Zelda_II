@@ -18,7 +18,7 @@ public:
     int getValue() const;
     AnimationFilm* getFilm() const;
 
-    void setValue(int newCost);
+    void setValue(int newCooldown);
     void setFilm(AnimationFilm* film);
 };
 

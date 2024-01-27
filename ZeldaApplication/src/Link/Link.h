@@ -25,6 +25,7 @@ private:
     int m_speed;
     int m_jumpingForce;
     int m_damageCoolDown;
+    int m_attackingStateCoolDown;
     int m_keys;
     int m_points;
 
@@ -53,6 +54,7 @@ public:
     int getSpeed() const;
     int getJumpingForce() const;
     int getDamageCoolDown() const;
+    int getAttackingStateCoolDown() const;
     int getPoints() const;
     int getKeys() const;
     
@@ -63,6 +65,7 @@ public:
     void setSpeed(int newLives);
     void setJumpingForce(int jumpingForce);
     void setDamageCoolDown(int _cooldown);
+    void setAttackingStateCoolDown(int _cooldown);
     void setPoints(int _points);
 
 

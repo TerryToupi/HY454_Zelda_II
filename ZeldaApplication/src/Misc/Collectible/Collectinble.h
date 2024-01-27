@@ -18,7 +18,11 @@ public:
 	Collectible(ID _id, AnimationSheet* _sheet, Ref<Scene> _scene, c_type _type);
 	~Collectible() = default;
 
+	int getCooldown() const;
+	void setCooldown(int newCost);
+
 	c_type GetType();
 private:
+	int cooldown;
 	c_type m_type;
 };
