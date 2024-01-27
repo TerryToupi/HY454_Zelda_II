@@ -54,11 +54,6 @@ uint32_t Entity::GetID() const
 	return m_id;
 }
 
-Sprite Entity::GetSecondary()
-{
-	return m_secondary;
-}
-
 void Entity::EmplaceAnimation(Animation* animation) 
 {
 	m_animations.emplace(std::make_pair(animation->GetId(), animation));
@@ -87,11 +82,6 @@ void Entity::SetSprite(Sprite s)
 void Entity::SetSheet(AnimationSheet* _sheet)
 {
 	m_sheet = _sheet;
-}
-
-void Entity::SetSecondary(Sprite _secondary)
-{
-	m_secondary = _secondary;
 }
 
 void Entity::EntityDestroy()
@@ -169,7 +159,6 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 	uint32_t currFrame = animator->GetCurrFrame();
 	std::string film = m_state + "_" + m_lookingAt;
 
-	//ENGINE_TRACE(m_state);
 	m_Sprite->SetFrame(currFrame);
 
 	if ((m_state == "attacking" && currFrame == 2) ||
@@ -204,12 +193,10 @@ void Entity::MovingAction(std::string name, MovingAnimator* animator)
 		else if (m_lookingAt == "up")
 		{
 			m_Sprite->Move(0, -2);
-			m_secondary->Move(0, -2);
 		}
 		else if (m_lookingAt == "down")
 		{
 			m_Sprite->Move(0, +2);
-			m_secondary->Move(0, +2);
 		}
 	}
 	else if (name == "mov_gravity")

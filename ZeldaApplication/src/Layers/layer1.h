@@ -49,7 +49,7 @@ public:
     void InitializeDoors();
     void InitialiazeCollectibles();
     void InitializeAudio();
-    void InitializeElevators();
+    void InitializeElevators(GridLayer* grid);
     void LoadSheets();
     
     /*----LAYER FUNCTIONS----*/
@@ -59,6 +59,7 @@ public:
     void onEvent(Event& e) override;
     bool mover(Event& e);
     void EnemyMovement();
+    bool ElevatorMovement(Event& e);
     
     /*----HANDLERS---*/
     void TeleportHandler();
@@ -67,6 +68,7 @@ public:
     void UpdateSpell(Spell& spell, Time ts);
     void DoorHandler();
     void CollectibleHandler();
+    void ElevatorHandler();
     void CreateCollectible(std::string json, std::string type, enum c_type);
     void SpellFollowLink();
 
@@ -82,6 +84,7 @@ public:
     Collectibles m_collectibles;
     Doors m_doors;
     Elevators m_elevators;
+
 
 
     Wosu* wosu;
