@@ -21,11 +21,14 @@ namespace Engine
 
 		Time GetTime(void) const; 
 		static Time GetDeltaTime(void); 
-		static void SetDeltaTime(Time t);
+		static void SetDeltaTime(Time t); 
+		static Time GetDeltaTimeStep(void);
+		static void SetDeltaTimeStep(Time t);
 
 	private:
 		std::chrono::high_resolution_clock m_Clock;  
-		Time delta;
+		Time m_deltaTime; 
+		Time m_deltaTs;
 
 	private:
 		static SystemClock s_Instance;

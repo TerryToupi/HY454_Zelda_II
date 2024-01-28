@@ -30,7 +30,7 @@ namespace Engine
 		Rect		 GetBox(void); 
 		SpriteClass& Move(int dx, int dy);
 		void		 SetPos(int _x, int _y); 
-		void		 SetZorder(unsigned z); 
+		void		 SetZorder(int z); 
 		unsigned	 GetZorder(void); 
 		void		 SetFrame(byte i);  
 		int			 GetPosX() const;
@@ -67,7 +67,7 @@ namespace Engine
 		bool m_isVisible = false;
 		AnimationFilm* m_currFilm = nullptr;
 		BoundingArea* m_boundingArea = nullptr;
-		unsigned m_zorder = 0;
+		int m_zorder = 0;
 		std::string m_typeId, m_stateId;
 		Mover m_mover;
 		MotionQuantizer m_quantizer;  

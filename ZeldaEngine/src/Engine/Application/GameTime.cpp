@@ -36,11 +36,21 @@ namespace Engine
 
 	Time SystemClock::GetDeltaTime(void)
 	{
-		return s_Instance.delta;
+		return s_Instance.m_deltaTime;
 	}
 
 	void SystemClock::SetDeltaTime(Time t)
 	{ 
-		s_Instance.delta = t;
+		s_Instance.m_deltaTime = t; 
+	} 
+
+	Time SystemClock::GetDeltaTimeStep(void)
+	{
+		return s_Instance.m_deltaTs;
+	} 
+
+	void SystemClock::SetDeltaTimeStep(Time t)
+	{
+		s_Instance.m_deltaTs = t;
 	}
 }

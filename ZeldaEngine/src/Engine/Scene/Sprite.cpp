@@ -49,7 +49,7 @@ namespace Engine
 		m_y = _y;
 	}
 
-	void SpriteClass::SetZorder(unsigned z)
+	void SpriteClass::SetZorder(int z)
 	{ 
 		m_zorder = z;
 	}

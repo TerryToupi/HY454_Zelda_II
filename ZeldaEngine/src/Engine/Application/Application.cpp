@@ -107,7 +107,8 @@ namespace Engine {
 			currTime = SystemClock::Get().GetTime(); 
 			timeStep = currTime - prevTime;    
 			prevTime = currTime; 
-			SystemClock::SetDeltaTime(currTime);
+			SystemClock::SetDeltaTime(currTime); 
+			SystemClock::SetDeltaTimeStep(timeStep);
 
 			if (currTime >= statTimer + 150)
 			{ 
