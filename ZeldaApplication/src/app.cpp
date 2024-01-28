@@ -5,6 +5,7 @@
 // Game application include 
 #include "Layers/Layer0.h"   
 #include "Layers/Layer1.h"
+#include "Layers/Overlay.h"
 
 // STD::LIB include
 #include <string>
@@ -20,6 +21,7 @@ public:
 	{
 		pushLayer(new Layer0());
 		pushLayer(new Layer1());
+		pushOverLay(new Overlay());
 	} 
 
 	~Zelda() 
