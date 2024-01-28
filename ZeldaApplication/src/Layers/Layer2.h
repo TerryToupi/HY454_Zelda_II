@@ -1,20 +1,20 @@
-#pragma once
-
 #pragma once 
 
 #include <Engine.h>
 #include "../Link/Link.h"
 #include <json.hpp>
 
+
+using json = nlohmann::json;
 using namespace Engine;
 
 using Sheets = std::unordered_map<std::string, AnimationSheet*>;
 
 
-class Overlay : public Layer
+class Layer2 : public Layer
 {
 public:
-	Overlay();
+    Layer2();
 
 	void onStart() override;
 
@@ -24,7 +24,9 @@ public:
 
 	void onEvent(Event& e) override;
 
-	AnimationSheet* m_sheet;
-	AnimationFilm* m_film;
+	void LoadSheets();
+
+	Link* link;
+	Sheets m_overlaySheets;
 
 };

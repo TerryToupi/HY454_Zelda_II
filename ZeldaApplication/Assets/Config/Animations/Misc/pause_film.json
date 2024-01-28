@@ -1,0 +1,13 @@
+{
+  "animation": "pause",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 0,
+      "y": 0,
+      "h": 256,
+      "w": 336
+    }
+  ]
+}

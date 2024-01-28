@@ -5,6 +5,7 @@
 // Game application include 
 #include "Layers/Layer0.h"   
 #include "Layers/Layer1.h"
+#include "Layers/Layer2.h"
 #include "Layers/Overlay.h"
 
 // STD::LIB include
@@ -21,6 +22,7 @@ public:
 	{
 		pushLayer(new Layer0());
 		pushLayer(new Layer1());
+		pushLayer(new Layer2());
 		pushOverLay(new Overlay());
 	} 
 
