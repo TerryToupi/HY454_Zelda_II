@@ -1,5 +1,5 @@
 {
-  "amount": 14,
+  "amount": 8,
   "points": [
     {
       "origin": {
@@ -29,19 +29,19 @@
         "y": 15
       },
       "destination": {
-        "x": 570,
+        "x": 571,
         "y": 3
       },
       "stage": 3
     },
     {
       "origin": {
-        "x": 570,
+        "x": 571,
         "y": 1
       },
       "destination": {
         "x": 271,
-        "y": 12
+        "y": 11
       },
       "stage": 2
     },
@@ -51,19 +51,19 @@
         "y": 15
       },
       "destination": {
-        "x": 747,
+        "x": 748,
         "y": 3
       },
       "stage": 7
     },
     {
       "origin": {
-        "x": 747,
+        "x": 748,
         "y": 1
       },
       "destination": {
         "x": 339,
-        "y": 12
+        "y": 11
       },
       "stage": 2
     },
@@ -73,14 +73,14 @@
         "y": 1
       },
       "destination": {
-        "x": 586,
-        "y": 12
+        "x": 587,
+        "y": 11
       },
       "stage": 5
     },
     {
       "origin": {
-        "x": 586,
+        "x": 587,
         "y": 15
       },
       "destination": {
