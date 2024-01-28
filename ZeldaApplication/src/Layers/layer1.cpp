@@ -76,15 +76,15 @@ void Layer1::InitializeTeleports()
 	json Points = json::parse(file);
 	json ePoints = json::parse(efile);
 	Sprite origin, dest;
-	char id = 'A';
+	ID id = 0;
 
 	for (auto p : Points["points"])
 	{	
 		Teleport tmp;
 
-		tmp.origin = m_Scene->CreateSprite("tp_1" + id, p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
+		tmp.origin = m_Scene->CreateSprite("tp_1" + std::to_string(id), p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
 		tmp.origin->SetColiderBox(32, 16);
-		tmp.dest = m_Scene->CreateSprite("tp_2" + id, p["destination"]["x"].get<int>() * 16, p["destination"]["y"].get<int>() * 16, NONPRINTABLE, "");
+		tmp.dest = m_Scene->CreateSprite("tp_2" + std::to_string(id), p["destination"]["x"].get<int>() * 16, p["destination"]["y"].get<int>() * 16, NONPRINTABLE, "");
 		tmp.dest->SetColiderBox(32, 16);
 		tmp.stage = p["stage"].get<int>();
 		m_teleports.push_back(tmp);
@@ -92,15 +92,15 @@ void Layer1::InitializeTeleports()
 		id++;
 	} 
 	
-	id = 'A';
+	id = 0;
 
 	for (auto p : ePoints["points"])
 	{
 		Teleport e_tmp;
 
-		e_tmp.origin = m_Scene->CreateSprite("etp_1" + id, p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
+		e_tmp.origin = m_Scene->CreateSprite("etp_1" + std::to_string(id), p["origin"]["x"].get<int>() * 16, p["origin"]["y"].get<int>() * 16, NONPRINTABLE, "");
 		e_tmp.origin->SetColiderBox(32, 16);
-		e_tmp.dest = m_Scene->CreateSprite("etp_2" + id, (p["destination"]["x"].get<int>()) * 16, p["destination"]["y"].get<int>() * 16, NONPRINTABLE, "");
+		e_tmp.dest = m_Scene->CreateSprite("etp_2" + std::to_string(id), p["destination"]["x"].get<int>() * 16, p["destination"]["y"].get<int>() * 16, NONPRINTABLE, "");
 		e_tmp.dest->SetColiderBox(32, 16);
 		e_tmp.stage = p["stage"].get<int>();
 		m_elevator_teleports.push_back(e_tmp);
@@ -287,10 +287,18 @@ void Layer1::InitializeAudio()
 
 void Layer1::InitializeElevators(GridLayer* grid)
 {
-	m_elevators.emplace(std::make_pair(0, new Elevator(0, m_sheets["elevator_sheet"], m_Scene)));
-	m_elevators.at(0)->SetSprite(m_Scene->CreateSprite("Elevator" + std::to_string(0), 40 * 16, 10 * 16, m_elevators.at(0)->GetFilm("elevator_film"), ""));
-	m_elevators.at(0)->GetSprite()->SetColiderBox(32, 56);
-	m_elevators.at(0)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_elevators.at(0)->GetSprite()));
+	std::ifstream elevatorFile("Assets/Config/Elevator/elevator_config.json");
+	json elevators = json::parse(elevatorFile);
+	ID id = 0;
+	for (auto i : elevators["data"])
+	{
+		m_elevators.emplace(std::make_pair(id, new Elevator(id, m_sheets["elevator_sheet"], m_Scene)));
+		m_elevators.at(id)->SetSprite(m_Scene->CreateSprite("Elevator" + std::to_string(id), i["spawn_pos"]["x"].get<uint32_t>() * 16, i["spawn_pos"]["y"].get<uint32_t>() * 16, m_elevators.at(id)->GetFilm("elevator_film"), ""));
+		m_elevators.at(id)->GetSprite()->SetColiderBox(32, 56);
+		m_elevators.at(id)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_elevators.at(id)->GetSprite()));
+		id++;
+	}
+
 }
 
 void Layer1::UpdateSpell(Spell& spell, Time ts) {
@@ -389,6 +397,7 @@ void Layer1::onStart()
 	
 	link->shieldspell.SetSprite(m_Scene->CreateSprite("Shieldspell", 20 * 16, 10 * 16, link->shieldspell.GetFilm("shieldspell_"), ""));
 	link->shieldspell.GetSprite()->SetZorder(2);
+	link->AddKey();
 
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
 	link->GetSprite()->SetColiderBox(16, 32);
@@ -453,6 +462,7 @@ void Layer1::onUpdate(Time ts)
 
 	CheckTimers(ts);
 
+
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
 	Renderer::DisplaySprites();
@@ -466,6 +476,7 @@ void Layer1::onEvent(Event& e)
 	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::mover));
 	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer1::mover));
 	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::ElevatorMovement));
+	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer1::ElevatorMovement));
 }
 
 bool Layer1::mover(Event& e)
@@ -989,11 +1000,13 @@ void Layer1::CollectibleHandler()
 
 bool Layer1::ElevatorMovement(Event& e)
 {
+	if (!currElevator)
+		return true;
+
 	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
 	{
 		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
-		if (!currElevator)
-			return true;
+
 
 		if (event->GetKey() == InputKey::DOWN)
 		{
@@ -1010,6 +1023,20 @@ bool Layer1::ElevatorMovement(Event& e)
 			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 		}
 	}
+	
+	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
+	{
+		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
+		if (event->GetKey() == InputKey::DOWN)
+		{
+			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Stop();
+		}
+		else if (event->GetKey() == InputKey::UP)
+		{
+			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Stop();
+		}
+	}
+
 	return true;
 }
 
@@ -1019,6 +1046,7 @@ void Layer1::ElevatorHandler()
 	Rect d2;
 	Rect tmpBox = m_elevators.begin()->second->GetSprite()->GetBox();
 	Sprite link_sprite = link->GetSprite();
+//	Sprite stop_point = m_Scene->GetSprite("elevator_stop_point");
 	TileLayer* tilelayer = m_Scene->GetTiles().get();
 	
 	Elevator* tmp = nullptr;
@@ -1029,16 +1057,21 @@ void Layer1::ElevatorHandler()
 		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 		{
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i, tmp](Sprite s1, Sprite s2) {
+				ENGINE_TRACE(i.second->GetSprite()->GetHashName());
 				i.second->SetState("Selected");
 				link_sprite->SetPos(link_sprite->GetPosX(), i.second->GetSprite()->GetPosY() + 16);
 			});
-			i.second->SetState("");
+			i.second->SetState("idle");
 			m_Scene->GetColider().Check();
 			m_Scene->GetColider().Cancel(link_sprite, i.second->GetSprite());
 		}
-
+		
 		if (i.second->GetState() == "Selected")
-			currElevator = i.second;
+			tmp = i.second;
 	}
 
+	currElevator = tmp;
+	
 }
+
+
