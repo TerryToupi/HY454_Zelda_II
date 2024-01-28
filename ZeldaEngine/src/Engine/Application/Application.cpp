@@ -139,12 +139,12 @@ namespace Engine {
 
 	void Application::SetOnPauseFunction(const PauseAction& f)
 	{ 
-		m_pauseFunction = f;
+		s_Instance->m_pauseFunction = f;
 	}
 
 	void Application::SetOnResumeFunction(const PauseAction& f)
 	{ 
-		m_resumeFunction = f;
+		s_Instance->m_resumeFunction = f;
 	}
 
 	void Application::Pause(Time t)

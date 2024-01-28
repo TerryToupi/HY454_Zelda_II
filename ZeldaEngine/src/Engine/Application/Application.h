@@ -41,13 +41,14 @@ namespace Engine
 		static Layer& GetOverlay(std::string tag);
 
 		void static popLayer(Layer* layer);  
-		void static popOverLay(Layer* overlay); 
+		void static popOverLay(Layer* overlay);  
+
+		static void SetOnPauseFunction(const PauseAction& f);
+		static void SetOnResumeFunction(const PauseAction& f);
 
 		void Run();
 
 	protected:   
-		void SetOnPauseFunction(const PauseAction& f);
-		void SetOnResumeFunction(const PauseAction& f);
 		void Pause(Time t);
 		void Resume(void);
 		bool IsPaused(void);
