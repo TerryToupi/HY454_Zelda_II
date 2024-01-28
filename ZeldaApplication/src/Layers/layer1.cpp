@@ -201,6 +201,37 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 		i++;
 	}
 
+	std::ifstream staflosFile("Assets/Config/Enemies/staflos_config.json");
+	enemies = json::parse(staflosFile);
+
+	for (auto e : enemies["data"])
+	{
+		ID id = UUID::GenerateUUID();
+
+		m_enemies.emplace(std::make_pair(i, new Staflos(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
+		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_" + e["lookingAt"].get<std::string>()), "E_BOT")));
+		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 16);
+		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+
+		MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
+		MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
+
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+			anim->Start(down, SystemClock::GetDeltaTime());
+			});
+
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+			anim->Stop();
+			});
+
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+
+		i++;
+	}
 
 }
 
@@ -223,7 +254,7 @@ void Layer1::CreateCollectible(std::string jsonPath, std::string type, enum c_ty
 }
 
 void Layer1::DropCollectible(Enemy* enemy) {
-	ID random = UUID::GenerateUUID() % 3;
+	ID random = UUID::GenerateUUID() % 10;
 	
 	if (random > 2) {
 		return;
@@ -523,7 +554,7 @@ bool Layer1::mover(Event& e)
 
 		if (event->GetKey() == InputKey::q)
 		{
-			link->setAttackingStateCoolDown(300);
+			link->setAttackingStateCoolDown(500);
 
 			if (link->GetLookingAt() == "right" && (link->GetState() == "crouch" || link->GetState() == "crouch_attack")) {
 				link->SetState("crouch_attack");
