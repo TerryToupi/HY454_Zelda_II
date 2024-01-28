@@ -8,9 +8,6 @@
 using json = nlohmann::json;
 using namespace Engine;
 
-using Sheets = std::unordered_map<std::string, AnimationSheet*>;
-
-
 class Layer2 : public Layer
 {
 public:
@@ -26,7 +23,6 @@ public:
 
 	void LoadSheets();
 
-	Link* link;
-	Sheets m_overlaySheets;
-
+	AnimationSheet* m_sheet;
+	AnimationFilm* m_film;
 };
