@@ -9,7 +9,7 @@
 			"lookingAt": "right",
 			"stage": 2,
 			"min_x": 69,
-			"max_x": 207
+			"max_x": 166
 		},
 		{
 			"spawn_pos": {
@@ -19,7 +19,7 @@
 			"lookingAt": "right",
 			"stage": 2,
 			"min_x": 69,
-			"max_x": 207
+			"max_x": 166
 		},
 		{
 			"spawn_pos": {
@@ -28,7 +28,7 @@
 			},
 			"lookingAt": "left",
 			"stage": 2,
-			"min_x": 69,
+			"min_x": 169,
 			"max_x": 207
 		},
 		{
@@ -38,7 +38,7 @@
 			},
 			"lookingAt": "left",
 			"stage": 2,
-			"min_x": 69,
+			"min_x": 169,
 			"max_x": 207
 		},
 		{

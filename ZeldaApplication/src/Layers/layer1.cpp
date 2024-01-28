@@ -429,7 +429,6 @@ void Layer1::onStart()
 	
 	link->shieldspell.SetSprite(m_Scene->CreateSprite("Shieldspell", 20 * 16, 10 * 16, link->shieldspell.GetFilm("shieldspell_"), ""));
 	link->shieldspell.GetSprite()->SetZorder(2);
-	link->AddKey();
 
 	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
 	link->GetSprite()->SetColiderBox(16, 32);

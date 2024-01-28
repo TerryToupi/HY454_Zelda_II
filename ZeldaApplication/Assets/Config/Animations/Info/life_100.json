@@ -1,0 +1,14 @@
+{
+  "animation": "life_100",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 134,
+      "y": 0,
+      "h": 19,
+      "w": 41
+    }
+
+  ]
+}
