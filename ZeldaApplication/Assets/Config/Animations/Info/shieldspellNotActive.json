@@ -1,0 +1,14 @@
+{
+  "animation": "shieldspell",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 21,
+      "y": 103,
+      "h": 20,
+      "w": 20
+    }
+
+  ]
+}

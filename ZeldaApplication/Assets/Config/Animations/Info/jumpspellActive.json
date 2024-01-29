@@ -1,0 +1,14 @@
+{
+  "animation": "jumpspell",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 0,
+      "y": 82,
+      "h": 20,
+      "w": 20
+    }
+
+  ]
+}

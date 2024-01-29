@@ -19,6 +19,7 @@ using namespace Engine;
 class Link : public Entity{
 private:
     int m_health;
+    int m_maxHealth;
     int m_damage;
     int m_magicPoints;
     int m_lives;
@@ -48,6 +49,7 @@ public:
     ExtraLife extralife;
 
     int getHealth() const;
+    int getMaxHealth() const;
     int getDamage() const;
     int getMagicPoints() const;
     int getLives() const;
@@ -59,6 +61,7 @@ public:
     int getKeys() const;
     
     void setHealth(int newHealth);
+    void setMaxHealth(int newHealth);
     void setDamage(int newDamage);
     void setMagicPoints(int newMagicPoints);
     void setLives(int newLives);
