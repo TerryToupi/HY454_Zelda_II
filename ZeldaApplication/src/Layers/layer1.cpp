@@ -248,35 +248,35 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 	}
 
 
-	std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
-	enemies = json::parse(gumaFile);
+	//std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
+	//enemies = json::parse(gumaFile);
 
-	for (auto e : enemies["data"])
-	{
-		ID id = UUID::GenerateUUID();
+	//for (auto e : enemies["data"])
+	//{
+	//	ID id = UUID::GenerateUUID();
 
-		m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
-		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
-		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
-		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("falling"), "E_GUMA")));
-		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
-		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+	//	m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
+	//	m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
+	//	m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
+	//	m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("falling"), "E_GUMA")));
+	//	m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
+	//	m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
+	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
 
-		MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
-		MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
+	//	MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
+	//	MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
 
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
-			anim->Start(down, SystemClock::GetDeltaTime());
-			});
+	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+	//		anim->Start(down, SystemClock::GetDeltaTime());
+	//		});
 
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
-			anim->Stop();
-			});
+	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+	//		anim->Stop();
+	//		});
 
-		i++;
-	}
+	//	i++;
+	//}
 
 }
 
@@ -598,14 +598,18 @@ bool Layer1::mover(Event& e)
 		{
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
-			if (link->GetLookingAt() == "right") {
-				link->SetState("crouch");
+			if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				//if (!tmp->HasFinished())
+				//	return true;
+				link->SetState("crouch");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
 			}
-			else if (link->GetLookingAt() == "left") {
-				link->SetState("crouch");
+			else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				//if (!tmp->HasFinished())
+				//	return true;
+				link->SetState("crouch");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
 			}
 		}
@@ -708,9 +712,6 @@ bool Layer1::mover(Event& e)
 				tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
 					((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"))->GetStartFrame());
 			}
-
-			
-
 		}
 	}
 
@@ -734,16 +735,12 @@ bool Layer1::mover(Event& e)
 		if (event->GetKey() == InputKey::s)
 		{
 			if (link->GetLookingAt() == "right") {
-				Sprite link_sprite = m_Scene->GetSprite("Link");
-				link_sprite->SetFilm(link->GetFilm("crouch_right"));
-				link_sprite->SetFrame(0);
-				link->SetState("moving");
+				link->GetSprite()->SetFrame(0);
+				link->SetState("idle");
 			}
 			else if (link->GetLookingAt() == "left") {
-				Sprite link_sprite = m_Scene->GetSprite("Link");
-				link_sprite->SetFilm(link->GetFilm("crouch_left"));
-				link_sprite->SetFrame(0);
-				link->SetState("moving");
+				link->GetSprite()->SetFrame(0);
+				link->SetState("idle");
 			}
 		}
 	}

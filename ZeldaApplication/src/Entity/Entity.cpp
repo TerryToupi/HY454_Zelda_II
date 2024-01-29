@@ -136,7 +136,7 @@ void Entity::FrameRangeStart(std::string name)
 }
 
 void Entity::FrameRangeFinish()
-{	
+{
 	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attack"))
 		m_Sprite->SetPos(startX, startY);
 	else if(m_state == "moving")
@@ -163,7 +163,8 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 {
 	uint32_t currFrame = animator->GetCurrFrame();
 	std::string film = m_state + "_" + m_lookingAt;
-
+	
+	ENGINE_TRACE(currFrame);
 	m_Sprite->SetFrame(currFrame);
 
 	if ((m_state == "attacking" && currFrame == 2) ||
