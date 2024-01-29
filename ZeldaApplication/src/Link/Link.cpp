@@ -11,9 +11,10 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     m_scene = _scene;
     m_keys = 0;
 
-    setHealth(configVars["Link"]["HP"]);
     setMaxHealth(configVars["Link"]["HP"]);
+    setHealth(configVars["Link"]["HP"]);
     setDamage(configVars["Link"]["Damage"]);
+    setMaxMagicPoints(configVars["Link"]["MagicPoints"]);
     setMagicPoints(configVars["Link"]["MagicPoints"]);
     setLives(configVars["Link"]["InitialLives"]);
     setSpeed(100 - configVars["Link"]["Speed"]);
@@ -80,6 +81,11 @@ int Link::getMagicPoints() const
     return m_magicPoints;
 }
 
+int Link::getMaxMagicPoints() const
+{
+    return m_maxMagicPoints;
+}
+
 int Link::getLives() const 
 {
     return m_lives;
@@ -139,6 +145,15 @@ void Link::setDamage(int newDamage)
 void Link::setMagicPoints(int newMagicPoints) 
 {
     m_magicPoints = newMagicPoints;
+
+    if (m_magicPoints > m_maxMagicPoints) {
+        m_magicPoints = m_maxMagicPoints;
+    }
+}
+
+void Link::setMaxMagicPoints(int newMagicPoints)
+{
+    m_maxMagicPoints = newMagicPoints;
 }
 
 void Link::setLives(int newLives)

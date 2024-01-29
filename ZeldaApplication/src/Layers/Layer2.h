@@ -48,6 +48,7 @@ public:
 	Sprite currShieldCooldown[2];
 	Sprite currThunderCooldown[2];
 
+
 	//Sprite currHealthNumSprite[3];
 	//Sprite currMagicNumSprite[3];
 	//Sprite currPointsNumSprite[3];

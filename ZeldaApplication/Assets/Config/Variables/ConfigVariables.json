@@ -2,7 +2,7 @@
   "Link": {
     "InitialLives": 3,
     "HP": 100,
-    "MagicPoints": 450,
+    "MagicPoints": 350,
     "Damage": 8,
     "Speed": 90,
     "JumpingForce": 12
