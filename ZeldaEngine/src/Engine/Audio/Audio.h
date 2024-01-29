@@ -8,7 +8,8 @@
 
 namespace Engine
 {
-	typedef Uint64 AudioID;
+	typedef Uint64 AudioID; 
+	typedef Uint32 DeviceID;
 
 	struct AudioData
 	{  
@@ -16,7 +17,18 @@ namespace Engine
 		SDL_AudioSpec wavSpec;
 		Uint32 wavLength; 
 		Uint8* wavBuffer;
-	};  
+	}; 
+
+	struct MusicData
+	{
+		DeviceID id;
+		bool looping;
+		SDL_AudioSpec wavSpec;
+		Uint32 wavLength; 
+		Uint32 wavLengthConst;
+		Uint8* wavBuffer;
+		Uint8* wavBufferConst;
+	};
 
 	struct DeviceChain
 	{
@@ -29,10 +41,14 @@ namespace Engine
 	class AudioManager
 	{
 	public:		
-		using DataStorage = std::unordered_map<Uint32, AudioData*>;
+		using SoundStorage = std::unordered_map<AudioID, AudioData*>;
+		using MousicStorage = std::unordered_map<DeviceID, MusicData*>;
 
 	public: 
-		AudioID LoadSound(std::string _path); 
+		AudioID LoadSound(std::string _path);  
+		DeviceID InitMusicDevice(std::string _path, bool looping); 
+		void PauseMusicDevice(DeviceID _device, bool _v); 
+		void DeleteMusicAndDevice(DeviceID _device);
 		void PlaySound(AudioID _id); 
 		void DeleteSound(AudioID _id);
 
@@ -49,7 +65,8 @@ namespace Engine
 		AudioManager(AudioManager&& other) = delete; 
 
 	private:   
-		DataStorage m_data; 
+		SoundStorage m_sounds; 
+		MousicStorage m_tracs;
 		DeviceChain* m_itr = nullptr; 
 		DeviceChain* m_head = nullptr; 
 
