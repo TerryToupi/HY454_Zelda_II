@@ -599,14 +599,18 @@ bool Layer1::mover(Event& e)
 		{
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
-			if (link->GetLookingAt() == "right") {
-				link->SetState("crouch");
+			if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				//if (!tmp->HasFinished())
+				//	return true;
+				link->SetState("crouch");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
 			}
-			else if (link->GetLookingAt() == "left") {
-				link->SetState("crouch");
+			else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+				//if (!tmp->HasFinished())
+				//	return true;
+				link->SetState("crouch");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
 			}
 		}
@@ -709,9 +713,6 @@ bool Layer1::mover(Event& e)
 				tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
 					((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"))->GetStartFrame());
 			}
-
-			
-
 		}
 	}
 
@@ -735,16 +736,12 @@ bool Layer1::mover(Event& e)
 		if (event->GetKey() == InputKey::s)
 		{
 			if (link->GetLookingAt() == "right") {
-				Sprite link_sprite = m_Scene->GetSprite("Link");
-				link_sprite->SetFilm(link->GetFilm("crouch_right"));
-				link_sprite->SetFrame(0);
-				link->SetState("moving");
+				link->GetSprite()->SetFrame(0);
+				link->SetState("idle");
 			}
 			else if (link->GetLookingAt() == "left") {
-				Sprite link_sprite = m_Scene->GetSprite("Link");
-				link_sprite->SetFilm(link->GetFilm("crouch_left"));
-				link_sprite->SetFrame(0);
-				link->SetState("moving");
+				link->GetSprite()->SetFrame(0);
+				link->SetState("idle");
 			}
 		}
 	}
