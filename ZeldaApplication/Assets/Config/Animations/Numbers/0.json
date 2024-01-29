@@ -1,0 +1,13 @@
+{
+  "animation": "numbers",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 9,
+      "y": 51,
+      "h": 8,
+      "w": 7
+    }
+  ]
+}

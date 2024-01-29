@@ -19,7 +19,8 @@ namespace Engine
 
 	public:
 		void	Add(Sprite s); 
-		Sprite	Get(std::string& _tag);
+		Sprite	Get(std::string& _tag); 
+		bool	Has(std::string& _tag);
 		void	remove(Sprite s);  
 
 		auto GetDisplayList(void) -> SpriteList& 

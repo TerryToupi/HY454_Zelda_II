@@ -2,7 +2,9 @@
 
 #include <Engine.h>
 #include "../Link/Link.h"
+#include "layer1.h"
 #include <json.hpp>
+
 
 
 using json = nlohmann::json;
@@ -22,7 +24,42 @@ public:
 	void onEvent(Event& e) override;
 
 	void LoadSheets();
+	
+	Sprite UpdateCooldowns(std::string type, Spell spell, bool &isDisabled, Sprite sprite[], Sprite iconSprite, AnimationFilm* film[], int posX);
 
 	AnimationSheet* m_sheet;
-	AnimationFilm* m_film;
+	AnimationFilm* m_numberfilm[10];
+	AnimationFilm* m_healthfilm[5];
+	AnimationFilm* m_magicpointfilm[5];
+	AnimationFilm* m_lifespellFilm[2];
+	AnimationFilm* m_jumpspellFilm[2];
+	AnimationFilm* m_shieldspellFilm[2];
+	AnimationFilm* m_thunderspellFilm[2];
+
+	Sprite currHealthSprite;
+	Sprite currMagicSprite;
+	Sprite currLifeIconSprite;
+	Sprite currJumpIconSprite;
+	Sprite currShieldIconSprite;
+	Sprite currThunderIconSprite;
+
+	Sprite currLifeCooldown[2];
+	Sprite currJumpCooldown[2];
+	Sprite currShieldCooldown[2];
+	Sprite currThunderCooldown[2];
+
+
+	//Sprite currHealthNumSprite[3];
+	//Sprite currMagicNumSprite[3];
+	//Sprite currPointsNumSprite[3];
+	
+	int currHealthNum;
+	int currMagicNum;
+	int currPointNum;
+	bool lifespellDisabled = false;
+	bool jumpspellDisabled = false;
+	bool shieldspellDisabled = false;
+	bool thunderspellDisabled = false;
+
+	Layer1& layer1 = (Layer1&)(Application::GetLayer("Layer1"));
 };

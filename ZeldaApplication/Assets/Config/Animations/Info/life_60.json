@@ -1,10 +1,10 @@
 {
-  "animation": "life_100",
+  "animation": "life_75",
   "total_frames": 1,
   "frames": [
     {
       "frame": 1,
-      "x": 212,
+      "x": 106,
       "y": 0,
       "h": 19,
       "w": 49

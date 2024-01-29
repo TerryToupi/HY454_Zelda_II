@@ -551,6 +551,7 @@ void Layer1::onUpdate(Time ts)
 
 	CheckTimers(ts);
 
+	
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
@@ -651,7 +652,7 @@ bool Layer1::mover(Event& e)
 
 			if (link->getMagicPoints() >= link->lifespell.getCost() && link->lifespell.canUse()) {
 				link->setMagicPoints(link->getMagicPoints() - link->lifespell.getCost());
-				link->setHealth(link->getHealth() + 50);
+				link->heal(50);
 				link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
 				link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
 

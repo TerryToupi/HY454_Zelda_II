@@ -40,13 +40,19 @@ namespace Engine
 		return m_sprites[_tag];
 	}
 
-	void SpriteManager::remove(Sprite s)
+	bool SpriteManager::Has(std::string& _tag)
 	{
-		ENGINE_CORE_ASSERT(m_sprites.find(s->GetHashName()) != m_sprites.end());  
-		auto dpySprite = find(s);
-		m_sprites.erase(s->GetHashName());  
+		return m_sprites.find(_tag) != m_sprites.end();
+	}
+
+	void SpriteManager::remove(Sprite s)
+	{ 
+		Sprite tmp = s;
+		ENGINE_CORE_ASSERT(m_sprites.find(tmp->GetHashName()) != m_sprites.end());  
+		auto dpySprite = find(tmp);
+		m_sprites.erase(tmp->GetHashName());  
 		m_dpyList.erase(dpySprite);
-		s->Destroy();
+		tmp->Destroy();
 	}
 }
 
