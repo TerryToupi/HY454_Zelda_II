@@ -24,5 +24,10 @@ namespace Engine {
 	void Scene::RemoveSprite(Sprite _sprite)
 	{ 
 		m_sprites.remove(_sprite);
+	} 
+
+	bool Scene::HasSprite(std::string _tag)
+	{
+		return m_sprites.Has(_tag);
 	}
 }

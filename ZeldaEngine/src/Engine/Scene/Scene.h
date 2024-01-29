@@ -19,7 +19,8 @@ namespace Engine
 
 		Sprite CreateSprite(std::string _name, int _x, int _y, AnimationFilm* _film, const std::string& _typeid);
 		Sprite GetSprite(std::string _tag); 
-		void   RemoveSprite(Sprite _sprite);
+		void   RemoveSprite(Sprite _sprite); 
+		bool   HasSprite(std::string _tag);
 
 		Ref<TileLayer> GetTiles() { return m_Tiles; } 
 		SpriteManager& GetSpriteManager() { return m_sprites; }
