@@ -1,5 +1,4 @@
 #include "Layer1.h"
-#include "Layer1.h"
 
 Clipper clipper;
 std::pair<int, int>* bounds;
@@ -321,7 +320,8 @@ void Layer1::DropCollectible(Enemy* enemy) {
 	}
 	
 	Collectible* tmp = new Collectible(i, m_sheets["collectible_sheet"], m_Scene, cType);
-	tmp->SetSprite(m_Scene->CreateSprite(type +std::to_string(UUID::GenerateUUID()), enemy->GetSprite()->GetPosX(), enemy->GetSprite()->GetPosY(), tmp->GetFilm(type + "_film"), ""));
+	uint32_t posY = (enemy->GetSprite()->GetTypeId() == "E_BOT") ? 0 : 16;
+	tmp->SetSprite(m_Scene->CreateSprite(type +std::to_string(UUID::GenerateUUID()), enemy->GetSprite()->GetPosX(), enemy->GetSprite()->GetPosY() + posY, tmp->GetFilm(type + "_film"), ""));
 	tmp->GetSprite()->SetColiderBox(16, 16);
 	tmp->setCooldown(700);
 	
@@ -484,22 +484,22 @@ void Layer1::onStart()
 	
 	link = new Link(m_sheets["link_sheet"], m_Scene);
 	
-	link->shieldspell.SetSprite(m_Scene->CreateSprite("Shieldspell", 20 * 16, 10 * 16, link->shieldspell.GetFilm("shieldspell_"), ""));
+	link->shieldspell.SetSprite(m_Scene->CreateSprite("Shieldspell", 13 * 16, 10 * 16, link->shieldspell.GetFilm("shieldspell_"), ""));
 	link->shieldspell.GetSprite()->SetZorder(2);
 
-	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
+	link->SetSprite(m_Scene->CreateSprite("Link", 13 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
 	link->GetSprite()->SetColiderBox(16, 32);
 	link->GetSprite()->SetZorder(1);
 
-	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 20 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
+	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 13 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
 	link->lifespell.GetSprite()->SetZorder(0);
 
-	link->jumpspell.SetSprite(m_Scene->CreateSprite("Jumpspell", 20 * 16, 10 * 16, link->jumpspell.GetFilm("jumpspell_"), ""));
+	link->jumpspell.SetSprite(m_Scene->CreateSprite("Jumpspell", 13 * 16, 10 * 16, link->jumpspell.GetFilm("jumpspell_"), ""));
 	link->jumpspell.GetSprite()->SetZorder(0);
 
 
 
-	link->thunderspell.SetSprite(m_Scene->CreateSprite("Thunderspell", 20 * 16, 10 * 16, link->thunderspell.GetFilm("thunderspell_"), ""));
+	link->thunderspell.SetSprite(m_Scene->CreateSprite("Thunderspell", 13 * 16, 10 * 16, link->thunderspell.GetFilm("thunderspell_"), ""));
 	link->thunderspell.GetSprite()->SetZorder(0);
 
 	Rect r = m_Scene->GetTiles()->GetViewWindow();
@@ -601,15 +601,16 @@ bool Layer1::mover(Event& e)
 			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 			if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				//if (!tmp->HasFinished())
-				//	return true;
+				if (!tmp->HasFinished())
+					tmp->Stop();
 				link->SetState("crouch");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
+
 			}
 			else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				//if (!tmp->HasFinished())
-				//	return true;
+				if (!tmp->HasFinished())
+					tmp->Stop();
 				link->SetState("crouch");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
 			}
@@ -620,26 +621,39 @@ bool Layer1::mover(Event& e)
 			link->setAttackingStateCoolDown(500);
 
 			if (link->GetLookingAt() == "right" && link->GetState() == "crouch") {
-				link->SetState("crouch_attack");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"))->GetStartFrame());
+				if (tmp->HasFinished())
+				{
+					link->SetState("crouch_attack");
+					tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"))->GetStartFrame());
+
+				}
 			}
 			else if (link->GetLookingAt() == "left" && link->GetState() == "crouch") {
-
-				link->SetState("crouch_attack");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
+				if (tmp->HasFinished())
+				{
+					link->SetState("crouch_attack");
+					tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
 
+				}
 			}
 			else if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
-				link->SetState("attacking");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"))->GetStartFrame());
+				if (tmp->HasFinished())
+				{
+					link->SetState("attacking");
+					tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"))->GetStartFrame());
+				}
 			}
 			else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
-				link->SetState("attacking");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"))->GetStartFrame());
+				if (tmp->HasFinished())
+				{
+					link->SetState("attacking");
+					tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"))->GetStartFrame());
+
+				}
 			}
 			AudioManager::Get().PlaySound(m_sounds.at("attacking"));
 		}
@@ -735,14 +749,20 @@ bool Layer1::mover(Event& e)
 		
 		if (event->GetKey() == InputKey::s)
 		{
-			if (link->GetLookingAt() == "right") {
-				link->GetSprite()->SetFrame(0);
-				link->SetState("idle");
+			if (!((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->HasFinished())
+				((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
+
+			if (link->GetLookingAt() == "right")
+			{
+				link->GetSprite()->SetFilm(link->GetFilm("moving_right"));
 			}
-			else if (link->GetLookingAt() == "left") {
-				link->GetSprite()->SetFrame(0);
-				link->SetState("idle");
+			else if (link->GetLookingAt() == "left")
+			{
+				link->GetSprite()->SetFilm(link->GetFilm("moving_left"));
 			}
+
+			link->GetSprite()->SetFrame(0);
+			link->SetState("idle");
 		}
 	}
 
@@ -1105,8 +1125,8 @@ void Layer1::CollectibleHandler()
 {
 	Rect d1;
 	Rect d2;
-	Rect tmpBox = (m_collectibles.begin()->second).front()->GetSprite()->GetBox();
-	Sprite link_sprite = link->GetSprite();
+	Rect tmpBox;
+    Sprite link_sprite = link->GetSprite();
 	TileLayer* tilelayer = m_Scene->GetTiles().get();
 
 	int collected_index = m_collectibles.begin()->second.size();
