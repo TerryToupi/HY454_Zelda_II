@@ -1,5 +1,4 @@
 #include "Layer1.h"
-#include "Layer1.h"
 
 Clipper clipper;
 std::pair<int, int>* bounds;
@@ -485,22 +484,22 @@ void Layer1::onStart()
 	
 	link = new Link(m_sheets["link_sheet"], m_Scene);
 	
-	link->shieldspell.SetSprite(m_Scene->CreateSprite("Shieldspell", 20 * 16, 10 * 16, link->shieldspell.GetFilm("shieldspell_"), ""));
+	link->shieldspell.SetSprite(m_Scene->CreateSprite("Shieldspell", 13 * 16, 10 * 16, link->shieldspell.GetFilm("shieldspell_"), ""));
 	link->shieldspell.GetSprite()->SetZorder(2);
 
-	link->SetSprite(m_Scene->CreateSprite("Link", 20 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
+	link->SetSprite(m_Scene->CreateSprite("Link", 13 * 16, 10 * 16, link->GetFilm("moving_right"), ""));
 	link->GetSprite()->SetColiderBox(16, 32);
 	link->GetSprite()->SetZorder(1);
 
-	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 20 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
+	link->lifespell.SetSprite(m_Scene->CreateSprite("Lifespell", 13 * 16, 10 * 16, link->lifespell.GetFilm("lifespell_"), ""));
 	link->lifespell.GetSprite()->SetZorder(0);
 
-	link->jumpspell.SetSprite(m_Scene->CreateSprite("Jumpspell", 20 * 16, 10 * 16, link->jumpspell.GetFilm("jumpspell_"), ""));
+	link->jumpspell.SetSprite(m_Scene->CreateSprite("Jumpspell", 13 * 16, 10 * 16, link->jumpspell.GetFilm("jumpspell_"), ""));
 	link->jumpspell.GetSprite()->SetZorder(0);
 
 
 
-	link->thunderspell.SetSprite(m_Scene->CreateSprite("Thunderspell", 20 * 16, 10 * 16, link->thunderspell.GetFilm("thunderspell_"), ""));
+	link->thunderspell.SetSprite(m_Scene->CreateSprite("Thunderspell", 13 * 16, 10 * 16, link->thunderspell.GetFilm("thunderspell_"), ""));
 	link->thunderspell.GetSprite()->SetZorder(0);
 
 	Rect r = m_Scene->GetTiles()->GetViewWindow();

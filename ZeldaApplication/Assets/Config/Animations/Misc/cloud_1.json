@@ -1,0 +1,13 @@
+{
+  "animation": "cloud_1",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 0,
+      "y": 0,
+      "h": 16,
+      "w": 31
+    }
+  ]
+}
