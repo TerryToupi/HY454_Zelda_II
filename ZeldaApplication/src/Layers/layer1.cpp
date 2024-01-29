@@ -248,35 +248,35 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 	}
 
 
-	std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
-	enemies = json::parse(gumaFile);
+	//std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
+	//enemies = json::parse(gumaFile);
 
-	for (auto e : enemies["data"])
-	{
-		ID id = UUID::GenerateUUID();
+	//for (auto e : enemies["data"])
+	//{
+	//	ID id = UUID::GenerateUUID();
 
-		m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
-		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
-		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
-		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("falling"), "E_GUMA")));
-		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
-		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+	//	m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
+	//	m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
+	//	m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
+	//	m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("falling"), "E_GUMA")));
+	//	m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
+	//	m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
+	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
 
-		MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
-		MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
+	//	MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
+	//	MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
 
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
-			anim->Start(down, SystemClock::GetDeltaTime());
-			});
+	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+	//		anim->Start(down, SystemClock::GetDeltaTime());
+	//		});
 
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
-			anim->Stop();
-			});
+	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+	//		anim->Stop();
+	//		});
 
-		i++;
-	}
+	//	i++;
+	//}
 
 }
 
