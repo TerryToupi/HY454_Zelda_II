@@ -12,6 +12,7 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     m_keys = 0;
 
     setHealth(configVars["Link"]["HP"]);
+    setMaxHealth(configVars["Link"]["HP"]);
     setDamage(configVars["Link"]["Damage"]);
     setMagicPoints(configVars["Link"]["MagicPoints"]);
     setLives(configVars["Link"]["InitialLives"]);
@@ -62,6 +63,11 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
 int Link::getHealth() const 
 {
     return m_health;
+}
+
+int Link::getMaxHealth() const
+{
+    return m_maxHealth;
 }
 
 int Link::getDamage() const 
@@ -120,6 +126,11 @@ void Link::setHealth(int newHealth)
     m_health = newHealth;
 }
 
+void Link::setMaxHealth(int newHealth)
+{
+    m_maxHealth = newHealth;
+}
+
 void Link::setDamage(int newDamage) 
 {
     m_damage = newDamage;
@@ -175,8 +186,8 @@ void Link::heal(int amount)
 {
     m_health += amount;
 
-    if (m_health > 100)
-        m_health = 100;
+    if (m_health > m_maxHealth)
+        m_health = m_maxHealth;
 }
 
 void Link::castSpell(int spellCost)

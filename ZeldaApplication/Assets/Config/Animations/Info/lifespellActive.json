@@ -1,0 +1,14 @@
+{
+  "animation": "lifespell",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 0,
+      "y": 61,
+      "h": 20,
+      "w": 20
+    }
+
+  ]
+}
