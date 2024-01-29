@@ -8,8 +8,12 @@ class Bot : public Enemy {
 public:
     Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* _sheet, Ref<Scene> _scene);
     ~Bot() = default;
-    void jump();
 
+    uint32_t GetJumpCooldown();
+    void SetJumpCooldown(uint32_t cooldown);
+
+private:
+    uint32_t m_jumpCooldown;
 };
 
 #endif 

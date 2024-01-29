@@ -64,6 +64,22 @@ void InitilizeLayer(Layer1* layer)
 
 }
 
+void PlayElevatorSound(Layer1* layer)
+{
+	uint32_t delay = 0;
+	while (currElevator->GetState() == "moving") 
+	{
+		if (delay == 0)
+		{
+			AudioManager::Get().PlaySound(layer->m_sounds.at("elevator"));
+			delay = 10000;
+		}
+		else
+			delay -= SystemClock::GetDeltaTimeStep();
+	}
+	return;
+}
+
 Layer1::Layer1()
 	: Layer("Layer1")
 {
@@ -212,8 +228,38 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 		m_enemies.emplace(std::make_pair(i, new Staflos(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
 		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
 		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
-		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_" + e["lookingAt"].get<std::string>()), "E_BOT")));
-		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 16);
+		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("falling"), "E_STAFLOS")));
+		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
+		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+
+		MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
+		MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
+
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+			anim->Start(down, SystemClock::GetDeltaTime());
+			});
+
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+			anim->Stop();
+			});
+
+		i++;
+	}
+
+
+	std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
+	enemies = json::parse(gumaFile);
+
+	for (auto e : enemies["data"])
+	{
+		ID id = UUID::GenerateUUID();
+
+		m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
+		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("falling"), "E_GUMA")));
+		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
 		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
 		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
@@ -228,8 +274,6 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
 			anim->Stop();
 			});
-
-		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 
 		i++;
 	}
@@ -313,8 +357,11 @@ void Layer1::InitializeDoors()
 
 void Layer1::InitializeAudio()
 {	
-	AudioID tmp = AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav");
-	m_sounds.emplace(std::make_pair("attacking", tmp));
+	m_sounds.emplace(std::make_pair("attacking", AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav")));
+	m_sounds.emplace(std::make_pair("door", AudioManager::Get().LoadSound("Assets/Sounds/Misc/door_opening.wav")));
+	m_sounds.emplace(std::make_pair("enemy_damage", AudioManager::Get().LoadSound("Assets/Sounds/Enemies/enemy_damage.wav")));
+	m_sounds.emplace(std::make_pair("key", AudioManager::Get().LoadSound("Assets/Sounds/Misc/key_collected.wav")));
+	m_sounds.emplace(std::make_pair("elevator", AudioManager::Get().LoadSound("Assets/Sounds/Misc/elevator.wav")));
 }
 
 void Layer1::InitializeElevators(GridLayer* grid)
@@ -405,6 +452,16 @@ void Layer1::CheckTimers(Time ts) {
 		link->setAttackingStateCoolDown(0);
 	if(link->getAttackingStateCoolDown() == 0 && link->GetState() == "attacking")
 		link->SetState("moving");
+
+	for (auto e : m_enemies)
+	{
+		if (e.second->GetSprite()->GetHashName().find("Bot") != std::string::npos) 
+		{
+			Bot* tmp = (Bot*)e.second;
+			if (tmp->GetJumpCooldown() != 0)
+				tmp->SetJumpCooldown(tmp->GetJumpCooldown() - ts);
+		}
+	}
 
 
 }
@@ -514,7 +571,7 @@ void Layer1::onEvent(Event& e)
 
 bool Layer1::mover(Event& e)
 {
-
+	ENGINE_TRACE(link->GetState());
 	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
 	{
 		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
@@ -558,24 +615,24 @@ bool Layer1::mover(Event& e)
 		{
 			link->setAttackingStateCoolDown(500);
 
-			if (link->GetLookingAt() == "right" && (link->GetState() == "crouch" || link->GetState() == "crouch_attack")) {
+			if (link->GetLookingAt() == "right" && link->GetState() == "crouch") {
 				link->SetState("crouch_attack");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"))->GetStartFrame());
 			}
-			else if (link->GetLookingAt() == "left" && (link->GetState() == "crouch" || link->GetState() == "crouch_attack")) {
+			else if (link->GetLookingAt() == "left" && link->GetState() == "crouch") {
 
 				link->SetState("crouch_attack");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
 
 			}
-			else if (link->GetLookingAt() == "right") {
+			else if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
 				link->SetState("attacking");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"))->GetStartFrame());
 			}
-			else if (link->GetLookingAt() == "left") {
+			else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
 				link->SetState("attacking");
 				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"))->GetStartFrame());
@@ -761,30 +818,107 @@ void Layer1::EnemyMovement() {
 		MovingAnimator* mov = (MovingAnimator*)e.second->GetAnimator("mov_moving");
 		FrameRangeAnimator* anim = (FrameRangeAnimator*)e.second->GetAnimator("frame_animator");
 		
-		if (e.second->GetStage() == m_currStage)
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 		{
 			if (e.second->GetState() != "death")
 			{
 				e.second->SetState("moving");
 
-				if (e.second->GetSprite()->GetPosX() > e.second->GetMaxX())
+				if (e.second->GetSprite()->GetTypeId() == "E_WOSU")
 				{
-					e.second->SetLookingAt("left");
-					anim->Stop();
-				}
-				else if (e.second->GetSprite()->GetPosX() < e.second->GetMinX())
-				{
-					e.second->SetLookingAt("right");
-					anim->Stop();
-				}
+					if (e.second->GetSprite()->GetPosX() > e.second->GetMaxX())
+					{
+						e.second->SetLookingAt("left");
+						anim->Stop();
+					}
+					else if (e.second->GetSprite()->GetPosX() < e.second->GetMinX())
+					{
+						e.second->SetLookingAt("right");
+						anim->Stop();
+					}
 
-				if (anim->HasFinished())
-					anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
-				
-				if (e.second->GetSprite()->GetHashName().find("Bot") == std::string::npos)
 					if (mov->HasFinished())
 						mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 
+					if (anim->HasFinished())
+						anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
+
+				}
+				else if (e.second->GetSprite()->GetTypeId() == "E_STAFLOS")
+				{
+					Staflos* tmp_staflos = (Staflos*)e.second;
+					if (link->GetSprite()->GetPosX() < e.second->GetSprite()->GetPosX() && e.second->GetLookingAt() != "left")
+					{
+						e.second->SetLookingAt("left");
+						anim->Stop();
+					}
+					else if (link->GetSprite()->GetPosX() > e.second->GetSprite()->GetPosX() && e.second->GetLookingAt() != "right")
+					{
+							e.second->SetLookingAt("right");
+						anim->Stop();
+					}
+					
+					if (!tmp_staflos->isSleeping())
+					{
+						if (anim->HasFinished())
+							anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
+
+						if (mov->HasFinished())
+							mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+					}
+					else
+					{
+						int32_t dx = 0;
+						dx = link->GetSprite()->GetPosX() - tmp_staflos->GetSprite()->GetPosX();
+						if (std::abs(dx) < 96)
+						{
+							tmp_staflos->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+							tmp_staflos->SetSleeping(false);
+						}
+
+					}
+
+				}
+				else if (e.second->GetSprite()->GetTypeId() == "E_BOT")
+				{
+					Bot* tmp_bot = (Bot*)e.second;
+					MovingAnimator* jump = (MovingAnimator*)tmp_bot->GetAnimator("mov_jumping");
+					//ENGINE_TRACE(tmp_bot->GetJumpCooldown());
+
+					if (link->GetSprite()->GetPosX() < tmp_bot->GetSprite()->GetPosX())
+						tmp_bot->SetLookingAt("left");
+					else if (link->GetSprite()->GetPosX() > tmp_bot->GetSprite()->GetPosX())
+						tmp_bot->SetLookingAt("right");
+
+					if (anim->HasFinished())
+						anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
+
+
+					//if(mov->HasFinished())
+					//	mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+					//if(jump->HasFinished())
+					//	jump->Start((MovingAnimation*)e.second->GetAnimation("mov_jumping"), SystemClock::GetDeltaTime());
+				//	tmp_bot->SetJumpCooldown(1000);	
+				}
+				else if (e.second->GetSprite()->GetTypeId() == "E_GUMA")
+				{
+					if (e.second->GetSprite()->GetPosX() > e.second->GetMaxX())
+					{
+						e.second->SetLookingAt("left");
+					}
+					else if (e.second->GetSprite()->GetPosX() < e.second->GetMinX())
+					{
+						e.second->SetLookingAt("right");
+					}
+
+					if (anim->HasFinished())
+						anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
+
+					if (mov->HasFinished())
+						mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+				}
+
+				
 			}
 		}
 		else {
@@ -860,7 +994,17 @@ void Layer1::EnemyHandler()
 				}
 				else
 				{
-					i.second->TakeDamage(8);
+					if (i.second->GetSprite()->GetTypeId() != "E_STAFLOS")
+					{
+						i.second->TakeDamage(8);
+						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
+					}
+					else if (link->GetState() == "crouch_attack")
+					{
+						i.second->TakeDamage(8);
+						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
+					}
+
 				}
 
 				});
@@ -923,6 +1067,7 @@ void Layer1::DoorHandler()
 						anim->Stop();
 
 					i.second->SetState("open");
+					AudioManager::Get().PlaySound(m_sounds.at("door"));
 					anim->Start((FrameRangeAnimation*)i.second->GetAnimation("frame_open"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)i.second->GetAnimation("frame_open"))->GetStartFrame());
 				}
 				else
@@ -987,6 +1132,7 @@ void Layer1::CollectibleHandler()
 					{
 					case C_KEY: link->AddKey();
 								i->SetState("collected");
+								AudioManager::Get().PlaySound(m_sounds.at("key"));
 								break;
 
 					case C_REDPOTION: link->setMagicPoints(link->getMagicPoints() + link->redpotion.getValue());
@@ -1055,6 +1201,9 @@ bool Layer1::ElevatorMovement(Event& e)
 			currElevator->SetState("moving");
 			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 		}
+		
+		//PlayElevatorSound(this);
+
 	}
 	
 	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
@@ -1063,10 +1212,12 @@ bool Layer1::ElevatorMovement(Event& e)
 		if (event->GetKey() == InputKey::DOWN)
 		{
 			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Stop();
+			currElevator->SetState("idle");
 		}
 		else if (event->GetKey() == InputKey::UP)
 		{
 			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Stop();
+			currElevator->SetState("idle");
 		}
 	}
 
@@ -1090,7 +1241,6 @@ void Layer1::ElevatorHandler()
 		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 		{
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i, tmp](Sprite s1, Sprite s2) {
-				ENGINE_TRACE(i.second->GetSprite()->GetHashName());
 				i.second->SetState("Selected");
 				link_sprite->SetPos(link_sprite->GetPosX(), i.second->GetSprite()->GetPosY() + 16);
 			});

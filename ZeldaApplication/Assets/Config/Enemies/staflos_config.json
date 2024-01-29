@@ -3,133 +3,63 @@
   "data": [
     {
       "spawn_pos": {
-        "x": 140,
-        "y": 12
+        "x": 96,
+        "y": 4
       },
       "lookingAt": "right",
       "stage": 2,
       "min_x": 69,
-      "max_x": 207
+      "max_x": 166
     },
     {
       "spawn_pos": {
-        "x": 156,
-        "y": 12
+        "x": 255,
+        "y": 4
       },
       "lookingAt": "right",
       "stage": 2,
       "min_x": 69,
-      "max_x": 207
+      "max_x": 166
     },
     {
       "spawn_pos": {
-        "x": 176,
-        "y": 12
+        "x": 281,
+        "y": 4
       },
       "lookingAt": "left",
       "stage": 2,
-      "min_x": 69,
-      "max_x": 207
+      "min_x": 273,
+      "max_x": 336
     },
     {
       "spawn_pos": {
-        "x": 188,
-        "y": 12
+        "x": 330,
+        "y": 4
       },
       "lookingAt": "left",
       "stage": 2,
-      "min_x": 69,
-      "max_x": 207
+      "min_x": 273,
+      "max_x": 336
     },
     {
       "spawn_pos": {
-        "x": 215,
-        "y": 12
+        "x": 784,
+        "y": 4
       },
       "lookingAt": "left",
       "stage": 2,
-      "min_x": 210,
-      "max_x": 270
+      "min_x": 783,
+      "max_x": 787
     },
     {
       "spawn_pos": {
-        "x": 223,
-        "y": 12
+        "x": 796,
+        "y": 4
       },
       "lookingAt": "right",
       "stage": 2,
-      "min_x": 210,
-      "max_x": 270
-    },
-    {
-      "spawn_pos": {
-        "x": 230,
-        "y": 12
-      },
-      "lookingAt": "left",
-      "stage": 2,
-      "min_x": 210,
-      "max_x": 270
-    },
-    {
-      "spawn_pos": {
-        "x": 234,
-        "y": 12
-      },
-      "lookingAt": "right",
-      "stage": 2,
-      "min_x": 210,
-      "max_x": 270
-    },
-    {
-      "spawn_pos": {
-        "x": 245,
-        "y": 12
-      },
-      "lookingAt": "right",
-      "stage": 2,
-      "min_x": 210,
-      "max_x": 270
-    },
-    {
-      "spawn_pos": {
-        "x": 253,
-        "y": 12
-      },
-      "lookingAt": "left",
-      "stage": 2,
-      "min_x": 210,
-      "max_x": 270
-    },
-    {
-      "spawn_pos": {
-        "x": 608,
-        "y": 12
-      },
-      "lookingAt": "left",
-      "stage": 5,
-      "min_x": 591,
-      "max_x": 623
-    },
-    {
-      "spawn_pos": {
-        "x": 638,
-        "y": 6
-      },
-      "lookingAt": "left",
-      "stage": 5,
-      "min_x": 628,
-      "max_x": 644
-    },
-    {
-      "spawn_pos": {
-        "x": 703,
-        "y": 12
-      },
-      "lookingAt": "left",
-      "stage": 5,
-      "min_x": 672,
-      "max_x": 725
+      "min_x": 795,
+      "max_x": 798
     }
   ]
 }

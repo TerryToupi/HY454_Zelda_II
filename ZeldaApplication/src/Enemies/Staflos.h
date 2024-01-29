@@ -8,7 +8,11 @@ class Staflos : public Enemy {
 public:
     Staflos(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* _sheet, Ref<Scene> _scene);
     ~Staflos() = default;
-    void apearFromCeiling();
+    void SetSleeping(bool _sleeping);
+    bool isSleeping();
+
+private:
+    bool m_sleeping;
 
 };
 

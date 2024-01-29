@@ -6,7 +6,7 @@
 class Guma : public Enemy {
 
 public:
-    Guma();
+    Guma(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* _sheet, Ref<Scene> _scene);
     ~Guma() = default;
     void throwObject();
 };
