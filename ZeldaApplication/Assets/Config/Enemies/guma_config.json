@@ -1,135 +1,36 @@
 {
-   "name" : "wosu",
+   "name" : "guma",
 	"data": [
 		{
 			"spawn_pos": {
-				"x": 140,
+				"x": 732,
+				"y": 12
+			},
+			"lookingAt": "left",
+			"stage": 2,
+			"min_x": 730,
+			"max_x": 733
+		},
+		{
+			"spawn_pos": {
+				"x": 858,
+				"y": 12
+			},
+			"lookingAt": "left",
+			"stage": 2,
+			"min_x": 849,
+			"max_x": 867
+		},
+		{
+			"spawn_pos": {
+				"x": 400,
 				"y": 12
 			},
 			"lookingAt": "right",
 			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 156,
-				"y": 12
-			},
-			"lookingAt": "right",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 176,
-				"y": 12
-			},
-			"lookingAt": "left",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 188,
-				"y": 12
-			},
-			"lookingAt": "left",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 215,
-				"y": 12
-			},
-			"lookingAt": "left",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 223,
-				"y": 12
-			},
-			"lookingAt": "right",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 230,
-				"y": 12
-			},
-			"lookingAt": "left",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 234,
-				"y": 12
-			},
-			"lookingAt": "right",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 245,
-				"y": 12
-			},
-			"lookingAt": "right",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 253,
-				"y": 12
-			},
-			"lookingAt": "left",
-			"stage": 2,
-			"min_x": 69,
-			"max_x": 270
-		},
-		{
-			"spawn_pos": {
-				"x": 608,
-				"y": 12
-			},
-			"lookingAt": "left",
-			"stage": 5,
-			"min_x": 591,
-			"max_x": 623
-		},
-		{
-			"spawn_pos": {
-				"x": 638,
-				"y": 6
-			},
-			"lookingAt": "left",
-			"stage": 5,
-			"min_x": 628,
-			"max_x": 644
-		},
-		{
-			"spawn_pos": {
-				"x": 703,
-				"y": 12
-			},
-			"lookingAt": "left",
-			"stage": 5,
-			"min_x": 672,
-			"max_x": 725
+			"min_x": 390,
+			"max_x": 410
 		}
+
 	]
 }
