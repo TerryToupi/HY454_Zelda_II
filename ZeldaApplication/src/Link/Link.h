@@ -22,6 +22,7 @@ private:
     int m_maxHealth;
     int m_damage;
     int m_magicPoints;
+    int m_maxMagicPoints;
     int m_lives;
     int m_speed;
     int m_jumpingForce;
@@ -52,6 +53,7 @@ public:
     int getMaxHealth() const;
     int getDamage() const;
     int getMagicPoints() const;
+    int getMaxMagicPoints() const;
     int getLives() const;
     int getSpeed() const;
     int getJumpingForce() const;
@@ -64,6 +66,7 @@ public:
     void setMaxHealth(int newHealth);
     void setDamage(int newDamage);
     void setMagicPoints(int newMagicPoints);
+    void setMaxMagicPoints(int newMagicPoints);
     void setLives(int newLives);
     void setSpeed(int newLives);
     void setJumpingForce(int jumpingForce);
