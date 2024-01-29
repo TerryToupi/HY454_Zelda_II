@@ -15,6 +15,7 @@ Bot::Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* 
 	m_lookingAt = _direction;
 	m_sheet = _sheet;
 	m_scene = _scene;
+	m_jumpCooldown = 0;
 	EmplaceFilm("moving_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Great Palace Bot/slime_moving.json"));
 	EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Great Palace Bot/slime_moving.json"));
 	EmplaceFilm("death_", new AnimationFilm(m_sheet, "Assets/Config/Animations/Misc/single_damage.json"));
@@ -23,17 +24,25 @@ Bot::Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* 
 	EmplaceAnimation(new FrameRangeAnimation("frame_moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 150));
 
 	EmplaceAnimation(new FrameRangeAnimation("frame_death", 0, m_films["death_"]->GetTotalFrames(), 1, 300, 12 * 16, 50));
-	EmplaceAnimation(new MovingAnimation("mov_moving", 0, 0, 0, GetSpeed()));
+	EmplaceAnimation(new MovingAnimation("mov_moving", 4, 0, 0, GetSpeed()));
+	EmplaceAnimation(new MovingAnimation("mov_jumping", 10, 0, 0, 20));
 
 	EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
 
 	EmplaceAnimator("frame_animator", new FrameRangeAnimator());
+	EmplaceAnimator("mov_jumping", new MovingAnimator());
 	EmplaceAnimator("mov_moving", new MovingAnimator());
 	EmplaceAnimator("mov_gravity", new MovingAnimator());
 
 	InitializeAnimators();
 }
 
-void Bot::jump() {
+void Bot::SetJumpCooldown(uint32_t _cooldown) 
+{
+	m_jumpCooldown = _cooldown;
+}
 
+uint32_t Bot::GetJumpCooldown()
+{
+	return m_jumpCooldown;
 }

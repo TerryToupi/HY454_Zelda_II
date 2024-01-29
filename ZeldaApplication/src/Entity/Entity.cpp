@@ -142,6 +142,11 @@ void Entity::FrameRangeFinish()
 	else if(m_state == "moving")
 		m_Sprite->SetFrame(0);
 
+	if (m_state == "attacking")
+		m_state = "moving";
+	else if (m_state == "crouch_attack")
+		m_state = "crouch";
+
 
 	if (m_state == "death")
 	{ 

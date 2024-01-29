@@ -1,0 +1,13 @@
+{
+  "animation": "falling",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 157,
+      "y": 0,
+      "h": 32,
+      "w": 16
+    }
+  ]
+}
