@@ -1,8 +1,9 @@
 #pragma once 
 
 #include <Engine.h>
-#include "../Entity/Entity.h"
+#include "../Misc/Camera/Camera.h"
 #include "../Misc/Clouds/Cloud.h"
+
 #include "layer1.h"
 
 using namespace Engine; 
@@ -24,8 +25,8 @@ public:
 	void onDelete() override;
 	void onUpdate(Time ts) override; 
 	void onEvent(Event& e) override; 
-	bool MoveSky(Event& e);
-	bool StopSky(Event& e);
+	bool MoveSky(KeyTapEvent& e);
+	bool StopSky(KeyReleaseEvent& e);
 
 
 	/*----HANDLERS---*/
@@ -33,8 +34,7 @@ public:
 	void SpawnCloud();
 
 private:
-	Ref<MovingAnimator> m_CamLeft;
-	Ref<MovingAnimator> m_CamRight;
+	Camera* m_camera;
 
 	std::vector<uint32_t> m_cloudY;
 	std::vector<uint32_t> m_speeds;

@@ -78,10 +78,8 @@ void Layer0::onStart()
 	m_Scene = MakeReference<Scene>(0);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
 	clipper0 = Clipper0(m_Scene->GetTiles().get());
+	m_camera = new Camera(m_Scene);
 
-	m_CamLeft = MakeReference<MovingAnimator>();
-	m_CamRight = MakeReference <MovingAnimator>();
-	
 	InitializeCloudData();
 	InitializeClouds();
 
@@ -121,11 +119,37 @@ void Layer0::onUpdate(Time ts)
 
 void Layer0::onEvent(Event& e)
 {
-	/*EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer0::SkyForward));
-	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer0::SkyBackward));*/
+	EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer0::MoveSky));
+	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer0::StopSky));
 }
 
+bool Layer0::MoveSky(KeyTapEvent& e)
+{
+	MovingAnimator* mov = m_camera->GetAnimator();
+	if (e.GetKey() == InputKey::d)
+	{
+		m_camera->SetDirection("right");
+	}
+	else if (e.GetKey() == InputKey::a)
+	{
+		m_camera->SetDirection("left");
+	}
+
+	if (!mov->HasFinished())
+		mov->Stop();
+	mov->Start(m_camera->GetAnimation(), SystemClock::GetDeltaTime());
+
+	return true;
+}
+
+bool Layer0::StopSky(KeyReleaseEvent& e)
+{
+	if (!m_camera->GetAnimator()->HasFinished())
+		m_camera->GetAnimator()->Stop();
+
+	return true;
+}
 
 void Layer0::CloudHandler()
 {

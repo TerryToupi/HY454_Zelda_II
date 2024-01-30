@@ -505,13 +505,17 @@ void Layer1::CheckTimers(Time ts) {
 		}
 	}
 
+
 	for (auto e : m_enemies)
 	{
-		if (e.second->GetSprite()->GetHashName().find("Bot") != std::string::npos) 
+		if (e.second->GetSprite()->GetTypeId() == "E_BOT")
 		{
 			Bot* tmp = (Bot*)e.second;
 			if (tmp->GetJumpCooldown() != 0)
 				tmp->SetJumpCooldown(tmp->GetJumpCooldown() - ts);
+
+			if (tmp->GetJumpCooldown() < 0)
+				tmp->SetJumpCooldown(0);
 		}
 	}
 
@@ -615,209 +619,209 @@ void Layer1::onUpdate(Time ts)
 void Layer1::onEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::mover));
-	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer1::mover));
-	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::ElevatorMovement));
-	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer1::ElevatorMovement));
+	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::LinkStartAnimations));
+	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer1::LinkStopAnimations));
+	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer1::ElevatorStart));
+	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer1::ElevatorStop));
 }
 
-bool Layer1::mover(Event& e)
+bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 {
-	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
+	if (e.GetKey() == InputKey::d && !KeyboardInput::IsPressed(SCANCODE_S))
 	{
-		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
-		if (event->GetKey() == InputKey::d && !KeyboardInput::IsPressed(SCANCODE_S))
-		{
-			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-			if (!tmp->HasFinished())
-				tmp->Stop();
-			link->SetState("moving");
-			link->SetLookingAt("right");
-			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
-			((MovingAnimator*)link->GetAnimator("mov_moving"))->Start((MovingAnimation*)link->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
-			
-		}
-
-		if (event->GetKey() == InputKey::a && !KeyboardInput::IsPressed(SCANCODE_S))
-		{
-			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-			if (!tmp->HasFinished())
-				tmp->Stop();
-			link->SetState("moving");
-			link->SetLookingAt("left");
-			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"))->GetStartFrame());
-			
-			((MovingAnimator*)link->GetAnimator("mov_moving"))->Start((MovingAnimation*)link->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
-		}
+		FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+		if (!tmp->HasFinished())
+			tmp->Stop();
+		link->SetState("moving");
+		link->SetLookingAt("right");
+		tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
+		((MovingAnimator*)link->GetAnimator("mov_moving"))->Start((MovingAnimation*)link->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 		
-		if (event->GetKey() == InputKey::s && 
-			!KeyboardInput::IsPressed(SCANCODE_D) && 
-			!KeyboardInput::IsPressed(SCANCODE_A))
-		{
-			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
-			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
-			if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				if (!tmp->HasFinished())
-					tmp->Stop();
-				link->SetState("crouch");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
+	}
+		
+	if (e.GetKey() == InputKey::a && !KeyboardInput::IsPressed(SCANCODE_S))
+	{
+		FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+		if (!tmp->HasFinished())
+			tmp->Stop();
+		link->SetState("moving");
+		link->SetLookingAt("left");
+		tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"))->GetStartFrame());
+		
+		((MovingAnimator*)link->GetAnimator("mov_moving"))->Start((MovingAnimation*)link->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+	}
+	
+	if (e.GetKey() == InputKey::s && 
+		!KeyboardInput::IsPressed(SCANCODE_D) && 
+		!KeyboardInput::IsPressed(SCANCODE_A))
+	{
+		((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
+		((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
+		if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			link->SetState("crouch");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
 
-			}
-			else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				if (!tmp->HasFinished())
-					tmp->Stop();
-				link->SetState("crouch");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
-			}
 		}
+		else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			link->SetState("crouch");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_left"))->GetStartFrame());
+		}
+	}
 
-		if (event->GetKey() == InputKey::q)
-		{
-			link->setAttackingStateCoolDown(500);
+	if (e.GetKey() == InputKey::q)
+	{
+		link->setAttackingStateCoolDown(500);
 
-			if (link->GetLookingAt() == "right" && link->GetState() == "crouch") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				if (!tmp->HasFinished())
-					tmp->Stop();
-				link->SetState("crouch_attack");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"))->GetStartFrame());
+		if (link->GetLookingAt() == "right" && link->GetState() == "crouch") {
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			link->SetState("crouch_attack");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"))->GetStartFrame());
 
-			}
-			else if (link->GetLookingAt() == "left" && link->GetState() == "crouch") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				if (!tmp->HasFinished())
-					tmp->Stop();
-				link->SetState("crouch_attack");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
-
-			}
-			else if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				if (!tmp->HasFinished())
-					tmp->Stop();
-				link->SetState("attacking");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"))->GetStartFrame());
-				
-			}
-			else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-				if (!tmp->HasFinished())
-					tmp->Stop();
-				link->SetState("attacking");
-				tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"))->GetStartFrame());
+		}
+		else if (link->GetLookingAt() == "left" && link->GetState() == "crouch") {
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			link->SetState("crouch_attack");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
 
 			}
 			AudioManager::Get().PlaySound(m_sounds.at("attacking"));
 		}
-
-		if (event->GetKey() == InputKey::SPACE)
-		{
-			MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("mov_jumping");
-			tmp->Start((MovingAnimation*)link->GetAnimation("mov_jumping"), SystemClock::GetDeltaTime());
-			link->SetState("jumping");
+		else if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			link->SetState("attacking");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_right"))->GetStartFrame());
+			
 		}
+		else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			link->SetState("attacking");
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_attacking_left"))->GetStartFrame());
 
-		if (event->GetKey() == InputKey::NUM_1)
-		{
-
-			if (link->getMagicPoints() >= link->lifespell.getCost() && link->lifespell.canUse()) {
-				link->setMagicPoints(link->getMagicPoints() - link->lifespell.getCost());
-				link->heal(50);
-				link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
-				link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
-
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("frame_animator");
-				tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
-					((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
-
-			}
+			
 		}
+		AudioManager::Get().PlaySound(m_sounds.at("attacking"));
+	}
 
-		if (event->GetKey() == InputKey::NUM_2)
-		{
+	if (e.GetKey() == InputKey::SPACE)
+	{
+		MovingAnimator* tmp = (MovingAnimator*)link->GetAnimator("mov_jumping");
+		tmp->Start((MovingAnimation*)link->GetAnimation("mov_jumping"), SystemClock::GetDeltaTime());
+		link->SetState("jumping");
+	}
 
-			if (link->getMagicPoints() >= link->jumpspell.getCost() && link->jumpspell.canUse()) {
-				link->setMagicPoints(link->getMagicPoints() - link->jumpspell.getCost());
-				link->setJumpingForce(link->getJumpingForce() * 2);
-				link->jumpspell.setDurationRemainingTime(link->jumpspell.getDuration());
-				link->jumpspell.setCooldownRemainingTime(link->jumpspell.getCooldown());
+	if (e.GetKey() == InputKey::NUM_1)
+	{
 
-				link->EraseAnimation(link->jumpAnimation);
-				
-				link->jumpAnimation = new MovingAnimation("mov_jumping", link->getJumpingForce(), 0, 0, 12);
-				link->EmplaceAnimation(link->jumpAnimation);
-				
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->jumpspell.GetAnimator("frame_animator");
-				tmp->Start((FrameRangeAnimation*)link->jumpspell.GetAnimation("jumpspell_animation"), SystemClock::GetDeltaTime(),
-					((FrameRangeAnimation*)link->jumpspell.GetAnimation("jumpspell_animation"))->GetStartFrame());
-			}
+		if (link->getMagicPoints() >= link->lifespell.getCost() && link->lifespell.canUse()) {
+			link->setMagicPoints(link->getMagicPoints() - link->lifespell.getCost());
+			link->heal(50);
+			link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
+			link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
 
-		}
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("frame_animator");
+			tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
+				((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
 
-		if (event->GetKey() == InputKey::NUM_3)
-		{
-			if (link->getMagicPoints() >= link->shieldspell.getCost() && link->shieldspell.canUse()) {
-				link->setMagicPoints(link->getMagicPoints() - link->shieldspell.getCost());
-				link->shieldspell.setDurationRemainingTime(link->shieldspell.getDuration());
-				link->shieldspell.setCooldownRemainingTime(link->shieldspell.getCooldown());
-
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->shieldspell.GetAnimator("frame_animator");
-				tmp->Start((FrameRangeAnimation*)link->shieldspell.GetAnimation("shieldspell_animation"), SystemClock::GetDeltaTime(),
-					((FrameRangeAnimation*)link->shieldspell.GetAnimation("shieldspell_animation"))->GetStartFrame());
-			}
-		}
-
-		if (event->GetKey() == InputKey::NUM_4)
-		{
-			if (link->getMagicPoints() >= link->thunderspell.getCost() && link->thunderspell.canUse()) {
-
-				link->setMagicPoints(link->getMagicPoints() - link->thunderspell.getCost());
-				link->thunderspell.setDurationRemainingTime(link->thunderspell.getDuration());
-				link->thunderspell.setCooldownRemainingTime(link->thunderspell.getCooldown());
-
-				FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->thunderspell.GetAnimator("frame_animator");
-				tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
-					((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"))->GetStartFrame());
-			}
 		}
 	}
 
-	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
+	if (e.GetKey() == InputKey::NUM_2)
 	{
-		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
-		if (event->GetKey() == InputKey::d)
-		{
-			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
-			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
-			link->SetState("idle");
-		}
-		
-		if (event->GetKey() == InputKey::a)
-		{
-			((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
-			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
-			link->SetState("idle");
-		}
-		
-		if (event->GetKey() == InputKey::s)
-		{
-			if (!((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->HasFinished())
-				((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
 
-			if (link->GetLookingAt() == "right")
-			{
-				link->GetSprite()->SetFilm(link->GetFilm("moving_right"));
-			}
-			else if (link->GetLookingAt() == "left")
-			{
-				link->GetSprite()->SetFilm(link->GetFilm("moving_left"));
-			}
+		if (link->getMagicPoints() >= link->jumpspell.getCost() && link->jumpspell.canUse()) {
+			link->setMagicPoints(link->getMagicPoints() - link->jumpspell.getCost());
+			link->setJumpingForce(link->getJumpingForce() * 2);
+			link->jumpspell.setDurationRemainingTime(link->jumpspell.getDuration());
+			link->jumpspell.setCooldownRemainingTime(link->jumpspell.getCooldown());
 
-			link->GetSprite()->SetFrame(0);
-			link->SetState("idle");
+			link->EraseAnimation(link->jumpAnimation);
+			
+			link->jumpAnimation = new MovingAnimation("mov_jumping", link->getJumpingForce(), 0, 0, 12);
+			link->EmplaceAnimation(link->jumpAnimation);
+			
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->jumpspell.GetAnimator("frame_animator");
+			tmp->Start((FrameRangeAnimation*)link->jumpspell.GetAnimation("jumpspell_animation"), SystemClock::GetDeltaTime(),
+				((FrameRangeAnimation*)link->jumpspell.GetAnimation("jumpspell_animation"))->GetStartFrame());
 		}
+
+	}
+		
+	if (e.GetKey() == InputKey::NUM_3)
+	{
+		if (link->getMagicPoints() >= link->shieldspell.getCost() && link->shieldspell.canUse()) {
+			link->setMagicPoints(link->getMagicPoints() - link->shieldspell.getCost());
+			link->shieldspell.setDurationRemainingTime(link->shieldspell.getDuration());
+			link->shieldspell.setCooldownRemainingTime(link->shieldspell.getCooldown());
+
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->shieldspell.GetAnimator("frame_animator");
+			tmp->Start((FrameRangeAnimation*)link->shieldspell.GetAnimation("shieldspell_animation"), SystemClock::GetDeltaTime(),
+				((FrameRangeAnimation*)link->shieldspell.GetAnimation("shieldspell_animation"))->GetStartFrame());
+		}
+	}
+		
+	if (e.GetKey() == InputKey::NUM_4)
+	{
+		if (link->getMagicPoints() >= link->thunderspell.getCost() && link->thunderspell.canUse()) {
+
+			link->setMagicPoints(link->getMagicPoints() - link->thunderspell.getCost());
+			link->thunderspell.setDurationRemainingTime(link->thunderspell.getDuration());
+			link->thunderspell.setCooldownRemainingTime(link->thunderspell.getCooldown());
+
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->thunderspell.GetAnimator("frame_animator");
+			tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
+				((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"))->GetStartFrame());
+		}
+	}
+
+	return true;
+}
+
+bool Layer1::LinkStopAnimations(KeyReleaseEvent& e)
+{
+	if (e.GetKey() == InputKey::d)
+	{
+		((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
+		((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
+		link->SetState("idle");
+	}
+	
+	if (e.GetKey() == InputKey::a)
+	{
+		((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
+		((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
+		link->SetState("idle");
+	}
+	
+	if (e.GetKey() == InputKey::s)
+	{
+		if (!((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->HasFinished())
+			((FrameRangeAnimator*)link->GetAnimator("frame_animator"))->Stop();
+
+		if (link->GetLookingAt() == "right")
+		{
+			link->GetSprite()->SetFilm(link->GetFilm("moving_right"));
+		}
+		else if (link->GetLookingAt() == "left")
+		{
+			link->GetSprite()->SetFilm(link->GetFilm("moving_left"));
+		}
+
+		link->GetSprite()->SetFrame(0);
+		link->SetState("idle");
 	}
 
 	return true;
@@ -965,11 +969,13 @@ void Layer1::EnemyMovement() {
 						anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
 
 
-					//if(mov->HasFinished())
-					//	mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
-					//if(jump->HasFinished())
-					//	jump->Start((MovingAnimation*)e.second->GetAnimation("mov_jumping"), SystemClock::GetDeltaTime());
-				//	tmp_bot->SetJumpCooldown(1000);	
+					if(mov->HasFinished())
+						mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+					if (jump->HasFinished() && tmp_bot->GetJumpCooldown() == 0) {
+						jump->Start((MovingAnimation*)e.second->GetAnimation("mov_jumping"), SystemClock::GetDeltaTime());
+						tmp_bot->SetJumpCooldown(1000);
+					}
+	
 				}
 				else if (e.second->GetSprite()->GetTypeId() == "E_GUMA")
 				{
@@ -1071,6 +1077,15 @@ void Layer1::EnemyHandler()
 							m_Scene->GetTiles()->Scroll(dx, 0);
 					}
 
+					if (link->getHealth() <= 0) {
+						link->setHealth(link->getMaxHealth());
+
+						link->GetSprite()->SetPos(16 * 16, 10 * 16);
+						int32_t dx = (16 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+						m_currStage = 1;
+						if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+							m_Scene->GetTiles()->Scroll(dx, 0);
+					}
 				}
 				else
 				{
@@ -1079,7 +1094,7 @@ void Layer1::EnemyHandler()
 						i.second->TakeDamage(8);
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
 					}
-					else if (link->GetState() == "crouch_attack")
+					else if (link->GetState() == "crouch_attack" || (link->GetSprite()->GetPosY() == i.second->GetSprite()->GetPosY()) + 16)
 					{
 						i.second->TakeDamage(8);
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
@@ -1258,48 +1273,43 @@ void Layer1::CollectibleHandler()
 
 }
 
-bool Layer1::ElevatorMovement(Event& e)
+bool Layer1::ElevatorStart(KeyTapEvent& e)
 {
 	if (!currElevator)
 		return true;
 
-	if (KeyPressEvent::GetEventTypeStatic() == e.GetEventType())
+	if (e.GetKey() == InputKey::DOWN)
 	{
-		KeyTapEvent* event = dynamic_cast<KeyTapEvent*>(&e);
-
-
-		if (event->GetKey() == InputKey::DOWN)
-		{
-			ENGINE_TRACE("KATWWW");
-			currElevator->SetLookingAt("down");
-			currElevator->SetState("moving");
-			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
-		}
-		else if (event->GetKey() == InputKey::UP)
-		{
-			ENGINE_TRACE("PANWWW");
-			currElevator->SetLookingAt("up");
-			currElevator->SetState("moving");
-			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
-		}
-		
-		//PlayElevatorSound(this);
-
+		ENGINE_TRACE("KATWWW");
+		currElevator->SetLookingAt("down");
+		currElevator->SetState("moving");
+		((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 	}
-	
-	if (KeyReleaseEvent::GetEventTypeStatic() == e.GetEventType())
+	else if (e.GetKey() == InputKey::UP)
 	{
-		KeyReleaseEvent* event = dynamic_cast<KeyReleaseEvent*>(&e);
-		if (event->GetKey() == InputKey::DOWN)
-		{
-			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Stop();
-			currElevator->SetState("idle");
-		}
-		else if (event->GetKey() == InputKey::UP)
-		{
-			((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Stop();
-			currElevator->SetState("idle");
-		}
+		ENGINE_TRACE("PANWWW");
+		currElevator->SetLookingAt("up");
+		currElevator->SetState("moving");
+		((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+	}
+
+	return true;
+}
+
+bool Layer1::ElevatorStop(KeyReleaseEvent& e)
+{
+	if (!currElevator)
+		return true;
+
+	if (e.GetKey() == InputKey::DOWN)
+	{
+		((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Stop();
+		currElevator->SetState("idle");
+	}
+	else if (e.GetKey() == InputKey::UP)
+	{
+		((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Stop();
+		currElevator->SetState("idle");
 	}
 
 	return true;
