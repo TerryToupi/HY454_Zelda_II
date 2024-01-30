@@ -131,15 +131,17 @@ bool Layer0::MoveSky(KeyTapEvent& e)
 	if (e.GetKey() == InputKey::d)
 	{
 		m_camera->SetDirection("right");
+		if (!mov->HasFinished())
+			mov->Stop();
+		mov->Start(m_camera->GetAnimation(), SystemClock::GetDeltaTime());
 	}
 	else if (e.GetKey() == InputKey::a)
 	{
 		m_camera->SetDirection("left");
+		if (!mov->HasFinished())
+			mov->Stop();
+		mov->Start(m_camera->GetAnimation(), SystemClock::GetDeltaTime());
 	}
-
-	if (!mov->HasFinished())
-		mov->Stop();
-	mov->Start(m_camera->GetAnimation(), SystemClock::GetDeltaTime());
 
 	return true;
 }

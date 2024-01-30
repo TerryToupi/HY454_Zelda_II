@@ -352,7 +352,7 @@ void Layer1::InitializeDoors()
 		ID id = UUID::GenerateUUID();
 		m_doors.emplace(std::make_pair(i, new Door(i, m_sheets["door_sheet"], m_Scene)));
 		m_doors.at(i)->SetSprite(m_Scene->CreateSprite("Door" + std::to_string(id), d["spawn_pos"]["x"].get<uint32_t>() * 16, d["spawn_pos"]["y"].get<uint32_t>() * 16, m_doors.at(i)->GetFilm("open_"), ""));
-		m_doors.at(i)->GetSprite()->SetColiderBox(48, 16);
+		m_doors.at(i)->GetSprite()->SetColiderBox(7, 48);
 		i++;
 	}
 }
