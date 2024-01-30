@@ -2,7 +2,7 @@
 #include <algorithm>  
 #include <audio.h>
 
-#define MAX_AVAILABLE_AUDIO_DEVICES 8
+#define MAX_AVAILABLE_AUDIO_DEVICES 12
 
 namespace Engine
 {   
