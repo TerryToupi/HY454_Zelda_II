@@ -452,13 +452,17 @@ void Layer1::CheckTimers(Time ts) {
 	if(link->getAttackingStateCoolDown() == 0 && link->GetState() == "attacking")
 		link->SetState("moving");
 
+
 	for (auto e : m_enemies)
 	{
-		if (e.second->GetSprite()->GetHashName().find("Bot") != std::string::npos) 
+		if (e.second->GetSprite()->GetTypeId() == "E_BOT")
 		{
 			Bot* tmp = (Bot*)e.second;
 			if (tmp->GetJumpCooldown() != 0)
 				tmp->SetJumpCooldown(tmp->GetJumpCooldown() - ts);
+
+			if (tmp->GetJumpCooldown() < 0)
+				tmp->SetJumpCooldown(0);
 		}
 	}
 
@@ -913,11 +917,13 @@ void Layer1::EnemyMovement() {
 						anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
 
 
-					//if(mov->HasFinished())
-					//	mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
-					//if(jump->HasFinished())
-					//	jump->Start((MovingAnimation*)e.second->GetAnimation("mov_jumping"), SystemClock::GetDeltaTime());
-				//	tmp_bot->SetJumpCooldown(1000);	
+					if(mov->HasFinished())
+						mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+					if (jump->HasFinished() && tmp_bot->GetJumpCooldown() == 0) {
+						jump->Start((MovingAnimation*)e.second->GetAnimation("mov_jumping"), SystemClock::GetDeltaTime());
+						tmp_bot->SetJumpCooldown(1000);
+					}
+	
 				}
 				else if (e.second->GetSprite()->GetTypeId() == "E_GUMA")
 				{
@@ -1010,6 +1016,15 @@ void Layer1::EnemyHandler()
 					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
 					link->takeDamage(i.second->GetDamage());
 
+					if (link->getHealth() <= 0) {
+						link->setHealth(link->getMaxHealth());
+
+						link->GetSprite()->SetPos(16 * 16, 10 * 16);
+						int32_t dx = (16 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+						m_currStage = 1;
+						if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+							m_Scene->GetTiles()->Scroll(dx, 0);
+					}
 				}
 				else
 				{
@@ -1018,7 +1033,7 @@ void Layer1::EnemyHandler()
 						i.second->TakeDamage(8);
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
 					}
-					else if (link->GetState() == "crouch_attack")
+					else if (link->GetState() == "crouch_attack" || (link->GetSprite()->GetPosY() == i.second->GetSprite()->GetPosY()) + 16)
 					{
 						i.second->TakeDamage(8);
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));

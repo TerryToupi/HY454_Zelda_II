@@ -24,7 +24,7 @@ Bot::Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* 
 	EmplaceAnimation(new FrameRangeAnimation("frame_moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 150));
 
 	EmplaceAnimation(new FrameRangeAnimation("frame_death", 0, m_films["death_"]->GetTotalFrames(), 1, 300, 12 * 16, 50));
-	EmplaceAnimation(new MovingAnimation("mov_moving", 4, 0, 0, GetSpeed()));
+	EmplaceAnimation(new MovingAnimation("mov_moving", 4, 0, 0, GetSpeed() + 10));
 	EmplaceAnimation(new MovingAnimation("mov_jumping", 10, 0, 0, 20));
 
 	EmplaceAnimation(new MovingAnimation("mov_gravity", 0, 0, 0, 4));
@@ -37,12 +37,12 @@ Bot::Bot(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet* 
 	InitializeAnimators();
 }
 
-void Bot::SetJumpCooldown(uint32_t _cooldown) 
+void Bot::SetJumpCooldown(int32_t _cooldown) 
 {
 	m_jumpCooldown = _cooldown;
 }
 
-uint32_t Bot::GetJumpCooldown()
+int32_t Bot::GetJumpCooldown()
 {
 	return m_jumpCooldown;
 }
