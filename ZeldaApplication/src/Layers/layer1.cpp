@@ -62,7 +62,7 @@ void InitilizeLayer(Layer1* layer)
 	layer->InitializeDoors();
 	layer->InitializeStages();
 	layer->InitializeTeleports();
-
+	layer->InitializeBridge();
 }
 
 void PlayElevatorSound(Layer1* layer)
@@ -149,7 +149,7 @@ void Layer1::LoadSheets()
 	m_sheets.emplace(std::make_pair("door_sheet", new AnimationSheet("enemy_sheet", "Assets/AnimationFilms/door.bmp")));
 	m_sheets.emplace(std::make_pair("collectible_sheet", new AnimationSheet("collectible_sheet", "Assets/AnimationFilms/collectibles.bmp")));
 	m_sheets.emplace(std::make_pair("elevator_sheet", new AnimationSheet("elevator_sheet", "Assets/AnimationFilms/elevator.bmp")));
-
+	m_sheets.emplace(std::make_pair("block_sheet", new AnimationSheet("block_sheet", "Assets/AnimationFilms/block_film.bmp")));
 }
 
 void Layer1::InitializeEnemies(GridLayer *grid) 
@@ -333,11 +333,11 @@ void Layer1::DropCollectible(Enemy* enemy) {
 void Layer1::InitialiazeCollectibles()
 {
 	CreateCollectible("Assets/Config/Collectibles/key_config.json", "key", C_KEY);
-	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
-	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
-	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "extraLife", C_LINK);
-	CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
-	CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
+//	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
+//	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
+//	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "extraLife", C_LINK);
+//	CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
+//	CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
 }
 
 void Layer1::InitializeDoors()
@@ -364,6 +364,7 @@ void Layer1::InitializeAudio()
 	m_sounds.emplace(std::make_pair("enemy_damage", AudioManager::Get().LoadSound("Assets/Sounds/Enemies/enemy_damage.wav")));
 	m_sounds.emplace(std::make_pair("key", AudioManager::Get().LoadSound("Assets/Sounds/Misc/key_collected.wav")));
 	m_sounds.emplace(std::make_pair("elevator", AudioManager::Get().LoadSound("Assets/Sounds/Misc/elevator.wav")));
+	m_sounds.emplace(std::make_pair("block", AudioManager::Get().LoadSound("Assets/Sounds/Misc/block_breaking.wav")));
 }
 
 void Layer1::InitializeElevators(GridLayer* grid)
@@ -380,6 +381,18 @@ void Layer1::InitializeElevators(GridLayer* grid)
 		id++;
 	}
 
+}
+
+void Layer1::InitializeBridge()
+{
+	int index = 0;
+	for (int i = 471; i <= 503; i++)
+	{
+		m_blocks.push_back(new Block(i, m_sheets.at("block_sheet"), m_Scene));
+		m_blocks[index]->SetSprite(m_Scene->CreateSprite("Block" + std::to_string(i), i * 16, 8 * 16, m_blocks[index]->GetFilm("break_"), "S_BLOCK"));
+		m_blocks[index]->GetSprite()->SetColiderBox(16, 16);
+		index++;
+	}
 }
 
 void Layer1::ResetElevators()
@@ -521,6 +534,15 @@ void Layer1::CheckTimers(Time ts) {
 		}
 	}
 
+	for (auto b : m_blocks)
+	{
+		if (b->GetRespawnCooldown() != 0)
+			b->SetRespawnCooldown(b->GetRespawnCooldown() - ts);
+		
+		if (b->GetRespawnCooldown() < 0)
+			b->SetRespawnCooldown(0);
+	}
+
 
 }
 
@@ -605,6 +627,7 @@ void Layer1::onUpdate(Time ts)
 	EnemyHandler();
 	DoorHandler();
 	CollectibleHandler();
+	BridgeHandler();
 
 	ElevatorHandler();
 	SpellFollowLink();
@@ -1122,7 +1145,7 @@ void Layer1::EnemyHandler()
 						i.second->TakeDamage(8);
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
 					}
-					else if (link->GetState() == "crouch_attack" || (link->GetSprite()->GetPosY() == i.second->GetSprite()->GetPosY()) + 16)
+					else if (link->GetState() == "crouch_attack")
 					{
 						i.second->TakeDamage(8);
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
@@ -1371,4 +1394,43 @@ void Layer1::ElevatorHandler()
 	
 }
 
+void Layer1::BridgeHandler()
+{
+	Rect d1;
+	Rect d2;
+	Rect tmpBox;
+	Sprite link_sprite = link->GetSprite();
+	TileLayer* tilelayer = m_Scene->GetTiles().get();
 
+	for (auto i : m_blocks)
+	{
+		tmpBox = i->GetSprite()->GetBox();
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+		{
+			if (i->GetState() != "dead")
+			{
+				m_Scene->GetColider().Register(link_sprite, i->GetSprite(), [link_sprite, this, i](Sprite s1, Sprite s2) {
+					link_sprite->SetPos(link_sprite->GetPosX(), i->GetSprite()->GetPosY() - 32);
+					i->SetState("break");
+					FrameRangeAnimator* anim = (FrameRangeAnimator*)i->GetAnimator("frame_animator");
+					if (anim->HasFinished())
+					{
+						anim->Start((FrameRangeAnimation*)i->GetAnimation("frame_breaking"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)i->GetAnimation("frame_breaking"))->GetStartFrame());
+						i->SetRespawnCooldown(3000);
+						AudioManager::Get().PlaySound(m_sounds.at("block"));
+					}
+					});
+
+				m_Scene->GetColider().Check();
+				m_Scene->GetColider().Cancel(link_sprite, i->GetSprite());
+			}
+		}
+		
+		if (i->GetRespawnCooldown() == 0)
+		{
+			i->GetSprite()->SetFrame(0);
+			i->SetState("idle");
+		}
+	}
+
+}
