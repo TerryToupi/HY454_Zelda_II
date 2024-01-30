@@ -8,6 +8,7 @@
 #include "../Misc/Collectible/Collectinble.h"
 #include "../Misc/Elevator/Elevator.h"
 #include "../Misc/Block/Block.h"
+#include "../Flash/Flash.h"
 
 using json = nlohmann::json;
 using namespace Engine;
@@ -95,4 +96,6 @@ public:
     Doors m_doors;
     Elevators m_elevators;
     Blocks m_blocks;
+    Flash flash;
+    int waitTeleportCounter = 0;
 };

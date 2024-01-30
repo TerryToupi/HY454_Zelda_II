@@ -20,7 +20,8 @@ project "ZeldaApplication"
 
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.json}"
+		"%{IncludeDir.json}",
+		"%{IncludeDir.Music}"
 	}  
 
 	links 

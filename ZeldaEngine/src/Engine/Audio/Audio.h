@@ -19,17 +19,6 @@ namespace Engine
 		Uint8* wavBuffer;
 	}; 
 
-	struct MusicData
-	{
-		DeviceID id;
-		bool looping;
-		SDL_AudioSpec wavSpec;
-		Uint32 wavLength; 
-		Uint32 wavLengthConst;
-		Uint8* wavBuffer;
-		Uint8* wavBufferConst;
-	};
-
 	struct DeviceChain
 	{
 		Uint32 deviceID;
@@ -42,15 +31,15 @@ namespace Engine
 	{
 	public:		
 		using SoundStorage = std::unordered_map<AudioID, AudioData*>;
-		using MousicStorage = std::unordered_map<DeviceID, MusicData*>;
 
 	public: 
 		AudioID LoadSound(std::string _path);  
-		DeviceID InitMusicDevice(std::string _path, bool looping); 
-		void PauseMusicDevice(DeviceID _device, bool _v); 
-		void DeleteMusicAndDevice(DeviceID _device);
 		void PlaySound(AudioID _id); 
-		void DeleteSound(AudioID _id);
+		void DeleteSound(AudioID _id); 
+
+		void PlayMusic(std::string _path, int volume);
+		void PauseMusic(); 
+		void UnPauseMusic();
 
 		static auto Get(void) -> AudioManager& { return s_instance; } 
 		static auto GetConst(void) -> const AudioManager& { return s_instance; }  
@@ -66,7 +55,6 @@ namespace Engine
 
 	private:   
 		SoundStorage m_sounds; 
-		MousicStorage m_tracs;
 		DeviceChain* m_itr = nullptr; 
 		DeviceChain* m_head = nullptr; 
 

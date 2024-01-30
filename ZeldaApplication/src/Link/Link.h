@@ -49,6 +49,7 @@ public:
     StrongerPointBag strongerpointbag;
     ExtraLife extralife;
 
+
     int getHealth() const;
     int getMaxHealth() const;
     int getDamage() const;

@@ -57,6 +57,7 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     EmplaceAnimator("mov_moving", new MovingAnimator());
     EmplaceAnimator("mov_gravity", new MovingAnimator());
     EmplaceAnimator("mov_damage", new MovingAnimator());
+    EmplaceAnimator("flash_hide", new FlashHideAnimator());
 
     InitializeAnimators();  //initializes the onAction and OnFinish of all inserted animations in the entity
 }
