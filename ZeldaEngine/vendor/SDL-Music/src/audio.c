@@ -178,7 +178,7 @@ void initAudio(void)
     global->next = NULL;
 
     /* want.userdata = newAudio; */
-    if((gDevice->device = SDL_OpenAudioDevice(NULL, 0, &(gDevice->want), NULL, SDL_AUDIO_ALLOW_CHANGES)) == 0)
+    if((gDevice->device = SDL_OpenAudioDevice(NULL, 0, &(gDevice->want), NULL, 0)) == 0)
     {
         fprintf(stderr, "[%s: %d]Warning: failed to open audio device: %s\n", __FILE__, __LINE__, SDL_GetError());
     }
