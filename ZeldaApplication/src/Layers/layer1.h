@@ -7,6 +7,7 @@
 #include "../Misc/Door/Door.h"
 #include "../Misc/Collectible/Collectinble.h"
 #include "../Misc/Elevator/Elevator.h"
+#include "../Misc/Block/Block.h"
 
 using json = nlohmann::json;
 using namespace Engine;
@@ -39,6 +40,7 @@ public:
     using Doors = std::unordered_map<ID, Door*>;
     using Elevators = std::unordered_map<ID, Elevator*>;
     using Teleports = std::vector<Teleport>;
+    using Blocks = std::vector<Block*>;
 
     Layer1();
 
@@ -50,6 +52,7 @@ public:
     void InitialiazeCollectibles();
     void InitializeAudio();
     void InitializeElevators(GridLayer* grid);
+    void InitializeBridge();
     void LoadSheets();
     
     /*----LAYER FUNCTIONS----*/
@@ -57,7 +60,6 @@ public:
     void onDelete() override;
     void onUpdate(Time ts) override;
     void onEvent(Event& e) override;
-    //bool mover(Event& e);
     bool LinkStartAnimations(KeyTapEvent& e);
     bool LinkStopAnimations(KeyReleaseEvent& e);
     void EnemyMovement();
@@ -75,7 +77,8 @@ public:
     void DoorHandler();
     void CollectibleHandler();
     void ElevatorHandler();
-    void CreateCollectible(std::string json, std::string type, enum c_type);
+    void BridgeHandler();
+    void CreateCollectible(std::string jsonPath, std::string type, enum c_type cType);
     void DropCollectible(Enemy* enemy);
     void SpellFollowLink();
 
@@ -91,8 +94,5 @@ public:
     Collectibles m_collectibles;
     Doors m_doors;
     Elevators m_elevators;
-
-
-
-    Wosu* wosu;
+    Blocks m_blocks;
 };

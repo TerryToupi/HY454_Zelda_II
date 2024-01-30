@@ -156,6 +156,11 @@ void Entity::FrameRangeFinish()
 	{
 		m_Sprite->SetFrame(0);
 	}
+
+	if (m_state == "break")
+	{
+		m_state = "dead";
+	}
 }
 
 void Entity::FrameRangeAction(FrameRangeAnimator* animator)
