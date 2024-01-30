@@ -23,6 +23,7 @@ namespace Engine
 	{
 	public: 
 		using PauseAction = std::function<void(void)>; 
+		using FreezeAction = std::function<void(void)>;
 
 	public:
 		Application(const ApplicationConfig& config);
@@ -44,15 +45,18 @@ namespace Engine
 		void static popOverLay(Layer* overlay);  
 
 		static void SetOnPauseFunction(const PauseAction& f);
-		static void SetOnResumeFunction(const PauseAction& f);
+		static void SetOnResumeFunction(const PauseAction& f); 
+		static void SetOnFreezeFunction(const FreezeAction& f);
 
 		void Pause(Time t);
-		void Resume(void); 
+		void Resume(void);
+		void Freeze(void);
 
 		void Run();
 
 	protected:   
 		bool IsPaused(void);
+		bool IsFrozen(void);
 		Time GetPauseTime(void) const;
 	 
 		bool OnWindowClose(WindowCloseEvent& e); 
@@ -65,9 +69,11 @@ namespace Engine
 		Scope<Window> m_Window;  
 		PauseAction m_pauseFunction;  
 		PauseAction m_resumeFunction;
+		FreezeAction m_freezeFunction;
 		Time m_pauseTimestamp;
 		bool m_Running = false; 
 		bool m_isPaused = false;
+		bool m_frozen = false;
 
 	private: 
 		static Application* s_Instance; 

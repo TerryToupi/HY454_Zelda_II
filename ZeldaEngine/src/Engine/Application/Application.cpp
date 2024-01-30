@@ -119,7 +119,7 @@ namespace Engine {
 			Application::Instance().GetWindow().EventPolling();
 			KeyboardInput::UpdateKeyState(); 
 
-			if (!IsPaused())
+			if (!IsPaused() && !IsFrozen())
 			{
 				DestructionManager::Get().Commit();
 				for (auto layer = m_Layers.LayersFront(); layer != m_Layers.LayersBack(); layer++)
@@ -148,6 +148,11 @@ namespace Engine {
 		s_Instance->m_resumeFunction = f;
 	}
 
+	void Application::SetOnFreezeFunction(const FreezeAction& f)
+	{ 
+		s_Instance->m_freezeFunction = f;
+	}
+
 	void Application::Pause(Time t)
 	{ 
 		m_isPaused = true; 
@@ -163,9 +168,21 @@ namespace Engine {
 			m_resumeFunction(); 
 	}
 
+	void Application::Freeze(void)
+	{
+		m_frozen = true; 
+		if (m_freezeFunction)
+			m_freezeFunction();
+	}
+
 	bool Application::IsPaused(void)
 	{
 		return m_isPaused;
+	}
+
+	bool Application::IsFrozen(void)
+	{
+		return m_frozen;
 	}
 
 	Time Application::GetPauseTime(void) const
