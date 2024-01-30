@@ -46,11 +46,12 @@ namespace Engine
 		static void SetOnPauseFunction(const PauseAction& f);
 		static void SetOnResumeFunction(const PauseAction& f);
 
+		void Pause(Time t);
+		void Resume(void); 
+
 		void Run();
 
 	protected:   
-		void Pause(Time t);
-		void Resume(void);
 		bool IsPaused(void);
 		Time GetPauseTime(void) const;
 	 
