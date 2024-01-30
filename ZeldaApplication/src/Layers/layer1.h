@@ -57,9 +57,13 @@ public:
     void onDelete() override;
     void onUpdate(Time ts) override;
     void onEvent(Event& e) override;
-    bool mover(Event& e);
+    //bool mover(Event& e);
+    bool LinkStartAnimations(KeyTapEvent& e);
+    bool LinkStopAnimations(KeyReleaseEvent& e);
     void EnemyMovement();
     bool ElevatorMovement(Event& e);
+    bool ElevatorStart(KeyTapEvent& e);
+    bool ElevatorStop(KeyReleaseEvent& e);
  
  
     /*----HANDLERS---*/
