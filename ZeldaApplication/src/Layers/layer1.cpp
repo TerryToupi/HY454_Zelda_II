@@ -4,6 +4,8 @@ Clipper clipper;
 std::pair<int, int>* bounds;
 Elevator* currElevator;
 
+DeviceID backgroundMusic;
+
 SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite sprite, TileLayer* tiles, std::pair<int, int>* bounds) {
 	return [gridLayer, sprite, tiles, bounds](Rect& r, int* dx, int* dy) {
 		int windowX = tiles->GetViewWindow().x;
@@ -584,6 +586,8 @@ void Layer1::onStart()
 	InitializeEnemies(grid);
 	InitializeElevators(grid);
 
+	backgroundMusic = AudioManager::Get().InitMusicDevice("Assets/Sounds/Link/hitting.wav", true);
+	AudioManager::Get().PauseMusicDevice(backgroundMusic, false);
 
 }
 

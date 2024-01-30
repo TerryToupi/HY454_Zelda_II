@@ -105,7 +105,7 @@ namespace Engine
 		data->wavLengthConst = data->wavLength;
 		data->wavBufferConst = data->wavBuffer;
 		data->wavSpec.callback = callbackfun;
-		data->id = SDL_OpenAudioDevice(NULL, 0, &data->wavSpec, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE); 
+		data->id = SDL_OpenAudioDevice(NULL, 0, &data->wavSpec, NULL, 0); 
 		SDL_PauseAudioDevice(data->id, 1); 
 
 		m_tracs[data->id] = data;
