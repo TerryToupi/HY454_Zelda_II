@@ -586,8 +586,8 @@ void Layer1::onStart()
 	InitializeEnemies(grid);
 	InitializeElevators(grid);
 
-	backgroundMusic = AudioManager::Get().InitMusicDevice("Assets/Sounds/Link/hitting.wav", true);
-	AudioManager::Get().PauseMusicDevice(backgroundMusic, false);
+	//backgroundMusic = AudioManager::Get().InitMusicDevice("Assets/Sounds/Link/hitting.wav", true);
+	//AudioManager::Get().PauseMusicDevice(backgroundMusic, false);
 
 }
 
