@@ -83,9 +83,7 @@ void Layer0::onStart()
 	InitializeCloudData();
 	InitializeClouds();
 
-	AudioManager::Get().PlayMusic("Assets/Sounds/Background/background_music.wav", 3);
-
-
+	AudioManager::Get().PlayMusic("Assets/Sounds/Background/background_music.wav", 5);
 }
 
 void Layer0::onDelete()
