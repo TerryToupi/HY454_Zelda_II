@@ -15,11 +15,11 @@ namespace Engine
 		{ 
 			return;
 		} 
-		else if (music->wavLength == 0 && music->looping) 
-		{
-			music->wavBuffer = music->wavBufferConst; 
-			music->wavLength = music->wavLengthConst;
-		}
+		//else if (music->wavLength == 0 && music->looping) 
+		//{
+		//	music->wavBuffer = music->wavBufferConst; 
+		//	music->wavLength = music->wavLengthConst;
+		//}
 
 		Uint32 len = (Uint32)buffer_len; 
 		len = (len > music->wavLength ? music->wavLength : len);

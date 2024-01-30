@@ -696,7 +696,7 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 				tmp->Stop();
 			link->SetState("crouch_attack");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
-			
+
 			AudioManager::Get().PlaySound(m_sounds.at("attacking"));
 		}
 		else if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
