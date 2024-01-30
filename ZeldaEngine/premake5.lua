@@ -20,14 +20,16 @@ project "ZeldaEngine"
 		"vendor/spdlog/include",
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.json}"
+		"%{IncludeDir.json}",
+		"%{IncludeDir.Music}"
 	} 
 
 	links
 	{ 
 		 "SDL2",
 		 "Glad",
-		 "opengl32.lib"
+		 "opengl32.lib", 
+		 "SDL-Music"
 	}  
 
 	flags { "NoPCH" }

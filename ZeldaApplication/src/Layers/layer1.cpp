@@ -4,6 +4,8 @@ Clipper clipper;
 std::pair<int, int>* bounds;
 Elevator* currElevator;
 
+DeviceID backgroundMusic;
+
 SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite sprite, TileLayer* tiles, std::pair<int, int>* bounds) {
 	return [gridLayer, sprite, tiles, bounds](Rect& r, int* dx, int* dy) {
 		int windowX = tiles->GetViewWindow().x;
@@ -585,6 +587,8 @@ void Layer1::onStart()
 	InitializeEnemies(grid);
 	InitializeElevators(grid);
 
+	//backgroundMusic = AudioManager::Get().InitMusicDevice("Assets/Sounds/Link/hitting.wav", true);
+	//AudioManager::Get().PauseMusicDevice(backgroundMusic, false);
 
 }
 
@@ -660,7 +664,8 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 	{
 		((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
 		((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
-		if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
+		if (link->GetLookingAt() == "right" && link->GetState() != "attacking") 
+		{
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 			if (!tmp->HasFinished())
 				tmp->Stop();
@@ -668,7 +673,8 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_right"))->GetStartFrame());
 
 		}
-		else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") {
+		else if (link->GetLookingAt() == "left" && link->GetState() != "attacking") 
+		{
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 			if (!tmp->HasFinished())
 				tmp->Stop();
@@ -681,7 +687,8 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 	{
 		link->setAttackingStateCoolDown(500);
 
-		if (link->GetLookingAt() == "right" && link->GetState() == "crouch") {
+		if (link->GetLookingAt() == "right" && link->GetState() == "crouch") 
+		{
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 			if (!tmp->HasFinished())
 				tmp->Stop();
@@ -689,7 +696,8 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_right"))->GetStartFrame());
 
 		}
-		else if (link->GetLookingAt() == "left" && link->GetState() == "crouch") {
+		else if (link->GetLookingAt() == "left" && link->GetState() == "crouch") 
+		{
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 			if (!tmp->HasFinished())
 				tmp->Stop();
@@ -1185,17 +1193,15 @@ void Layer1::DoorHandler()
 					AudioManager::Get().PlaySound(m_sounds.at("door"));
 					anim->Start((FrameRangeAnimation*)i.second->GetAnimation("frame_open"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)i.second->GetAnimation("frame_open"))->GetStartFrame());
 				}
-				else
+
+				((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
+				if (link->GetLookingAt() == "left")
 				{
-					((MovingAnimator*)link->GetAnimator("mov_moving"))->Stop();
-					if (link->GetLookingAt() == "left")
-					{
-						link->GetSprite()->Move(+2, 0);
-					}
-					else if (link->GetLookingAt() == "right")
-					{
-						link->GetSprite()->Move(-2, 0);
-					}
+					link->GetSprite()->Move(+2, 0);
+				}
+				else if (link->GetLookingAt() == "right")
+				{
+					link->GetSprite()->Move(-2, 0);
 				}
 			});
 
@@ -1282,7 +1288,6 @@ void Layer1::CollectibleHandler()
 			}
 			cnt++;
 		}
-
 	}
 
 	if (collected) {
@@ -1340,7 +1345,6 @@ void Layer1::ElevatorHandler()
 	Rect d2;
 	Rect tmpBox = m_elevators.begin()->second->GetSprite()->GetBox();
 	Sprite link_sprite = link->GetSprite();
-//	Sprite stop_point = m_Scene->GetSprite("elevator_stop_point");
 	TileLayer* tilelayer = m_Scene->GetTiles().get();
 	
 	Elevator* tmp = nullptr;
