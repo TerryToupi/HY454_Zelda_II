@@ -8,6 +8,7 @@
 #include "../Misc/Collectible/Collectinble.h"
 #include "../Misc/Elevator/Elevator.h"
 #include "../Misc/Block/Block.h"
+#include "../Misc/Arrows/Arrow.h"
 #include "../Flash/Flash.h"
 
 using json = nlohmann::json;
@@ -42,6 +43,7 @@ public:
     using Elevators = std::unordered_map<ID, Elevator*>;
     using Teleports = std::vector<Teleport>;
     using Blocks = std::vector<Block*>;
+    using Arrows = std::unordered_map<ID, Arrow*>;
 
     Layer1();
 
@@ -67,6 +69,7 @@ public:
     void ResetElevators();
     bool ElevatorStart(KeyTapEvent& e);
     bool ElevatorStop(KeyReleaseEvent& e);
+    void SpawnArrow(std::string direction, uint32_t x, uint32_t y);
  
  
     /*----HANDLERS---*/
@@ -82,6 +85,7 @@ public:
     void CreateCollectible(std::string jsonPath, std::string type, enum c_type cType);
     void DropCollectible(Enemy* enemy);
     void SpellFollowLink();
+    void ArrowHandler();
 
 public:
     Link* link;                             // main character instance
@@ -96,6 +100,8 @@ public:
     Doors m_doors;
     Elevators m_elevators;
     Blocks m_blocks;
+    Arrows m_arrows;
+
     Flash flash;
     int waitTeleportCounter = 0;
 };

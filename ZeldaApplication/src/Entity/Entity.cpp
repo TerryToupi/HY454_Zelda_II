@@ -137,14 +137,16 @@ void Entity::FrameRangeStart(std::string name)
 
 void Entity::FrameRangeFinish()
 {
-	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attack"))
+	if (m_lookingAt == "left" && (m_state == "attacking" || m_state == "crouch_attack") && m_Sprite->GetTypeId() != "E_STAFLOS")
 		m_Sprite->SetPos(startX, startY);
 	else if(m_state == "moving")
 		m_Sprite->SetFrame(0);
 
 	if (m_state == "crouch_attack")
 		m_state = "crouch";
-
+	
+	if (m_Sprite->GetTypeId() == "E_STAFLOS" && m_state == "attacking")
+		m_state = "moving";
 
 	if (m_state == "death")
 	{ 

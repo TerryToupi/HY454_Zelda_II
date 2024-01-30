@@ -3,6 +3,7 @@
 Clipper clipper;
 std::pair<int, int>* bounds;
 Elevator* currElevator;
+GridLayer* gridlayer;
 
 DeviceID backgroundMusic;
 
@@ -249,35 +250,35 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 	}
 
 
-	//std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
-	//enemies = json::parse(gumaFile);
+	std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
+	enemies = json::parse(gumaFile);
 
-	//for (auto e : enemies["data"])
-	//{
-	//	ID id = UUID::GenerateUUID();
+	for (auto e : enemies["data"])
+	{
+		ID id = UUID::GenerateUUID();
 
-	//	m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
-	//	m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
-	//	m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
-	//	m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("falling"), "E_GUMA")));
-	//	m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
-	//	m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
-	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
-	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+		m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
+		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Guma" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_"+ e["lookingAt"].get<std::string>()), "E_GUMA")));
+		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
+		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
 
-	//	MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
-	//	MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
+		MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
+		MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
 
-	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
-	//		anim->Start(down, SystemClock::GetDeltaTime());
-	//		});
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+			anim->Start(down, SystemClock::GetDeltaTime());
+			});
 
-	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
-	//		anim->Stop();
-	//		});
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+			anim->Stop();
+			});
 
-	//	i++;
-	//}
+		i++;
+	}
 
 }
 
@@ -532,6 +533,25 @@ void Layer1::CheckTimers(Time ts) {
 			if (tmp->GetJumpCooldown() < 0)
 				tmp->SetJumpCooldown(0);
 		}
+		else if (e.second->GetSprite()->GetTypeId() == "E_STAFLOS")
+		{
+			Staflos* tmp = (Staflos*)e.second;
+			if (tmp->GetAttackCooldown() != 0)
+				tmp->SetAttackCooldown(tmp->GetAttackCooldown() - ts);
+
+			if (tmp->GetAttackCooldown() < 0)
+				tmp->SetAttackCooldown(0);
+
+		}
+		else if (e.second->GetSprite()->GetTypeId() == "E_GUMA")
+		{
+			Guma* tmp = (Guma*)e.second;
+			if (tmp->GetAttackCooldown() != 0)
+				tmp->SetAttackCooldown(tmp->GetAttackCooldown() - ts);
+
+			if (tmp->GetAttackCooldown() < 0)
+				tmp->SetAttackCooldown(0);
+		}
 	}
 
 	for (auto b : m_blocks)
@@ -591,6 +611,7 @@ void Layer1::onStart()
 	bounds = new std::pair<int, int>;
 	*bounds = m_stages.at(0);
 	GridLayer* grid = m_Scene->GetTiles()->GetGrid();
+	gridlayer = grid;
 	link->GetSprite()->SetMover(MakeSpriteGridLayerMoverLink(m_Scene->GetTiles()->GetGrid(), link->GetSprite(), (m_Scene.get()->GetTiles()).get(), bounds));
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	link->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
@@ -628,6 +649,7 @@ void Layer1::onUpdate(Time ts)
 	DoorHandler();
 	CollectibleHandler();
 	BridgeHandler();
+	ArrowHandler();
 
 	ElevatorHandler();
 	SpellFollowLink();
@@ -981,15 +1003,24 @@ void Layer1::EnemyMovement() {
 					}
 					else if (link->GetSprite()->GetPosX() > e.second->GetSprite()->GetPosX() && e.second->GetLookingAt() != "right")
 					{
-							e.second->SetLookingAt("right");
+						e.second->SetLookingAt("right");
 						anim->Stop();
 					}
 					
 					if (!tmp_staflos->isSleeping())
 					{
+						if (tmp_staflos->GetAttackCooldown() == 0)
+						{
+							ENGINE_TRACE("STAFLOS_ATTACK");
+							e.second->SetState("attacking");
+							tmp_staflos->SetAttackCooldown(3000);
+							anim->Stop();
+							anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_attacking_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_attacking_" + e.second->GetLookingAt()))->GetStartFrame());
+						}
+
 						if (anim->HasFinished())
 							anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
-
+						
 						if (mov->HasFinished())
 							mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 					}
@@ -1030,6 +1061,7 @@ void Layer1::EnemyMovement() {
 				}
 				else if (e.second->GetSprite()->GetTypeId() == "E_GUMA")
 				{
+					Guma* tmp_guma = (Guma*)e.second;
 					if (e.second->GetSprite()->GetPosX() > e.second->GetMaxX())
 					{
 						e.second->SetLookingAt("left");
@@ -1044,6 +1076,13 @@ void Layer1::EnemyMovement() {
 
 					if (mov->HasFinished())
 						mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+
+					if (tmp_guma->GetAttackCooldown() == 0)
+					{
+						ENGINE_TRACE("GUMA ATTACK");
+						tmp_guma->SetAttackCooldown(1500);
+						SpawnArrow(e.second->GetLookingAt(), e.second->GetSprite()->GetPosX(), e.second->GetSprite()->GetPosY());
+					}
 				}
 
 				
@@ -1434,3 +1473,84 @@ void Layer1::BridgeHandler()
 	}
 
 }
+
+void Layer1::SpawnArrow(std::string direction, uint32_t x, uint32_t y)
+{
+	uint32_t posX = 0;
+	if (direction == "right")
+	{
+		posX = x + 16;
+	}
+	else if (direction == "left")
+	{
+		posX = x - 16;
+	}
+
+	ID id = UUID::GenerateUUID();
+	m_arrows.emplace(std::make_pair(id, new Arrow(id, m_sheets.at("enemy_sheet"), m_Scene)));
+	m_arrows.at(id)->SetSprite(m_Scene->CreateSprite("Arrow" + std::to_string(id), posX, y, m_arrows.at(id)->GetFilm("arrow_" + direction), "W_ARROW"));
+	m_arrows.at(id)->GetSprite()->SetColiderBox(16, 16);
+	m_arrows.at(id)->GetSprite()->SetMover(MakeSpriteGridLayerMover(gridlayer, m_arrows.at(id)->GetSprite()));
+	m_arrows.at(id)->SetState("arrow");
+	m_arrows.at(id)->SetLookingAt(direction);
+}
+
+void Layer1::ArrowHandler()
+{
+	Rect d1;
+	Rect d2;
+	Rect tmpBox;
+	Sprite link_sprite = link->GetSprite();
+	TileLayer* tilelayer = m_Scene->GetTiles().get();
+
+	Arrow* dead = nullptr;
+	
+	if (!m_arrows.empty())
+	{
+		for (auto i : m_arrows)
+		{
+			MovingAnimator* mov = (MovingAnimator*)i.second->GetAnimator("mov_moving");
+			FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
+			
+
+			if (anim->HasFinished())
+				anim->Start((FrameRangeAnimation*)i.second->GetAnimation("frame_arrow_" + i.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)i.second->GetAnimation("frame_arrow_" + i.second->GetLookingAt()))->GetStartFrame());
+		
+			if (mov->HasFinished())
+				mov->Start((MovingAnimation*)i.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+		}
+
+		for (auto i : m_arrows)
+		{
+			tmpBox = i.second->GetSprite()->GetBox();
+			if (!clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+				dead = i.second;
+			else
+			{
+				m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i](Sprite s1, Sprite s2) {
+					i.second->SetState("dead");
+					MovingAnimator* mov = (MovingAnimator*)i.second->GetAnimator("mov_moving");
+					FrameRangeAnimator* anim = (FrameRangeAnimator*)i.second->GetAnimator("frame_animator");
+
+					if (!mov->HasFinished())
+						mov->Stop();
+					if (!anim->HasFinished())
+						anim->Stop();
+				});
+				m_Scene->GetColider().Check();
+				m_Scene->GetColider().Cancel(link_sprite, i.second->GetSprite());
+			}
+
+			if (i.second->GetState() == "dead")
+				dead = i.second;
+		}
+
+		if (dead)
+		{
+			dead->EntityDestroy();
+			m_arrows.erase(m_arrows.find(dead->GetID()));
+		}
+	}
+	
+}
+
