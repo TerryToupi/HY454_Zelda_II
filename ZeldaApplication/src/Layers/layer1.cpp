@@ -553,10 +553,11 @@ void Layer1::onStart()
 	link->jumpspell.SetSprite(m_Scene->CreateSprite("Jumpspell", 13 * 16, 10 * 16, link->jumpspell.GetFilm("jumpspell_"), ""));
 	link->jumpspell.GetSprite()->SetZorder(0);
 
-
-
 	link->thunderspell.SetSprite(m_Scene->CreateSprite("Thunderspell", 13 * 16, 10 * 16, link->thunderspell.GetFilm("thunderspell_"), ""));
 	link->thunderspell.GetSprite()->SetZorder(0);
+	
+	flash.SetSprite(m_Scene->CreateSprite("Flash", m_Scene->GetTiles()->GetViewWindow().x, 0, flash.GetFilm("flash_"), ""));
+	flash.GetSprite()->SetZorder(0);
 
 	Rect r = m_Scene->GetTiles()->GetViewWindow();
 	r.x = link->GetSprite()->GetPosX() - (r.w / 2);
@@ -595,7 +596,6 @@ void Layer1::onDelete()
 void Layer1::onUpdate(Time ts)
 {
 	*bounds = m_stages.at(m_currStage - 1);
-	ENGINE_TRACE(link->GetState());
 	TeleportHandler();
 	EnemyMovement();
 	EnemyHandler();
@@ -607,7 +607,10 @@ void Layer1::onUpdate(Time ts)
 
 	CheckTimers(ts);
 
-	
+	flash.GetSprite()->SetPos(m_Scene->GetTiles()->GetViewWindow().x, 0);
+	if (waitTeleportCounter < 15) {
+		waitTeleportCounter++;
+	}
 
 	Renderer::BeginScene(m_Scene);
 	Renderer::DisplaySceneTiles();
@@ -692,8 +695,6 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 				tmp->Stop();
 			link->SetState("crouch_attack");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
-
-			}
 			AudioManager::Get().PlaySound(m_sounds.at("attacking"));
 		}
 		else if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
@@ -787,6 +788,7 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 		}
 	}
 
+
 	return true;
 }
 
@@ -842,15 +844,25 @@ void Layer1::TeleportHandler()
 		{	
 			Sprite dest = i.dest;
 			m_Scene->GetColider().Register(link_sprite, i.origin, [link_sprite, dest, tilelayer, this, i](Sprite s1, Sprite s2) {
-				link_sprite->SetPos(dest->GetPosX(), dest->GetPosY()); 
-				m_currStage = i.stage;
-				ENGINE_TRACE(i.stage);
-				int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
-				ENGINE_TRACE("Teleport Pos: {0}, {1}", dest->GetPosX()/16, dest->GetPosY()/16);
-				if (tilelayer->CanScrollHoriz(dx))
-					tilelayer->Scroll(dx,0);
-				});
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)flash.GetAnimator("frame_animator");
+				if (tmp->HasFinished()) 
+				{
+					waitTeleportCounter = 0;
+					tmp->Start((FrameRangeAnimation*)flash.GetAnimation("flash_animation"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)flash.GetAnimation("flash_animation"))->GetStartFrame());
+				}
+				ENGINE_TRACE(waitTeleportCounter);
 
+				if (waitTeleportCounter == 12) {
+					link_sprite->SetPos(dest->GetPosX(), dest->GetPosY());
+					m_currStage = i.stage;
+					int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
+
+					if (tilelayer->CanScrollHoriz(dx))
+						tilelayer->Scroll(dx, 0);
+				}
+				
+			});
+			
 			m_Scene->GetColider().Check();
 			m_Scene->GetColider().Cancel(link_sprite, i.origin);
 		}
@@ -867,15 +879,24 @@ void Layer1::TeleportHandler()
 		{
 			Sprite dest = i.dest;
 			m_Scene->GetColider().Register(el_sprite, i.origin, [el_sprite, link_sprite, dest, tilelayer, this, i](Sprite s1, Sprite s2) {
-				el_sprite->SetPos(dest->GetPosX(), dest->GetPosY());
-				link_sprite->SetPos(dest->GetPosX() + 8, dest->GetPosY() + 16);
-				m_currStage = i.stage;
-				ENGINE_TRACE(i.stage);
-				int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
-				ENGINE_TRACE("Teleport Pos: {0}, {1}", dest->GetPosX() / 16, dest->GetPosY() / 16);
-				if (tilelayer->CanScrollHoriz(dx))
-					tilelayer->Scroll(dx, 0);
-				});
+				FrameRangeAnimator* tmp = (FrameRangeAnimator*)flash.GetAnimator("frame_animator");
+				if (tmp->HasFinished())
+				{
+					waitTeleportCounter = 0;
+					tmp->Start((FrameRangeAnimation*)flash.GetAnimation("flash_animation"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)flash.GetAnimation("flash_animation"))->GetStartFrame());
+				}
+				ENGINE_TRACE(waitTeleportCounter);
+
+				if (waitTeleportCounter == 15) {
+
+					el_sprite->SetPos(dest->GetPosX(), dest->GetPosY());
+					link_sprite->SetPos(dest->GetPosX() + 8, dest->GetPosY() + 16);
+					m_currStage = i.stage;
+					int32_t dx = dest->GetPosX() - tilelayer->GetViewWindow().x - (tilelayer->GetViewWindow().w / 2);
+					if (tilelayer->CanScrollHoriz(dx))
+						tilelayer->Scroll(dx, 0);
+				}
+			});
 
 			m_Scene->GetColider().Check();
 			m_Scene->GetColider().Cancel(el_sprite, i.origin);
@@ -958,7 +979,6 @@ void Layer1::EnemyMovement() {
 				{
 					Bot* tmp_bot = (Bot*)e.second;
 					MovingAnimator* jump = (MovingAnimator*)tmp_bot->GetAnimator("mov_jumping");
-					//ENGINE_TRACE(tmp_bot->GetJumpCooldown());
 
 					if (link->GetSprite()->GetPosX() < tmp_bot->GetSprite()->GetPosX())
 						tmp_bot->SetLookingAt("left");
@@ -1131,7 +1151,6 @@ void Layer1::EnemyHandler()
 
 	if (dying) {
 		DropCollectible(dying);
-		ENGINE_TRACE("{0},{1}:", dying->GetSprite()->GetHashName(), dying->GetID());
 		m_enemies.erase(m_enemies.find(dying->GetID()));
 	}
 

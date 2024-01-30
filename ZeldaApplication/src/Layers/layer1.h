@@ -7,6 +7,7 @@
 #include "../Misc/Door/Door.h"
 #include "../Misc/Collectible/Collectinble.h"
 #include "../Misc/Elevator/Elevator.h"
+#include "../Flash/Flash.h"
 
 using json = nlohmann::json;
 using namespace Engine;
@@ -91,8 +92,7 @@ public:
     Collectibles m_collectibles;
     Doors m_doors;
     Elevators m_elevators;
-
-
-
+    Flash flash;
+    int waitTeleportCounter = 0;
     Wosu* wosu;
 };
