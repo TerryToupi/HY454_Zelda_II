@@ -150,6 +150,7 @@ void Entity::FrameRangeFinish()
 
 	if (m_state == "death")
 	{ 
+		ENGINE_TRACE("DEAD");
 		EntityDestroy();
 	}
 
@@ -164,7 +165,6 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 	uint32_t currFrame = animator->GetCurrFrame();
 	std::string film = m_state + "_" + m_lookingAt;
 	
-	ENGINE_TRACE(currFrame);
 	m_Sprite->SetFrame(currFrame);
 
 	if ((m_state == "attacking" && currFrame == 2) ||

@@ -1,17 +1,23 @@
 #include "Layer0.h"
 
 #define THE_GREATES_MPAMPIS "Mpampis"
+Clipper clipper0;
+int32_t cloudTimer;
 
-uint32_t cloudTimer;
-//Clipper clipper;
-//
-//const Clipper InitClipper(TileLayer* layer)
-//{
-//	return Clipper().SetView(
-//		[layer](void) -> const Rect&
-//		{ return layer->GetViewWindow(); }
-//	);
-//}
+const Clipper Clipper0(TileLayer* layer)
+{
+	return Clipper().SetView(
+		[layer](void) -> const Rect&
+		{ return layer->GetViewWindow(); }
+	);
+}
+
+SpriteClass::Mover MakeCloudMover(Sprite sprite)
+{
+	return [sprite](Rect& r, int* dx, int* dy) {
+		sprite->SetHasDirectMotion(true).Move(*dx, 0).SetHasDirectMotion(false);
+	};
+}
 
 Layer0::Layer0()
 	: Layer("Layer0")
@@ -20,7 +26,7 @@ Layer0::Layer0()
 
 void Layer0::InitializeCloudData()
 {
-	std::ifstream cloudFile("Assets/Config/Clouds/cloud_config.json");
+	std::ifstream cloudFile("Assets/Config/Clouds/clouds_config.json");
 	json clouds = json::parse(cloudFile);
 	
 	for (auto i : clouds["speeds"])
@@ -36,124 +42,110 @@ void Layer0::InitializeClouds()
 	for (int i = 0; i < 3; i++)
 	{
 		id = UUID::GenerateUUID();
-		int num = id % 2;
+		int num = id % 2 + 1;
 		int speed = id % 3;
-		int y = id % 6;
+		int y = id % 4;
 		uint32_t posX = m_Scene->GetTiles()->GetViewWindow().x + m_Scene->GetTiles()->GetViewWindow().w - (2 * 16);
 		uint32_t posY = m_cloudY[y] * 16;
-		m_clouds.emplace(id, new Cloud(id, m_sheets.at("cloud_" + std::to_string(num)), m_Scene, num, speed));
+		m_clouds.emplace(id, new Cloud(id, m_sheets.at("cloud_" + std::to_string(num)), m_Scene, num, m_speeds[speed]));
 		m_clouds.at(id)->SetSprite(m_Scene->CreateSprite("cloud" + std::to_string(id), posX, posY, m_clouds.at(id)->GetFilm("cloud_film"), ""));
-
-		((MovingAnimator*)m_clouds.at(id)->GetAnimator("mov_moving"))->Start((MovingAnimation*)m_clouds.at(id)->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+		m_clouds.at(id)->GetSprite()->SetMover(MakeCloudMover(m_clouds.at(id)->GetSprite()));
 	}
-
-	cloudTimer = 2000;
+	cloudTimer = 3000;
 }
 
 void Layer0::SpawnCloud()
 {
 	ID id = UUID::GenerateUUID();
-	int num = id % 2;
+	int num = id % 2 + 1;
 	int speed = id % 3;
-	int y = id % 6;
-	id = UUID::GenerateUUID();
-	uint32_t posX = m_Scene->GetTiles()->GetViewWindow().x + m_Scene->GetTiles()->GetViewWindow().w - (2 * 16);
+	int y = id % 4;
+	uint32_t posX = m_Scene->GetTiles()->GetViewWindow().x + m_Scene->GetTiles()->GetViewWindow().w - 16;
 	uint32_t posY = m_cloudY[y] * 16;
-	m_clouds.emplace(id, new Cloud(id, m_sheets.at("cloud_" + std::to_string(num)), m_Scene, num, speed));
+	m_clouds.emplace(id, new Cloud(id, m_sheets.at("cloud_" + std::to_string(num)), m_Scene, num, m_speeds.at(speed)));
 	m_clouds.at(id)->SetSprite(m_Scene->CreateSprite("cloud" + std::to_string(id), posX, posY, m_clouds.at(id)->GetFilm("cloud_film"), ""));
+	m_clouds.at(id)->GetSprite()->SetMover(MakeCloudMover(m_clouds.at(id)->GetSprite()));
 
-	((MovingAnimator*)m_clouds.at(id)->GetAnimator("mov_moving"))->Start((MovingAnimation*)m_clouds.at(id)->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
-
+	cloudTimer = 3000;
 }
 
 void Layer0::onStart()
 {
-	m_sheets.emplace("cloud_0", new AnimationSheet("cloud_0", "Assets/AnimationFilms/cloud_1.bmp"));
-	m_sheets.emplace("cloud_1", new AnimationSheet("cloud_1", "Assets/AnimationFilms/cloud_2.bmp"));
+	m_sheets.emplace("cloud_1", new AnimationSheet("cloud_0", "Assets/AnimationFilms/cloud1.bmp"));
+	m_sheets.emplace("cloud_2", new AnimationSheet("cloud_1", "Assets/AnimationFilms/cloud2.bmp"));
 
-	cloudTimer = 0;
+
 	m_Scene = MakeReference<Scene>(0);
 	m_Scene->GetTiles()->LoadTiles("Assets/TileSet/Zelda-II-Parapa-Palace-Tileset.bmp");
-	//clipper = InitClipper(m_Scene->GetTiles().get());
+	clipper0 = Clipper0(m_Scene->GetTiles().get());
 
 	m_CamLeft = MakeReference<MovingAnimator>();
 	m_CamRight = MakeReference <MovingAnimator>();
+	
+	InitializeCloudData();
+	InitializeClouds();
+
 }
 
 void Layer0::onDelete()
 { 
 }
 
-void Layer0::move()
-{
-	float SPEED = 1;
-
-	if (KeyboardInput::IsPressed(SCANCODE_A))
-	{ 
-		if (m_Scene->GetTiles()->CanScrollHoriz(-SPEED))
-		{
-			m_Scene->GetTiles()->Scroll(-SPEED, 0); 
-		}
-	}  
-	else if (KeyboardInput::IsPressed(SCANCODE_W))
-	{ 
-		if (m_Scene->GetTiles()->CanScrollVert(-SPEED))
-			m_Scene->GetTiles()->Scroll(0, -SPEED);
-	}
-	else if (KeyboardInput::IsPressed(SCANCODE_D))
-	{ 
-		if (m_Scene->GetTiles()->CanScrollHoriz(+SPEED))
-		{ 
-			m_Scene->GetTiles()->Scroll(+SPEED, 0);
-		}
-	}
-	else if (KeyboardInput::IsPressed(SCANCODE_S))
-	{ 
-		if (m_Scene->GetTiles()->CanScrollVert(+SPEED))
-			m_Scene->GetTiles()->Scroll(0, +SPEED);
-	} 
-}
 
 void Layer0::onUpdate(Time ts)
 {  
-	curr = ts;
-	move(); 
-
-	if (cloudTimer > 0)
+	if (cloudTimer != 0)
 		cloudTimer -= ts;
 
-	//if (cloudTimer == 0)
-	//	SpawnCloud();
+	if (cloudTimer < 0)
+		cloudTimer = 0;
+
+	if (cloudTimer == 0)
+		SpawnCloud();
+
+	for (auto c : m_clouds)
+	{	
+		MovingAnimator* tmp = ((MovingAnimator*)c.second->GetAnimator("mov_moving"));
+		if (tmp->HasFinished())
+			tmp->Start((MovingAnimation*)c.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+	}
+
+	CloudHandler();
 
 	Renderer::BeginScene(m_Scene); 
 	Renderer::DisplaySceneTiles();
+	Renderer::DisplaySprites();
 	//Renderer::DebugDisplayGrid();
 	Renderer::EndScene();
 }
 
 void Layer0::onEvent(Event& e)
-{    
+{
+	EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer0::SkyForward));
+	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer0::SkyBackward));
 }
 
 
-//void Layer0::CloudHandler()
-//{
-//	Rect d1;
-//	Rect d2;
-//	Rect tmpBox = m_clouds.begin()->second->GetSprite()->GetBox();
-//
-//	Cloud* clipped = nullptr;
-//
-//	for (auto c : m_clouds)
-//	{
-//		if (!clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
-//			clipped = c.second;
-//	}
-//
-//	if (clipped)
-//	{
-//		((MovingAnimator*)clipped->GetAnimator("mov_moving"))->Stop();
-//		m_clouds.erase(m_clouds.find(clipped->GetID()));
-//		clipped->EntityDestroy();
-//	}
-//}
+void Layer0::CloudHandler()
+{
+	Rect d1;
+	Rect d2;
+	Rect tmpBox;
+
+	Cloud* clipped = nullptr;
+
+	for (auto c : m_clouds)
+	{
+		tmpBox = c.second->GetSprite()->GetBox();
+		if (!clipper0.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+			clipped = c.second;
+	}
+
+	if (clipped)
+	{
+		((MovingAnimator*)clipped->GetAnimator("mov_moving"))->Stop();
+		m_clouds.erase(m_clouds.find(clipped->GetID()));
+		clipped->EntityDestroy();
+	}
+}
