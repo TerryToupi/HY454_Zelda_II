@@ -121,9 +121,9 @@ void Layer0::onUpdate(Time ts)
 
 void Layer0::onEvent(Event& e)
 {
-	EventDispatcher dispatcher(e);
+	/*EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<KeyTapEvent>(APP_EVENT_FUNTION(Layer0::SkyForward));
-	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer0::SkyBackward));
+	dispatcher.Dispatch<KeyReleaseEvent>(APP_EVENT_FUNTION(Layer0::SkyBackward));*/
 }
 
 

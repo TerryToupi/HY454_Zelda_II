@@ -214,6 +214,7 @@ void Link::castSpell(int spellCost)
 void Link::loseLife() 
 {
     m_lives -= 1;
+
 }
 
 void Link::AddKey()

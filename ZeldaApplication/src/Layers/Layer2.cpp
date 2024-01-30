@@ -25,7 +25,8 @@ void Layer2::onStart()
 //	InitilizeLayer(this);
 //	LoadSheets();
 	m_sheet = new AnimationSheet("info_sheet", "Assets/AnimationFilms/overlay.bmp");
-	//m_film = new AnimationFilm(m_sheet, "Assets/Config/Animations/Info/life_100.json");
+	m_collectiblesSheet = new AnimationSheet("info_sheet", "Assets/AnimationFilms/collectibles.bmp");
+
 	for (int i = 0; i < 10; i++) {
 		m_numberfilm[i] = new AnimationFilm(m_sheet, "Assets/Config/Animations/Numbers/"+ std::to_string(i) +".json");
 	}
@@ -46,53 +47,67 @@ void Layer2::onStart()
 	m_thunderspellFilm[0] = new AnimationFilm(m_sheet, "Assets/Config/Animations/Info/thunderspellActive.json");
 	m_thunderspellFilm[1] = new AnimationFilm(m_sheet, "Assets/Config/Animations/Info/thunderspellNotActive.json");
 
+	m_keyFilm = new AnimationFilm(m_collectiblesSheet, "Assets/Config/Animations/Misc/key_film.json");
 
-	currHealthSprite = m_Scene->CreateSprite("healthBoxes", 1 * 16, 8, m_healthfilm[4], "");
-	//currHealthNumSprite[0] = m_Scene->CreateSprite("healthHundrends", 2 * 16 + 8, 8, m_numberfilm[1], "");
-	//currHealthNumSprite[1] = m_Scene->CreateSprite("healthTens", 3 * 16, 8, m_numberfilm[0], "");
-	//currHealthNumSprite[2] = m_Scene->CreateSprite("healthOnes", 3 * 16 + 8, 8, m_numberfilm[0], "");
 
-	currMagicSprite = m_Scene->CreateSprite("magicBoxes", 5 * 16, 8, m_magicpointfilm[4], "");
-	//currMagicNumSprite[0] = m_Scene->CreateSprite("hundrends", 7 * 16 + 12, 8, m_numberfilm[1], "");
-	//currMagicNumSprite[1] = m_Scene->CreateSprite("tens", 8 * 16 + 4, 8, m_numberfilm[0], "");
-	//currMagicNumSprite[2] = m_Scene->CreateSprite("ones", 8 * 16 + 12, 8, m_numberfilm[0], "");
+	currHealthSprite = m_Scene->CreateSprite("healthBoxes", 3 * 16, 8, m_healthfilm[4], "");
+	totalLivesSprite = m_Scene->CreateSprite("totalLives", 5 * 16 + 10, 8, m_numberfilm[layer1.link->getLives()], "");
+
+	currMagicSprite = m_Scene->CreateSprite("magicBoxes", 7 * 16, 8, m_magicpointfilm[4], "");
 
 	currLifeIconSprite = m_Scene->CreateSprite("lifeIcon", 13 * 16, 1, m_lifespellFilm[0], "");
 	currJumpIconSprite = m_Scene->CreateSprite("jumpIcon", 15 * 16, 1, m_jumpspellFilm[0], "");
 	currShieldIconSprite = m_Scene->CreateSprite("shieldIcon", 17 * 16, 1, m_shieldspellFilm[0], "");
 	currThunderIconSprite = m_Scene->CreateSprite("thunderIcon", 19 * 16, 1, m_thunderspellFilm[0], "");
 
+	totalKeysSprite = m_Scene->CreateSprite("totalKeys", 1 * 16, 12, m_numberfilm[layer1.link->getKeys()], "");
+	keySprite = m_Scene->CreateSprite("keyIcon", 1 * 16 + 4, 7, m_keyFilm, "");
+
+
 	currHealthNum = 0;
 	currMagicNum = 0;
-	currPointNum = layer1.link->getPoints();
+	currLives = 0;
+	currKeys = 0;
 }
 
 void Layer2::onUpdate(Time ts)
 {
 
+	if (currKeys != layer1.link->getKeys() && layer1.link->getKeys() >= 0) {
+		currKeys = layer1.link->getKeys();
+
+		if (m_Scene->HasSprite("totalKeys"))
+			m_Scene->RemoveSprite(totalKeysSprite);
+
+		totalKeysSprite = m_Scene->CreateSprite("totalKeys", 1 * 16, 12, m_numberfilm[currKeys], "");
+	}
+
+	if (currLives != layer1.link->getLives() && layer1.link->getLives() > 0) {
+		currLives = layer1.link->getLives();
+		
+		if (m_Scene->HasSprite("totalLives"))
+			m_Scene->RemoveSprite(totalLivesSprite);
+
+		totalLivesSprite = m_Scene->CreateSprite("totalLives", 5 * 16 + 10, 8, m_numberfilm[currLives], "");
+	}
+
 	if (currHealthNum != layer1.link->getHealth() && layer1.link->getHealth() > 0) {
 		currHealthNum = layer1.link->getHealth();
 		m_Scene->RemoveSprite(currHealthSprite);
 
+
 		if (currHealthNum > (layer1.link->getMaxHealth()/5) * 4 ) {
-			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 1 * 16, 8, m_healthfilm[4], "");
+			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 3 * 16, 8, m_healthfilm[4], "");
 		}else if (currHealthNum > (layer1.link->getMaxHealth() / 5) * 3) {
-			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 1 * 16, 8, m_healthfilm[3], "");
+			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 3 * 16, 8, m_healthfilm[3], "");
 		}else if (currHealthNum > (layer1.link->getMaxHealth() / 5) * 2) {
-			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 1 * 16, 8, m_healthfilm[2], "");
+			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 3 * 16, 8, m_healthfilm[2], "");
 		}else if(currHealthNum > (layer1.link->getMaxHealth() / 5) * 1){
-			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 1 * 16, 8, m_healthfilm[1], "");
+			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 3 * 16, 8, m_healthfilm[1], "");
 		}else if (currHealthNum > 0) {
-			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 1 * 16, 8, m_healthfilm[0], "");
+			currHealthSprite = m_Scene->CreateSprite("healthBoxes", 3 * 16, 8, m_healthfilm[0], "");
 		}
 
-
-		//m_Scene->RemoveSprite(currHealthNumSprite[0]);
-		//m_Scene->RemoveSprite(currHealthNumSprite[1]);
-		//m_Scene->RemoveSprite(currHealthNumSprite[2]);
-		//currHealthNumSprite[0] = m_Scene->CreateSprite("healthHundrends", 2 * 16 + 8, 8, m_numberfilm[currHealthNum / 100], "");
-		//currHealthNumSprite[1] = m_Scene->CreateSprite("healthTens", 3 * 16, 8, m_numberfilm[(currHealthNum %100 ) / 10], "");
-		//currHealthNumSprite[2] = m_Scene->CreateSprite("healthOnes", 3 * 16 + 8, 8, m_numberfilm[(currHealthNum % 10)], "");
 	}
 
 	if (currMagicNum != layer1.link->getMagicPoints() && layer1.link->getMagicPoints() > 0) {
@@ -100,27 +115,21 @@ void Layer2::onUpdate(Time ts)
 		m_Scene->RemoveSprite(currMagicSprite);
 
 		if (currMagicNum > (layer1.link->getMaxMagicPoints() / 5) * 4) {
-			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 5 * 16, 8, m_magicpointfilm[4], "");
+			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 7 * 16, 8, m_magicpointfilm[4], "");
 		}
 		else if (currMagicNum > (layer1.link->getMaxMagicPoints() / 5) * 3) {
-			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 5 * 16, 8, m_magicpointfilm[3], "");
+			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 7 * 16, 8, m_magicpointfilm[3], "");
 		}
 		else if (currMagicNum > (layer1.link->getMaxMagicPoints() / 5) * 2) {
-			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 5 * 16, 8, m_magicpointfilm[2], "");
+			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 7 * 16, 8, m_magicpointfilm[2], "");
 		}
 		else if (currMagicNum > (layer1.link->getMaxMagicPoints() / 5) * 1) {
-			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 5 * 16, 8, m_magicpointfilm[1], "");
+			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 7 * 16, 8, m_magicpointfilm[1], "");
 		}
 		else if (currMagicNum > 0) {
-			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 5 * 16, 8, m_magicpointfilm[0], "");
+			currMagicSprite = m_Scene->CreateSprite("magicBoxes", 7 * 16, 8, m_magicpointfilm[0], "");
 		}
 
-		//m_Scene->RemoveSprite(currMagicNumSprite[0]);
-		//m_Scene->RemoveSprite(currMagicNumSprite[1]);
-		//m_Scene->RemoveSprite(currMagicNumSprite[2]);
-		//currMagicNumSprite[0] = m_Scene->CreateSprite("hundrends", 7 * 16 + 12, 8, m_numberfilm[currMagicNum / 100], "");
-		//currMagicNumSprite[1] = m_Scene->CreateSprite("tens", 8 * 16 + 4, 8, m_numberfilm[(currMagicNum % 100) / 10], "");
-		//currMagicNumSprite[2] = m_Scene->CreateSprite("ones", 8 * 16 + 12, 8, m_numberfilm[(currMagicNum % 10)], "");
 	}
 
 	currLifeIconSprite = UpdateCooldowns("life", layer1.link->lifespell, lifespellDisabled, currLifeCooldown, currLifeIconSprite, m_lifespellFilm, 13);
@@ -149,6 +158,7 @@ Sprite Layer2::UpdateCooldowns(std::string type, Spell spell, bool &isDisabled, 
 		if (m_Scene->HasSprite(type + "Ones"))
 			m_Scene->RemoveSprite(cooldownSprite[1]);
 	}
+
 	if (isDisabled == true) {
 		if(m_Scene->HasSprite(type + "Tens"))
 			m_Scene->RemoveSprite(cooldownSprite[0]);

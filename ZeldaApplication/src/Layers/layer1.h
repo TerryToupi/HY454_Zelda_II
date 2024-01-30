@@ -60,6 +60,8 @@ public:
     bool mover(Event& e);
     void EnemyMovement();
     bool ElevatorMovement(Event& e);
+    void ResetElevators();
+
  
  
     /*----HANDLERS---*/
