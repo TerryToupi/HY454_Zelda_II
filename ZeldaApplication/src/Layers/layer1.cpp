@@ -380,6 +380,19 @@ void Layer1::InitializeElevators(GridLayer* grid)
 
 }
 
+void Layer1::ResetElevators()
+{
+	std::ifstream elevatorFile("Assets/Config/Elevator/elevator_config.json");
+	json elevators = json::parse(elevatorFile);
+	ID id = 0;
+	for (auto i : elevators["data"])
+	{
+		m_elevators.at(id)->GetSprite()->SetPos(i["spawn_pos"]["x"].get<uint32_t>() * 16, i["spawn_pos"]["y"].get<uint32_t>() * 16);
+		id++;
+	}
+
+}
+
 void Layer1::UpdateSpell(Spell& spell, Time ts) {
 	if (!spell.canUse()) {
 
@@ -444,13 +457,53 @@ void Layer1::CheckTimers(Time ts) {
 		link->setDamageCoolDown(link->getDamageCoolDown() - ts);
 	if (link->getDamageCoolDown() < 0)
 		link->setDamageCoolDown(0);
+	if (link->getDamageCoolDown() == 0 && link->GetState() == "damage_from") {
+
+		if (!KeyboardInput::IsPressed(SCANCODE_D) && !KeyboardInput::IsPressed(SCANCODE_A))
+			link->SetState("idle");
+		else if (KeyboardInput::IsPressed(SCANCODE_D)) {
+			link->SetState("moving");
+			link->SetLookingAt("right");
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
+		}
+		else if (KeyboardInput::IsPressed(SCANCODE_A)) {
+			link->SetState("moving");
+			link->SetLookingAt("left");
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"))->GetStartFrame());
+		}
+	}
 
 	if (link->getAttackingStateCoolDown() != 0)
 		link->setAttackingStateCoolDown(link->getAttackingStateCoolDown() - ts);
 	if (link->getAttackingStateCoolDown() < 0)
 		link->setAttackingStateCoolDown(0);
-	if(link->getAttackingStateCoolDown() == 0 && link->GetState() == "attacking")
-		link->SetState("moving");
+	if (link->getAttackingStateCoolDown() == 0 && link->GetState() == "attacking") {
+
+		if(!KeyboardInput::IsPressed(SCANCODE_D) && !KeyboardInput::IsPressed(SCANCODE_A))
+			link->SetState("idle");
+		else if(KeyboardInput::IsPressed(SCANCODE_D)){
+			link->SetState("moving");
+			link->SetLookingAt("right");
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_right"))->GetStartFrame());
+		}
+		else if (KeyboardInput::IsPressed(SCANCODE_A)) {
+			link->SetState("moving");
+			link->SetLookingAt("left");
+			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_moving_left"))->GetStartFrame());
+		}
+	}
 
 
 	for (auto e : m_enemies)
@@ -542,7 +595,7 @@ void Layer1::onDelete()
 void Layer1::onUpdate(Time ts)
 {
 	*bounds = m_stages.at(m_currStage - 1);
-	
+	ENGINE_TRACE(link->GetState());
 	TeleportHandler();
 	EnemyMovement();
 	EnemyHandler();
@@ -640,6 +693,8 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			link->SetState("crouch_attack");
 			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_crouch_attack_left"))->GetStartFrame());
 
+			}
+			AudioManager::Get().PlaySound(m_sounds.at("attacking"));
 		}
 		else if (link->GetLookingAt() == "right" && link->GetState() != "attacking") {
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
@@ -1012,6 +1067,15 @@ void Layer1::EnemyHandler()
 
 					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
 					link->takeDamage(i.second->GetDamage());
+					if (link->getHealth() <= 0) {
+						link->setHealth(link->getMaxHealth());
+						m_currStage = 1;
+						ResetElevators();
+						link->GetSprite()->SetPos(13 * 16, 10 * 16);
+						int32_t dx = (13 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+						if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+							m_Scene->GetTiles()->Scroll(dx, 0);
+					}
 
 					if (link->getHealth() <= 0) {
 						link->setHealth(link->getMaxHealth());

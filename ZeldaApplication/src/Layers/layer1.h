@@ -61,7 +61,7 @@ public:
     bool LinkStartAnimations(KeyTapEvent& e);
     bool LinkStopAnimations(KeyReleaseEvent& e);
     void EnemyMovement();
-    bool ElevatorMovement(Event& e);
+    void ResetElevators();
     bool ElevatorStart(KeyTapEvent& e);
     bool ElevatorStop(KeyReleaseEvent& e);
  
