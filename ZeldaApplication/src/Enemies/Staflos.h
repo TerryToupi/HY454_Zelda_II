@@ -11,8 +11,12 @@ public:
     void SetSleeping(bool _sleeping);
     bool isSleeping();
 
+    void SetAttackCooldown(int32_t _cooldown);
+    int32_t GetAttackCooldown();
+
 private:
     bool m_sleeping;
+    int32_t m_attackCooldown;
 
 };
 
