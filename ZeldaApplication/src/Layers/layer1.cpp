@@ -3,6 +3,7 @@
 Clipper clipper;
 std::pair<int, int>* bounds;
 Elevator* currElevator;
+GridLayer* gridlayer;
 
 DeviceID backgroundMusic;
 
@@ -27,7 +28,8 @@ SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite spr
 
 SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite) {
 	return [gridLayer, sprite](Rect& r, int* dx, int* dy) {
-		gridLayer->FilterGridMotion(r, dx, dy);
+		if (sprite->GetTypeId() != "W_ARROW")
+			gridLayer->FilterGridMotion(r, dx, dy);
 		if (*dx || *dy)
 		{
 			sprite->SetHasDirectMotion(true).Move(*dx, *dy).SetHasDirectMotion(false);
@@ -249,35 +251,37 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 	}
 
 
-	//std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
-	//enemies = json::parse(gumaFile);
+	std::ifstream gumaFile("Assets/Config/Enemies/guma_config.json");
+	enemies = json::parse(gumaFile);
 
-	//for (auto e : enemies["data"])
-	//{
-	//	ID id = UUID::GenerateUUID();
+	for (auto e : enemies["data"])
+	{
+		ID id = UUID::GenerateUUID();
 
-	//	m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
-	//	m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
-	//	m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
-	//	m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Staflos" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("falling"), "E_GUMA")));
-	//	m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
-	//	m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
-	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
-	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
+		m_enemies.emplace(std::make_pair(i, new Guma(i, e["lookingAt"].get<std::string>(), e["stage"].get<uint32_t>(), m_sheets["enemy_sheet"], m_Scene)));
+		m_enemies.at(i)->SetMaxX(e["max_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetMinX(e["min_x"].get<uint32_t>() * 16);
+		m_enemies.at(i)->SetSprite((m_Scene->CreateSprite("Guma" + std::to_string(id), e["spawn_pos"]["x"].get<uint32_t>() * 16, e["spawn_pos"]["y"].get<uint32_t>() * 16, m_enemies.at(i)->GetFilm("moving_"+ e["lookingAt"].get<std::string>()), "E_GUMA")));
+		m_enemies.at(i)->GetSprite()->SetColiderBox(16, 32);
+		m_enemies.at(i)->GetSprite()->SetMover(MakeSpriteGridLayerMover(m_Scene->GetTiles()->GetGrid(), m_enemies.at(i)->GetSprite()));
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
 
-	//	MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
-	//	MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
+		MovingAnimator* anim = (MovingAnimator*)m_enemies.at(i)->GetAnimator("mov_gravity");
+		MovingAnimation* down = (MovingAnimation*)m_enemies.at(i)->GetAnimation("mov_gravity");
 
-	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
-	//		anim->Start(down, SystemClock::GetDeltaTime());
-	//		});
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+			anim->Start(down, SystemClock::GetDeltaTime());
+			});
 
-	//	m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
-	//		anim->Stop();
-	//		});
+		m_enemies.at(i)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+			anim->Stop();
+			});
 
-	//	i++;
-	//}
+		i++;
+	}
+
+	//SpawnArrow();
 
 }
 
@@ -365,6 +369,12 @@ void Layer1::InitializeAudio()
 	m_sounds.emplace(std::make_pair("key", AudioManager::Get().LoadSound("Assets/Sounds/Misc/key_collected.wav")));
 	m_sounds.emplace(std::make_pair("elevator", AudioManager::Get().LoadSound("Assets/Sounds/Misc/elevator.wav")));
 	m_sounds.emplace(std::make_pair("block", AudioManager::Get().LoadSound("Assets/Sounds/Misc/block_breaking.wav")));
+	m_sounds.emplace(std::make_pair("link_damage", AudioManager::Get().LoadSound("Assets/Sounds/Link/receive_damage.wav")));
+	m_sounds.emplace(std::make_pair("collect", AudioManager::Get().LoadSound("Assets/Sounds/Link/pickup_item.wav")));
+	m_sounds.emplace(std::make_pair("jump_spell", AudioManager::Get().LoadSound("Assets/Sounds/Link/level_up.wav")));
+	m_sounds.emplace(std::make_pair("lost_life", AudioManager::Get().LoadSound("Assets/Sounds/Link/lost_life.wav")));
+	m_sounds.emplace(std::make_pair("level_complete", AudioManager::Get().LoadSound("Assets/Sounds/Link/level_complete.wav")));
+	m_sounds.emplace(std::make_pair("ultimate", AudioManager::Get().LoadSound("Assets/Sounds/Link/ulti.wav")));
 }
 
 void Layer1::InitializeElevators(GridLayer* grid)
@@ -393,6 +403,12 @@ void Layer1::InitializeBridge()
 		m_blocks[index]->GetSprite()->SetColiderBox(16, 16);
 		index++;
 	}
+
+	m_lava = m_Scene->CreateSprite("lava", 471, 8 * 16, NONPRINTABLE, "E_LAVA");
+	m_lava->SetColiderBox(35 * 16, 16);
+
+	m_end = m_Scene->CreateSprite("lava", 953, 12 * 16, NONPRINTABLE, "E_LAVA");
+	m_end->SetColiderBox(16, 32);
 }
 
 void Layer1::ResetElevators()
@@ -532,6 +548,25 @@ void Layer1::CheckTimers(Time ts) {
 			if (tmp->GetJumpCooldown() < 0)
 				tmp->SetJumpCooldown(0);
 		}
+		else if (e.second->GetSprite()->GetTypeId() == "E_STAFLOS")
+		{
+			Staflos* tmp = (Staflos*)e.second;
+			if (tmp->GetAttackCooldown() != 0)
+				tmp->SetAttackCooldown(tmp->GetAttackCooldown() - ts);
+
+			if (tmp->GetAttackCooldown() < 0)
+				tmp->SetAttackCooldown(0);
+
+		}
+		else if (e.second->GetSprite()->GetTypeId() == "E_GUMA")
+		{
+			Guma* tmp = (Guma*)e.second;
+			if (tmp->GetAttackCooldown() != 0)
+				tmp->SetAttackCooldown(tmp->GetAttackCooldown() - ts);
+
+			if (tmp->GetAttackCooldown() < 0)
+				tmp->SetAttackCooldown(0);
+		}
 	}
 
 	for (auto b : m_blocks)
@@ -591,6 +626,7 @@ void Layer1::onStart()
 	bounds = new std::pair<int, int>;
 	*bounds = m_stages.at(0);
 	GridLayer* grid = m_Scene->GetTiles()->GetGrid();
+	gridlayer = grid;
 	link->GetSprite()->SetMover(MakeSpriteGridLayerMoverLink(m_Scene->GetTiles()->GetGrid(), link->GetSprite(), (m_Scene.get()->GetTiles()).get(), bounds));
 	link->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
 	link->GetSprite()->GetGravityHandler().SetOnSolidGround([grid](Rect& r) { return grid->IsOnSolidGround(r); });
@@ -609,9 +645,6 @@ void Layer1::onStart()
 	InitializeEnemies(grid);
 	InitializeElevators(grid);
 
-	//backgroundMusic = AudioManager::Get().InitMusicDevice("Assets/Sounds/Link/hitting.wav", true);
-	//AudioManager::Get().PauseMusicDevice(backgroundMusic, false);
-
 }
 
 void Layer1::onDelete()
@@ -623,6 +656,7 @@ void Layer1::onUpdate(Time ts)
 {
 	*bounds = m_stages.at(m_currStage - 1);
 	TeleportHandler();
+	//ArrowHandler();
 	EnemyMovement();
 	EnemyHandler();
 	DoorHandler();
@@ -788,6 +822,8 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->jumpspell.GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->jumpspell.GetAnimation("jumpspell_animation"), SystemClock::GetDeltaTime(),
 				((FrameRangeAnimation*)link->jumpspell.GetAnimation("jumpspell_animation"))->GetStartFrame());
+
+			AudioManager::Get().PlaySound(m_sounds.at("jump_spell"));
 		}
 
 	}
@@ -808,7 +844,6 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 	if (e.GetKey() == InputKey::NUM_4)
 	{
 		if (link->getMagicPoints() >= link->thunderspell.getCost() && link->thunderspell.canUse()) {
-
 			link->setMagicPoints(link->getMagicPoints() - link->thunderspell.getCost());
 			link->thunderspell.setDurationRemainingTime(link->thunderspell.getDuration());
 			link->thunderspell.setCooldownRemainingTime(link->thunderspell.getCooldown());
@@ -816,6 +851,8 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->thunderspell.GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
 				((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"))->GetStartFrame());
+		
+			AudioManager::Get().PlaySound(m_sounds.at("ultimate"));
 		}
 	}
 
@@ -981,15 +1018,24 @@ void Layer1::EnemyMovement() {
 					}
 					else if (link->GetSprite()->GetPosX() > e.second->GetSprite()->GetPosX() && e.second->GetLookingAt() != "right")
 					{
-							e.second->SetLookingAt("right");
+						e.second->SetLookingAt("right");
 						anim->Stop();
 					}
 					
 					if (!tmp_staflos->isSleeping())
 					{
+						if (tmp_staflos->GetAttackCooldown() == 0)
+						{
+							ENGINE_TRACE("STAFLOS_ATTACK");
+							tmp_staflos->SetAttackCooldown(2000);
+							anim->Stop();
+							e.second->SetState("attacking");
+							anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_attacking_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_attacking_" + e.second->GetLookingAt()))->GetStartFrame());
+						}
+
 						if (anim->HasFinished())
 							anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_moving_" + e.second->GetLookingAt()))->GetStartFrame());
-
+						
 						if (mov->HasFinished())
 							mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 					}
@@ -1030,6 +1076,7 @@ void Layer1::EnemyMovement() {
 				}
 				else if (e.second->GetSprite()->GetTypeId() == "E_GUMA")
 				{
+					Guma* tmp_guma = (Guma*)e.second;
 					if (e.second->GetSprite()->GetPosX() > e.second->GetMaxX())
 					{
 						e.second->SetLookingAt("left");
@@ -1044,6 +1091,13 @@ void Layer1::EnemyMovement() {
 
 					if (mov->HasFinished())
 						mov->Start((MovingAnimation*)e.second->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+
+					if (tmp_guma->GetAttackCooldown() == 0)
+					{
+						ENGINE_TRACE("GUMA ATTACK");
+						tmp_guma->SetAttackCooldown(1000);
+						SpawnArrow(e.second->GetLookingAt(), e.second->GetSprite()->GetPosX(), e.second->GetSprite()->GetPosY());
+					}
 				}
 
 				
@@ -1084,6 +1138,7 @@ void Layer1::EnemyHandler()
 				{
 
 					link->setDamageCoolDown(500);
+					AudioManager::Get().PlaySound(m_sounds.at("link_damage"));
 					if (link->GetState() == "crouch")
 					{
 						if (link->GetLookingAt() == i.second->GetLookingAt())
@@ -1151,6 +1206,7 @@ void Layer1::EnemyHandler()
 						link->setHealth(link->getMaxHealth());
 
 						link->GetSprite()->SetPos(16 * 16, 10 * 16);
+						AudioManager::Get().PlaySound(m_sounds.at("lost_life"));
 						int32_t dx = (16 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
 						m_currStage = 1;
 						if (m_Scene->GetTiles()->CanScrollHoriz(dx))
@@ -1300,22 +1356,27 @@ void Layer1::CollectibleHandler()
 
 					case C_REDPOTION: link->setMagicPoints(link->getMagicPoints() + link->redpotion.getValue());
 									  i->SetState("collected");
+									  AudioManager::Get().PlaySound(m_sounds.at("collect"));
 									  break;
 
 					case C_BLUEPOTION:  link->setMagicPoints(link->getMagicPoints() + link->bluepotion.getValue());
 										i->SetState("collected");
+										AudioManager::Get().PlaySound(m_sounds.at("collect"));
 										break;
 					
 					case C_LINK: link->setLives(link->getLives() + link->extralife.getValue());
 								 i->SetState("collected");
+								 AudioManager::Get().PlaySound(m_sounds.at("collect"));
 								 break;
 
 					case C_BASICPOINTS:  link->setPoints(link->getPoints() + link->basicpointbag.getValue());
 										 i->SetState("collected");
+										 AudioManager::Get().PlaySound(m_sounds.at("collect"));
 										 break;
 
 					case C_STRONGERPOINTS:  link->setPoints(link->getPoints() + link->strongerpointbag.getValue());
 											i->SetState("collected");
+											AudioManager::Get().PlaySound(m_sounds.at("collect"));
 											break;
 					}
 				});
@@ -1450,6 +1511,68 @@ void Layer1::BridgeHandler()
 			i->GetSprite()->SetFrame(0);
 			i->SetState("idle");
 		}
+	}
+
+}
+
+void Layer1::SpawnArrow(std::string direction, uint32_t x, uint32_t y)
+{
+	uint32_t posX = 0;
+
+	if (direction == "right")
+	{
+		posX = x + 16;
+	}
+	else if (direction == "left")
+	{
+		posX = x - 16;
+	}	
+
+	ID id = UUID::GenerateUUID();
+	Arrow* tmp = new Arrow(id, m_sheets.at("enemy_sheet"), m_Scene);
+	tmp->SetSprite(m_Scene->CreateSprite("Arrow" + std::to_string(id), posX, y, tmp->GetFilm("arrow_" + direction), "W_ARROW"));
+	tmp->GetSprite()->SetColiderBox(16, 16);
+	tmp->GetSprite()->SetMover(MakeSpriteGridLayerMover(gridlayer, tmp->GetSprite()));
+	tmp->SetState("arrow");
+	tmp->SetLookingAt(direction);
+	
+	MovingAnimator* mov = (MovingAnimator*)tmp->GetAnimator("mov_moving");
+	FrameRangeAnimator* anim = (FrameRangeAnimator*)tmp->GetAnimator("frame_animator");
+
+	if (anim->HasFinished())
+		anim->Start((FrameRangeAnimation*)tmp->GetAnimation("frame_arrow_" + direction), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)tmp->GetAnimation("frame_arrow_" + direction))->GetStartFrame());
+
+	if (mov->HasFinished())
+		mov->Start((MovingAnimation*)tmp->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
+}
+
+void Layer1::ArrowHandler()
+{
+
+}
+void Layer1::WaypointHandler()
+{
+	Rect d1, d2;
+	Rect tmpBox = m_lava->GetBox();
+	Sprite link_sprite = link->GetSprite();
+	if (!clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+	{
+		m_Scene->GetColider().Register(link_sprite, m_lava, [this](Sprite s1, Sprite s2) {
+			link->setHealth(0);
+		});
+		m_Scene->GetColider().Check();
+		m_Scene->GetColider().Cancel(link_sprite, m_lava);
+	}
+	
+	tmpBox = m_end->GetBox();
+	if (!clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+	{
+		m_Scene->GetColider().Register(link_sprite, m_end, [this](Sprite s1, Sprite s2) {
+			AudioManager::Get().PlaySound(m_sounds.at("level_complete"));
+			//implemente freeze
+		});
+		m_Scene->GetColider().Check();
+		m_Scene->GetColider().Cancel(link_sprite, m_end);
 	}
 
 }

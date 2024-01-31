@@ -15,6 +15,7 @@ Guma::Guma(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet
 	m_lookingAt = _direction;
 	m_sheet = _sheet;
 	m_scene = _scene;
+	m_attackCooldown = 0;
 
 	EmplaceFilm("moving_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Guma/moving_left.json"));
 	EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Guma/moving_right.json"));
@@ -33,5 +34,12 @@ Guma::Guma(uint32_t _id, std::string _direction, uint32_t _stage, AnimationSheet
 	InitializeAnimators();
 }
 
-void Guma::throwObject() {
+int32_t Guma::GetAttackCooldown()
+{
+	return m_attackCooldown;
+}
+
+void Guma::SetAttackCooldown(int32_t _cooldown)
+{
+	m_attackCooldown = _cooldown;
 }
