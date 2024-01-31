@@ -30,8 +30,7 @@ private:
     int m_attackingStateCoolDown;
     int m_keys;
     int m_points;
-
-
+ 
 public:
     Link(AnimationSheet* _sheet, Ref<Scene> _scene);
     ~Link() = default;
@@ -49,6 +48,8 @@ public:
     StrongerPointBag strongerpointbag;
     ExtraLife extralife;
 
+    void SetKritikos(bool _kritikos);
+    bool IsKritikos();
 
     int getHealth() const;
     int getMaxHealth() const;

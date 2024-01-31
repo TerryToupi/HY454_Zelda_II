@@ -122,7 +122,11 @@ void Entity::LeftAttackPosUpdate(std::string name)
 void Entity::FrameRangeStart(std::string name) 
 {	
 	std::string film = m_state + "_" + m_lookingAt;
-	m_Sprite->SetFilm(m_films[film]);
+	if (m_kritikos)
+		m_Sprite->SetFilm(m_films["kritiko_" + film]);
+	else
+		m_Sprite->SetFilm(m_films[film]);
+	
 
 	startX = m_Sprite->GetPosX();
 	startY = m_Sprite->GetPosY();
@@ -170,7 +174,6 @@ void Entity::FrameRangeAction(FrameRangeAnimator* animator)
 {
 	uint32_t currFrame = animator->GetCurrFrame();
 	std::string film = m_state + "_" + m_lookingAt;
-	
 	m_Sprite->SetFrame(currFrame);
 
 	if ((m_state == "attacking" && currFrame == 2) ||

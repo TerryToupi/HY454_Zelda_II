@@ -9,8 +9,9 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     m_lookingAt = "right";
     m_state = "moving";
     m_scene = _scene;
-    m_keys = 0;
-
+    m_keys = 1;
+    m_kritikos = false;
+ 
     setMaxHealth(configVars["Link"]["HP"]);
     setHealth(configVars["Link"]["HP"]);
     setDamage(configVars["Link"]["Damage"]);
@@ -33,6 +34,19 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     EmplaceFilm("damage_from_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/damage_from_left.json"));
     EmplaceFilm("damage_from_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/damage_from_right.json"));
 
+    EmplaceFilm("kritiko_moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_moving_right.json"));
+    EmplaceFilm("kritiko_moving_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_moving_left.json"));
+    EmplaceFilm("kritiko_crouch_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_crouch_left.json"));
+    EmplaceFilm("kritiko_crouch_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_crouch_right.json"));
+    EmplaceFilm("kritiko_attacking_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_attacking_left.json"));
+    EmplaceFilm("kritiko_attacking_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_attacking_right.json"));
+    EmplaceFilm("kritiko_crouch_attack_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_crouch_attack_left.json"));
+    EmplaceFilm("kritiko_crouch_attack_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_crouch_attack_right.json"));
+    EmplaceFilm("kritiko_voskos_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/voskos.json"));
+    EmplaceFilm("kritiko_voskos_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/voskos.json"));
+
+    EmplaceAnimation(new FrameRangeAnimation("frame_voskos_left", 0, m_films["kritiko_voskos_left"]->GetTotalFrames(), 1, 300, 12 * 16, 50));
+    EmplaceAnimation(new FrameRangeAnimation("frame_voskos_right", 0, m_films["kritiko_voskos_right"]->GetTotalFrames(), 1, 300, 12 * 16, 50));
     EmplaceAnimation(new FrameRangeAnimation("frame_moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
     EmplaceAnimation(new FrameRangeAnimation("frame_moving_left", 0, m_films["moving_left"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_left", 0, m_films["crouch_left"]->GetTotalFrames(), 1, 0, 0, 50));
@@ -226,4 +240,14 @@ void Link::AddKey()
 void Link::RemoveKey()
 {
     m_keys--;
+}
+
+void Link::SetKritikos(bool _kritikos)
+{
+    m_kritikos = _kritikos;
+}
+
+bool Link::IsKritikos()
+{
+    return m_kritikos;
 }

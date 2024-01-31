@@ -1,0 +1,21 @@
+{
+  "animation": "kritiko_crouch_left",
+  "total_frames" : 2,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 128,
+      "y": 120,
+      "h": 32,
+      "w": 16
+    },
+    {
+      "frame": 2,
+      "x": 48,
+      "y": 160,
+      "h": 32,
+      "w": 16
+    }
+  ]
+}
+

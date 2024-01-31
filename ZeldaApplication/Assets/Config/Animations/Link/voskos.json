@@ -1,0 +1,12 @@
+{
+  "animation": "voskos",
+  "total_frames": 1,
+  "frames": [
+    {
+      "frame": 1,
+      "x": 128,
+      "y": 200,
+      "h": 32,
+      "w": 16
+    }  ]
+}
