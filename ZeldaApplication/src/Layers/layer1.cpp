@@ -310,6 +310,8 @@ void Layer1::DropCollectible(Enemy* enemy) {
 		return;
 	}
 
+	AudioManager::Get().PlaySound(m_sounds.at("itemdrop"));
+
 	c_type cType;
 	std::string type;
 
@@ -337,11 +339,12 @@ void Layer1::DropCollectible(Enemy* enemy) {
 void Layer1::InitialiazeCollectibles()
 {
 	CreateCollectible("Assets/Config/Collectibles/key_config.json", "key", C_KEY);
-//	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
-//	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
-//	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "extraLife", C_LINK);
-//	CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
-//	CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
+	
+	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
+	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
+	CreateCollectible("Assets/Config/Collectibles/extra_life_config.json", "extraLife", C_LINK);
+	//CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
+	//CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
 }
 
 void Layer1::InitializeDoors()
@@ -364,8 +367,10 @@ void Layer1::InitializeDoors()
 void Layer1::InitializeAudio()
 {	
 	m_sounds.emplace(std::make_pair("attacking", AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav")));
+	m_sounds.emplace(std::make_pair("gameover", AudioManager::Get().LoadSound("Assets/Sounds/Link/dead.wav")));
 	m_sounds.emplace(std::make_pair("healing", AudioManager::Get().LoadSound("Assets/Sounds/Link/healing.wav")));
 	m_sounds.emplace(std::make_pair("shield", AudioManager::Get().LoadSound("Assets/Sounds/Link/shield.wav")));
+	m_sounds.emplace(std::make_pair("itemdrop", AudioManager::Get().LoadSound("Assets/Sounds/Link/item_drop.wav")));
 	m_sounds.emplace(std::make_pair("door", AudioManager::Get().LoadSound("Assets/Sounds/Misc/door_opening.wav")));
 	m_sounds.emplace(std::make_pair("enemy_damage", AudioManager::Get().LoadSound("Assets/Sounds/Enemies/enemy_damage.wav")));
 	m_sounds.emplace(std::make_pair("key", AudioManager::Get().LoadSound("Assets/Sounds/Misc/key_collected.wav")));
@@ -374,7 +379,7 @@ void Layer1::InitializeAudio()
 	m_sounds.emplace(std::make_pair("link_damage", AudioManager::Get().LoadSound("Assets/Sounds/Link/receive_damage.wav")));
 	m_sounds.emplace(std::make_pair("collect", AudioManager::Get().LoadSound("Assets/Sounds/Link/pickup_item.wav")));
 	m_sounds.emplace(std::make_pair("jump_spell", AudioManager::Get().LoadSound("Assets/Sounds/Link/level_up.wav")));
-	m_sounds.emplace(std::make_pair("lost_life", AudioManager::Get().LoadSound("Assets/Sounds/Link/lost_life.wav")));
+	m_sounds.emplace(std::make_pair("respawn", AudioManager::Get().LoadSound("Assets/Sounds/Link/lost_life.wav")));
 	m_sounds.emplace(std::make_pair("level_complete", AudioManager::Get().LoadSound("Assets/Sounds/Link/level_complete.wav")));
 	m_sounds.emplace(std::make_pair("ultimate", AudioManager::Get().LoadSound("Assets/Sounds/Link/ulti.wav")));
 }
@@ -1181,31 +1186,41 @@ void Layer1::EnemyHandler()
 
 					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
 					link->takeDamage(i.second->GetDamage());
-					if (link->getHealth() <= 0) {
+					if (link->getHealth() <= 0) 
+					{
 						link->setHealth(link->getMaxHealth());
-						ResetElevators();
-						ENGINE_TRACE(m_currStage);
-						if (m_currStage == 3 || m_currStage == 4) {
-							link->GetSprite()->SetPos(262 * 16, 12 * 16);
-							int32_t dx = (262 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 2;
-						}
-						else if (m_currStage == 5 || m_currStage == 6 || m_currStage == 7 || m_currStage == 8) {
-							link->GetSprite()->SetPos(351 * 16, 12 * 16);
-							int32_t dx = (351 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 2;
 
+						if (link->getLives() == 0) {
+							AudioManager::Get().PlaySound(m_sounds.at("gameover"));
+							Application::Instance().Freeze();
 						}
-						else {
-							link->GetSprite()->SetPos(13 * 16, 10 * 16);
-							int32_t dx = (13 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 1;
+						else 
+						{
+							AudioManager::Get().PlaySound(m_sounds.at("respawn"));
+							ResetElevators();
+							ENGINE_TRACE(m_currStage);
+							if (m_currStage == 3 || m_currStage == 4) {
+								link->GetSprite()->SetPos(262 * 16, 12 * 16);
+								int32_t dx = (262 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 2;
+							}
+							else if (m_currStage == 5 || m_currStage == 6 || m_currStage == 7 || m_currStage == 8) {
+								link->GetSprite()->SetPos(351 * 16, 12 * 16);
+								int32_t dx = (351 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 2;
+
+							}
+							else {
+								link->GetSprite()->SetPos(13 * 16, 10 * 16);
+								int32_t dx = (13 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 1;
+							}
 						}
 						
 					}
