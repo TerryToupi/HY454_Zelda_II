@@ -48,6 +48,8 @@ public:
     StrongerPointBag strongerpointbag;
     ExtraLife extralife;
 
+    void SetKritikos(bool _kritikos);
+    bool IsKritikos();
 
     int getHealth() const;
     int getMaxHealth() const;

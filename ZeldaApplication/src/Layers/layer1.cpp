@@ -83,6 +83,61 @@ void PlayElevatorSound(Layer1* layer)
 	return;
 }
 
+void ArrowFrameRangeStart(Layer1* layer, Arrow* arrow)
+{
+	std::string film = arrow->GetState() + "_" + arrow->GetLookingAt();
+	arrow->GetSprite()->SetFilm(arrow->GetFilm(film));
+
+	layer->m_Scene->GetColider().Register(layer->link->GetSprite(), arrow->GetSprite(), [layer, arrow](Sprite s1, Sprite s2) {
+		
+		if (!arrow->IsCollided())
+		{
+			FrameRangeAnimator* anim = (FrameRangeAnimator*)layer->link->GetAnimator("frame_animator");
+
+			MovingAnimator* mov = (MovingAnimator*)layer->link->GetAnimator("mov_damage");
+			AudioManager::Get().PlaySound(layer->m_sounds.at("link_damage"));
+
+			if (!anim->HasFinished())
+				anim->Stop();
+
+			if (!mov->HasFinished())
+				mov->Stop();
+
+			layer->link->SetState("damage_from");
+
+			mov->Start((MovingAnimation*)layer->link->GetAnimation("mov_damage"), SystemClock::GetDeltaTime());
+			anim->Start((FrameRangeAnimation*)layer->link->GetAnimation("frame_damage_from_" + layer->link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)layer->link->GetAnimation("frame_damage_from_" + layer->link->GetLookingAt()))->GetStartFrame());
+			layer->link->takeDamage(5);
+
+			arrow->SetCollided(true);
+		}
+	});
+}
+
+void ArrowFrameRangeAction(Layer1* layer, Arrow* arrow, FrameRangeAnimator* animator)
+{
+	Rect d1, d2;
+	Rect tmpBox = arrow->GetSprite()->GetBox();
+	MovingAnimator* mov = (MovingAnimator*)arrow->GetAnimator("mov_moving");
+	uint32_t currFrame = animator->GetCurrFrame();
+	arrow->GetSprite()->SetFrame(currFrame);
+	
+	if (!clipper.Clip(tmpBox, layer->m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+	{
+		mov->Stop();
+		animator->Stop();
+	}
+	
+	layer->m_Scene->GetColider().Check();
+}
+
+void ArrowFrameRangeFinish(Layer1* layer, Arrow* arrow)
+{
+	layer->m_Scene->GetColider().Cancel(layer->link->GetSprite(), arrow->GetSprite());
+	arrow->EntityDestroy();
+}
+
+
 Layer1::Layer1()
 	: Layer("Layer1")
 {
@@ -281,7 +336,6 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 		i++;
 	}
 
-	//SpawnArrow();
 
 }
 
@@ -411,10 +465,10 @@ void Layer1::InitializeBridge()
 		index++;
 	}
 
-	m_lava = m_Scene->CreateSprite("lava", 471, 8 * 16, NONPRINTABLE, "E_LAVA");
+	m_lava = m_Scene->CreateSprite("lava", 471 * 16, 15 * 16, NONPRINTABLE, "E_LAVA");
 	m_lava->SetColiderBox(35 * 16, 16);
 
-	m_end = m_Scene->CreateSprite("lava", 953, 12 * 16, NONPRINTABLE, "E_LAVA");
+	m_end = m_Scene->CreateSprite("end", 953 * 16, 12 * 16, NONPRINTABLE, "E_END");
 	m_end->SetColiderBox(16, 32);
 }
 
@@ -443,7 +497,8 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 
 			//ENGINE_TRACE(spell.getCooldownRemainingTime());
 		}
-		else {
+		else 
+		{
 			spell.setDurationRemainingTime(spell.getDurationRemainingTime() - ts);
 
 			if (spell.getDurationRemainingTime() <= 0) {
@@ -459,7 +514,11 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 				if (spell.getType() == "shieldspell") {
 					link->shieldspell.GetAnimator("frame_animator")->Stop();
 				}
+
 			}
+			
+			if (!link->thunderspell.isActive())
+				link->SetKritikos(false);
 
 			//ENGINE_TRACE(spell.getDurationRemainingTime());
 		}
@@ -677,6 +736,7 @@ void Layer1::onUpdate(Time ts)
 
 	ElevatorHandler();
 	SpellFollowLink();
+	WaypointHandler();
 
 	CheckTimers(ts);
 
@@ -862,9 +922,15 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			link->thunderspell.setCooldownRemainingTime(link->thunderspell.getCooldown());
 
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->thunderspell.GetAnimator("frame_animator");
+			FrameRangeAnimator* anim = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
 				((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"))->GetStartFrame());
-		
+			
+			link->SetKritikos(true);
+			//anim->Stop();
+			link->SetState("voskos");
+		//	anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_voskos_" + link->GetLookingAt()), 
+		//		SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_voskos_" + link->GetLookingAt()))->GetStartFrame());
 			AudioManager::Get().PlaySound(m_sounds.at("ultimate"));
 		}
 	}
@@ -896,11 +962,17 @@ bool Layer1::LinkStopAnimations(KeyReleaseEvent& e)
 
 		if (link->GetLookingAt() == "right")
 		{
-			link->GetSprite()->SetFilm(link->GetFilm("moving_right"));
+			if (link->IsKritikos())
+				link->GetSprite()->SetFilm(link->GetFilm("kritiko_moving_right"));
+			else
+				link->GetSprite()->SetFilm(link->GetFilm("moving_right"));
 		}
 		else if (link->GetLookingAt() == "left")
 		{
-			link->GetSprite()->SetFilm(link->GetFilm("moving_left"));
+			if (link->IsKritikos())
+				link->GetSprite()->SetFilm(link->GetFilm("kritiko_moving_left"));
+			else
+				link->GetSprite()->SetFilm(link->GetFilm("moving_left"));
 		}
 
 		link->GetSprite()->SetFrame(0);
@@ -1150,7 +1222,7 @@ void Layer1::EnemyHandler()
 				{
 
 					link->setDamageCoolDown(500);
-					AudioManager::Get().PlaySound(m_sounds.at("link_damage"));
+
 					if (link->GetState() == "crouch")
 					{
 						if (link->GetLookingAt() == i.second->GetLookingAt())
@@ -1162,8 +1234,23 @@ void Layer1::EnemyHandler()
 							
 							if (!mov->HasFinished())
 								mov->Stop();
-
+							
+							AudioManager::Get().PlaySound(m_sounds.at("link_damage"));
 							anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+							link->takeDamage(i.second->GetDamage());
+						}
+						else
+						{
+							uint32_t posX;
+							if (i.second->GetLookingAt() == "right")
+							{
+								posX = link->GetSprite()->GetPosX() - 16;
+							}
+							else if (i.second->GetLookingAt() == "left")
+							{
+								posX = link->GetSprite()->GetPosX() + 16;
+							}
+							i.second->GetSprite()->SetPos(posX, i.second->GetSprite()->GetPosY());
 						}
 
 					}
@@ -1177,15 +1264,14 @@ void Layer1::EnemyHandler()
 						if (!mov->HasFinished())
 							mov->Stop();
 
+						AudioManager::Get().PlaySound(m_sounds.at("link_damage"));
 						anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
+						link->takeDamage(i.second->GetDamage());
 					}
 
 					if (mov->HasFinished())
 						mov->Start((MovingAnimation*)link->GetAnimation("mov_damage"), SystemClock::GetDeltaTime());
 
-
-					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
-					link->takeDamage(i.second->GetDamage());
 					if (link->getHealth() <= 0) 
 					{
 						link->setHealth(link->getMaxHealth());
@@ -1564,6 +1650,10 @@ void Layer1::SpawnArrow(std::string direction, uint32_t x, uint32_t y)
 	MovingAnimator* mov = (MovingAnimator*)tmp->GetAnimator("mov_moving");
 	FrameRangeAnimator* anim = (FrameRangeAnimator*)tmp->GetAnimator("frame_animator");
 
+	anim->SetOnAction([this, tmp](Animator* animator, const Animation& anim) { return ArrowFrameRangeAction(this, tmp, (FrameRangeAnimator*)animator); });
+	anim->SetOnStart([this, tmp](Animator* animator) { return ArrowFrameRangeStart(this, tmp); });
+	anim->SetOnFinish([this, tmp](Animator* animator) { return ArrowFrameRangeFinish(this, tmp); });
+
 	if (anim->HasFinished())
 		anim->Start((FrameRangeAnimation*)tmp->GetAnimation("frame_arrow_" + direction), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)tmp->GetAnimation("frame_arrow_" + direction))->GetStartFrame());
 
@@ -1575,22 +1665,24 @@ void Layer1::ArrowHandler()
 {
 
 }
+
 void Layer1::WaypointHandler()
 {
 	Rect d1, d2;
 	Rect tmpBox = m_lava->GetBox();
 	Sprite link_sprite = link->GetSprite();
-	if (!clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+	if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 	{
 		m_Scene->GetColider().Register(link_sprite, m_lava, [this](Sprite s1, Sprite s2) {
-			link->setHealth(0);
+			link->takeDamage(20);
+			ENGINE_TRACE("KAIGOMAI");
 		});
 		m_Scene->GetColider().Check();
 		m_Scene->GetColider().Cancel(link_sprite, m_lava);
 	}
 	
 	tmpBox = m_end->GetBox();
-	if (!clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+	if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 	{
 		m_Scene->GetColider().Register(link_sprite, m_end, [this](Sprite s1, Sprite s2) {
 			AudioManager::Get().PlaySound(m_sounds.at("level_complete"));

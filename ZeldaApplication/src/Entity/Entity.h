@@ -12,7 +12,7 @@ public:
 	using Animations = std::unordered_map<std::string, Animation*>;
 	using Animators = std::unordered_map<std::string, Animator*>;
 
-	Entity() = default;
+	Entity() : m_kritikos(false) {};
 
 	Animation* GetAnimation(std::string name);
 	AnimationFilm* GetFilm();
@@ -61,6 +61,8 @@ protected:
 	std::string m_state;
 	std::string m_lookingAt;
 	uint32_t m_id;
+
+	bool m_kritikos;
 
 	Ref<Scene> m_scene;
 
