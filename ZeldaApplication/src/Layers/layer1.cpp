@@ -6,6 +6,7 @@ Elevator* currElevator;
 GridLayer* gridlayer;
 
 DeviceID backgroundMusic;
+bool pausedMusic;
 
 SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite sprite, TileLayer* tiles, std::pair<int, int>* bounds) {
 	return [gridLayer, sprite, tiles, bounds](Rect& r, int* dx, int* dy) {
@@ -517,8 +518,16 @@ void Layer1::UpdateSpell(Spell& spell, Time ts) {
 
 			}
 			
-			if (!link->thunderspell.isActive())
+			if (!link->thunderspell.isActive()) 
+			{
 				link->SetKritikos(false);
+				if (pausedMusic)
+				{
+					pausedMusic = false;
+					AudioManager::Get().UnPauseMusic();
+				}
+			}
+
 
 			//ENGINE_TRACE(spell.getDurationRemainingTime());
 		}
@@ -667,6 +676,8 @@ void Layer1::onStart()
 	currElevator = nullptr;
 
 	InitilizeLayer(this);
+
+	pausedMusic = false;
 	
 	link = new Link(m_sheets["link_sheet"], m_Scene);
 	
@@ -932,6 +943,8 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 		//	anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_voskos_" + link->GetLookingAt()), 
 		//		SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_voskos_" + link->GetLookingAt()))->GetStartFrame());
 			AudioManager::Get().PlaySound(m_sounds.at("ultimate"));
+			AudioManager::Get().PauseMusic();
+			pausedMusic = true;
 		}
 	}
 
@@ -1721,7 +1734,8 @@ void Layer1::WaypointHandler()
 	{
 		m_Scene->GetColider().Register(link_sprite, m_end, [this](Sprite s1, Sprite s2) {
 			AudioManager::Get().PlaySound(m_sounds.at("level_complete"));
-			//implemente freeze
+				AudioManager::Get().PauseMusic();
+				Application::Instance().Freeze();
 		});
 		m_Scene->GetColider().Check();
 		m_Scene->GetColider().Cancel(link_sprite, m_end);
