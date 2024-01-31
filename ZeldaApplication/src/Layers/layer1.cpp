@@ -364,6 +364,8 @@ void Layer1::InitializeDoors()
 void Layer1::InitializeAudio()
 {	
 	m_sounds.emplace(std::make_pair("attacking", AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav")));
+	m_sounds.emplace(std::make_pair("healing", AudioManager::Get().LoadSound("Assets/Sounds/Link/healing.wav")));
+	m_sounds.emplace(std::make_pair("shield", AudioManager::Get().LoadSound("Assets/Sounds/Link/shield.wav")));
 	m_sounds.emplace(std::make_pair("door", AudioManager::Get().LoadSound("Assets/Sounds/Misc/door_opening.wav")));
 	m_sounds.emplace(std::make_pair("enemy_damage", AudioManager::Get().LoadSound("Assets/Sounds/Enemies/enemy_damage.wav")));
 	m_sounds.emplace(std::make_pair("key", AudioManager::Get().LoadSound("Assets/Sounds/Misc/key_collected.wav")));
@@ -539,6 +541,11 @@ void Layer1::CheckTimers(Time ts) {
 
 	for (auto e : m_enemies)
 	{
+		if (e.second->getDamageCoolDown() != 0)
+			e.second->setDamageCoolDown(e.second->getDamageCoolDown() - ts);
+		if (e.second->getDamageCoolDown() < 0)
+			e.second->setDamageCoolDown(0);
+
 		if (e.second->GetSprite()->GetTypeId() == "E_BOT")
 		{
 			Bot* tmp = (Bot*)e.second;
@@ -797,7 +804,7 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			link->heal(50);
 			link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
 			link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
-
+			AudioManager::Get().PlaySound(m_sounds.at("healing"));
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
 				((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
@@ -834,6 +841,7 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			link->setMagicPoints(link->getMagicPoints() - link->shieldspell.getCost());
 			link->shieldspell.setDurationRemainingTime(link->shieldspell.getDuration());
 			link->shieldspell.setCooldownRemainingTime(link->shieldspell.getCooldown());
+			AudioManager::Get().PlaySound(m_sounds.at("shield"));
 
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->shieldspell.GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->shieldspell.GetAnimation("shieldspell_animation"), SystemClock::GetDeltaTime(),
@@ -918,7 +926,6 @@ void Layer1::TeleportHandler()
 					waitTeleportCounter = 0;
 					tmp->Start((FrameRangeAnimation*)flash.GetAnimation("flash_animation"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)flash.GetAnimation("flash_animation"))->GetStartFrame());
 				}
-				ENGINE_TRACE(waitTeleportCounter);
 
 				if (waitTeleportCounter == 12) {
 					link_sprite->SetPos(dest->GetPosX(), dest->GetPosY());
@@ -1127,7 +1134,7 @@ void Layer1::EnemyHandler()
 	for (auto i : m_enemies)
 	{
 		tmpBox = i.second->GetSprite()->GetBox();
-		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && link->getDamageCoolDown() == 0)
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && link->getDamageCoolDown() == 0 && !link->isInvisible())
 		{
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i](Sprite s1, Sprite s2) {
 				int32_t dx = (link->GetLookingAt() == "right") ? -16 : 16;
@@ -1170,6 +1177,7 @@ void Layer1::EnemyHandler()
 
 					if (mov->HasFinished())
 						mov->Start((MovingAnimation*)link->GetAnimation("mov_damage"), SystemClock::GetDeltaTime());
+
 
 					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
 					link->takeDamage(i.second->GetDamage());
@@ -1215,15 +1223,19 @@ void Layer1::EnemyHandler()
 				}
 				else
 				{
-					if (i.second->GetSprite()->GetTypeId() != "E_STAFLOS")
+					ENGINE_TRACE(i.second->GetHealth());
+
+					if (i.second->GetSprite()->GetTypeId() != "E_STAFLOS" && i.second->getDamageCoolDown() == 0)
 					{
-						i.second->TakeDamage(8);
+						i.second->TakeDamage(link->getDamage());
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
+						i.second->setDamageCoolDown(200);
 					}
-					else if (link->GetState() == "crouch_attack")
+					else if (link->GetState() == "crouch_attack" && i.second->getDamageCoolDown() == 0)
 					{
-						i.second->TakeDamage(8);
+						i.second->TakeDamage(link->getDamage());
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
+						i.second->setDamageCoolDown(200);
 					}
 
 				}
@@ -1407,14 +1419,12 @@ bool Layer1::ElevatorStart(KeyTapEvent& e)
 
 	if (e.GetKey() == InputKey::DOWN)
 	{
-		ENGINE_TRACE("KATWWW");
 		currElevator->SetLookingAt("down");
 		currElevator->SetState("moving");
 		((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 	}
 	else if (e.GetKey() == InputKey::UP)
 	{
-		ENGINE_TRACE("PANWWW");
 		currElevator->SetLookingAt("up");
 		currElevator->SetState("moving");
 		((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());

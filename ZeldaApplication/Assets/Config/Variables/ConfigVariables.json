@@ -53,7 +53,7 @@
     {
       "Type": "Thunder",
       "Cost": 120,
-      "Duration": 0,
+      "Duration": 10000,
       "Cooldown": 60000
     },
     {
