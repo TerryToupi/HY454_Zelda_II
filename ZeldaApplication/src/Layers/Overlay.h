@@ -24,7 +24,13 @@ public:
 
 	void onEvent(Event& e) override;
 
-	AnimationSheet* m_sheet;
-	AnimationFilm* m_film;
+	AnimationSheet* m_sheetPause;
+	AnimationFilm* m_filmPause;
+
+	AnimationSheet* m_sheetOver;
+	AnimationFilm* m_filmOver;
+
+	AnimationSheet* m_sheetWin;
+	AnimationFilm* m_filmWin;
 
 };

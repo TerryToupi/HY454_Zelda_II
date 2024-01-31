@@ -1181,31 +1181,39 @@ void Layer1::EnemyHandler()
 
 					anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_damage_from_" + link->GetLookingAt()))->GetStartFrame());
 					link->takeDamage(i.second->GetDamage());
-					if (link->getHealth() <= 0) {
+					if (link->getHealth() <= 0) 
+					{
 						link->setHealth(link->getMaxHealth());
-						ResetElevators();
-						ENGINE_TRACE(m_currStage);
-						if (m_currStage == 3 || m_currStage == 4) {
-							link->GetSprite()->SetPos(262 * 16, 12 * 16);
-							int32_t dx = (262 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 2;
-						}
-						else if (m_currStage == 5 || m_currStage == 6 || m_currStage == 7 || m_currStage == 8) {
-							link->GetSprite()->SetPos(351 * 16, 12 * 16);
-							int32_t dx = (351 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 2;
 
+						if (link->getLives() == 0) {
+							Application::Instance().Freeze();
 						}
-						else {
-							link->GetSprite()->SetPos(13 * 16, 10 * 16);
-							int32_t dx = (13 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 1;
+						else 
+						{
+							ResetElevators();
+							ENGINE_TRACE(m_currStage);
+							if (m_currStage == 3 || m_currStage == 4) {
+								link->GetSprite()->SetPos(262 * 16, 12 * 16);
+								int32_t dx = (262 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 2;
+							}
+							else if (m_currStage == 5 || m_currStage == 6 || m_currStage == 7 || m_currStage == 8) {
+								link->GetSprite()->SetPos(351 * 16, 12 * 16);
+								int32_t dx = (351 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 2;
+
+							}
+							else {
+								link->GetSprite()->SetPos(13 * 16, 10 * 16);
+								int32_t dx = (13 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 1;
+							}
 						}
 						
 					}
