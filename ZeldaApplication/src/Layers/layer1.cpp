@@ -310,6 +310,8 @@ void Layer1::DropCollectible(Enemy* enemy) {
 		return;
 	}
 
+	AudioManager::Get().PlaySound(m_sounds.at("itemdrop"));
+
 	c_type cType;
 	std::string type;
 
@@ -337,11 +339,12 @@ void Layer1::DropCollectible(Enemy* enemy) {
 void Layer1::InitialiazeCollectibles()
 {
 	CreateCollectible("Assets/Config/Collectibles/key_config.json", "key", C_KEY);
-//	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
-//	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
-//	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "extraLife", C_LINK);
-//	CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
-//	CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
+	
+	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
+	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
+	CreateCollectible("Assets/Config/Collectibles/extra_life_config.json", "extraLife", C_LINK);
+	//CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
+	//CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
 }
 
 void Layer1::InitializeDoors()
@@ -364,8 +367,10 @@ void Layer1::InitializeDoors()
 void Layer1::InitializeAudio()
 {	
 	m_sounds.emplace(std::make_pair("attacking", AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav")));
+	m_sounds.emplace(std::make_pair("gameover", AudioManager::Get().LoadSound("Assets/Sounds/Link/dead.wav")));
 	m_sounds.emplace(std::make_pair("healing", AudioManager::Get().LoadSound("Assets/Sounds/Link/healing.wav")));
 	m_sounds.emplace(std::make_pair("shield", AudioManager::Get().LoadSound("Assets/Sounds/Link/shield.wav")));
+	m_sounds.emplace(std::make_pair("itemdrop", AudioManager::Get().LoadSound("Assets/Sounds/Link/item_drop.wav")));
 	m_sounds.emplace(std::make_pair("door", AudioManager::Get().LoadSound("Assets/Sounds/Misc/door_opening.wav")));
 	m_sounds.emplace(std::make_pair("enemy_damage", AudioManager::Get().LoadSound("Assets/Sounds/Enemies/enemy_damage.wav")));
 	m_sounds.emplace(std::make_pair("key", AudioManager::Get().LoadSound("Assets/Sounds/Misc/key_collected.wav")));
@@ -374,7 +379,7 @@ void Layer1::InitializeAudio()
 	m_sounds.emplace(std::make_pair("link_damage", AudioManager::Get().LoadSound("Assets/Sounds/Link/receive_damage.wav")));
 	m_sounds.emplace(std::make_pair("collect", AudioManager::Get().LoadSound("Assets/Sounds/Link/pickup_item.wav")));
 	m_sounds.emplace(std::make_pair("jump_spell", AudioManager::Get().LoadSound("Assets/Sounds/Link/level_up.wav")));
-	m_sounds.emplace(std::make_pair("lost_life", AudioManager::Get().LoadSound("Assets/Sounds/Link/lost_life.wav")));
+	m_sounds.emplace(std::make_pair("respawn", AudioManager::Get().LoadSound("Assets/Sounds/Link/lost_life.wav")));
 	m_sounds.emplace(std::make_pair("level_complete", AudioManager::Get().LoadSound("Assets/Sounds/Link/level_complete.wav")));
 	m_sounds.emplace(std::make_pair("ultimate", AudioManager::Get().LoadSound("Assets/Sounds/Link/ulti.wav")));
 }
@@ -1186,10 +1191,12 @@ void Layer1::EnemyHandler()
 						link->setHealth(link->getMaxHealth());
 
 						if (link->getLives() == 0) {
+							AudioManager::Get().PlaySound(m_sounds.at("gameover"));
 							Application::Instance().Freeze();
 						}
 						else 
 						{
+							AudioManager::Get().PlaySound(m_sounds.at("respawn"));
 							ResetElevators();
 							ENGINE_TRACE(m_currStage);
 							if (m_currStage == 3 || m_currStage == 4) {
