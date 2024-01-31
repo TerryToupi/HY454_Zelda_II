@@ -360,6 +360,7 @@ void Layer1::InitializeDoors()
 void Layer1::InitializeAudio()
 {	
 	m_sounds.emplace(std::make_pair("attacking", AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav")));
+	m_sounds.emplace(std::make_pair("healing", AudioManager::Get().LoadSound("Assets/Sounds/Link/healing.wav")));
 	m_sounds.emplace(std::make_pair("door", AudioManager::Get().LoadSound("Assets/Sounds/Misc/door_opening.wav")));
 	m_sounds.emplace(std::make_pair("enemy_damage", AudioManager::Get().LoadSound("Assets/Sounds/Enemies/enemy_damage.wav")));
 	m_sounds.emplace(std::make_pair("key", AudioManager::Get().LoadSound("Assets/Sounds/Misc/key_collected.wav")));
@@ -763,7 +764,7 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			link->heal(50);
 			link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
 			link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
-
+			AudioManager::Get().PlaySound(m_sounds.at("healing"));
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
 				((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
