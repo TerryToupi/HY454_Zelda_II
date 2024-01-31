@@ -1,6 +1,6 @@
 {
   "Link": {
-    "InitialLives": 1,
+    "InitialLives": 3,
     "HP": 100,
     "MagicPoints": 350,
     "Damage": 8,

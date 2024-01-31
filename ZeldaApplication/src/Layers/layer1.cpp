@@ -1278,7 +1278,8 @@ void Layer1::EnemyHandler()
 
 						if (link->getLives() == 0) {
 							AudioManager::Get().PlaySound(m_sounds.at("gameover"));
-							Application::Instance().Freeze();
+							AudioManager::Get().PauseMusic();
+							Application::Instance().Freeze(); 
 						}
 						else 
 						{
@@ -1676,6 +1677,40 @@ void Layer1::WaypointHandler()
 		m_Scene->GetColider().Register(link_sprite, m_lava, [this](Sprite s1, Sprite s2) {
 			link->takeDamage(20);
 			ENGINE_TRACE("KAIGOMAI");
+
+			if (link->getLives() == 0) {
+				AudioManager::Get().PlaySound(m_sounds.at("gameover"));
+				AudioManager::Get().PauseMusic();
+				Application::Instance().Freeze();
+			}
+			else
+			{
+				AudioManager::Get().PlaySound(m_sounds.at("respawn"));
+				ResetElevators();
+				ENGINE_TRACE(m_currStage);
+				if (m_currStage == 3 || m_currStage == 4) {
+					link->GetSprite()->SetPos(262 * 16, 12 * 16);
+					int32_t dx = (262 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+					if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+						m_Scene->GetTiles()->Scroll(dx, 0);
+					m_currStage = 2;
+				}
+				else if (m_currStage == 5 || m_currStage == 6 || m_currStage == 7 || m_currStage == 8) {
+					link->GetSprite()->SetPos(351 * 16, 12 * 16);
+					int32_t dx = (351 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+					if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+						m_Scene->GetTiles()->Scroll(dx, 0);
+					m_currStage = 2;
+
+				}
+				else {
+					link->GetSprite()->SetPos(13 * 16, 10 * 16);
+					int32_t dx = (13 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+					if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+						m_Scene->GetTiles()->Scroll(dx, 0);
+					m_currStage = 1;
+				}
+			}
 		});
 		m_Scene->GetColider().Check();
 		m_Scene->GetColider().Cancel(link_sprite, m_lava);
