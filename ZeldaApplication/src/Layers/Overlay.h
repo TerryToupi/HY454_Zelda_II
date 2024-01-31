@@ -4,6 +4,7 @@
 
 #include <Engine.h>
 #include "../Link/Link.h"
+#include "layer1.h"
 #include <json.hpp>
 
 using namespace Engine;
@@ -32,5 +33,7 @@ public:
 
 	AnimationSheet* m_sheetWin;
 	AnimationFilm* m_filmWin;
+
+	Layer1& layer1 = (Layer1&)(Application::GetLayer("Layer1"));
 
 };

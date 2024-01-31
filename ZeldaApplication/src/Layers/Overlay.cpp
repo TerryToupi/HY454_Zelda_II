@@ -25,7 +25,15 @@ void Overlay::onStart()
 
 	Application::SetOnFreezeFunction([this](void) {
 		ENGINE_TRACE("FROZEN");
-		this->m_Scene->CreateSprite("Over", 0, 0, this->m_filmOver, "");
+		if (this->layer1.link->getLives() == 0)
+		{
+			this->m_Scene->CreateSprite("Over", 0, 0, this->m_filmOver, "");
+		}
+		else
+		{
+			this->m_Scene->CreateSprite("Win", 0, 0, this->m_filmWin, "");
+		}
+
 		this->onUpdate(SystemClock::GetDeltaTimeStep());
 		});
 
