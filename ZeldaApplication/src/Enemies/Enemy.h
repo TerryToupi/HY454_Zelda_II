@@ -10,6 +10,8 @@ private:
     int damage;
     int points;
     int speed;
+    int m_damageCoolDown;
+
 
 protected:
     uint32_t m_stage;
@@ -24,6 +26,7 @@ public:
     int GetPoints() const;
     int GetSpeed() const;
     int GetStage() const;
+    int getDamageCoolDown() const;
     uint32_t GetMaxX() const;
     uint32_t GetMinX() const;
 
@@ -33,7 +36,8 @@ public:
     void SetSpeed(int newPoints);
     void SetMaxX(uint32_t _maxX);
     void SetMinX(uint32_t _minX);
-    
+    void setDamageCoolDown(int _cooldown);
+
     void Attack();
     void TakeDamage(int amount);
     void Disapear();

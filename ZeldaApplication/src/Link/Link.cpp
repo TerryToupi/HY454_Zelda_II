@@ -21,6 +21,7 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     setSpeed(100 - configVars["Link"]["Speed"]);
     setJumpingForce(configVars["Link"]["JumpingForce"]);
     setPoints(0);
+    setPoints(0);
 
     m_sheet = _sheet;
     EmplaceFilm("moving_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/moving_right.json"));
@@ -199,6 +200,10 @@ void Link::setAttackingStateCoolDown(int _cooldown)
 void Link::setPoints(int _points)
 {
     m_points = _points;
+}
+
+bool Link::isInvisible() {
+    return thunderspell.isActive();
 }
 
 void Link::takeDamage(int amount) 

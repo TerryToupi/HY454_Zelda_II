@@ -22,6 +22,11 @@ int Enemy::GetStage() const
     return m_stage;
 }
 
+int Enemy::getDamageCoolDown() const
+{
+    return m_damageCoolDown;
+}
+
 uint32_t Enemy::GetMaxX() const
 {
     return m_maxX;
@@ -47,6 +52,12 @@ void Enemy::SetPoints(int newPoints) {
 void Enemy::SetSpeed(int newSpeed) {
     speed = newSpeed;
 }
+
+void Enemy::setDamageCoolDown(int _cooldown)
+{
+    m_damageCoolDown = _cooldown;
+}
+
 
 void Enemy::SetMinX(uint32_t _minX)
 {

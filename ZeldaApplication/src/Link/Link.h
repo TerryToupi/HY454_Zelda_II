@@ -30,7 +30,7 @@ private:
     int m_attackingStateCoolDown;
     int m_keys;
     int m_points;
- 
+
 public:
     Link(AnimationSheet* _sheet, Ref<Scene> _scene);
     ~Link() = default;
@@ -63,7 +63,7 @@ public:
     int getAttackingStateCoolDown() const;
     int getPoints() const;
     int getKeys() const;
-    
+
     void setHealth(int newHealth);
     void setMaxHealth(int newHealth);
     void setDamage(int newDamage);
@@ -84,7 +84,7 @@ public:
     void RemoveKey();
     void AddKey();
     bool HasKey() const;
-
+    bool isInvisible();
 };
 
 #endif 

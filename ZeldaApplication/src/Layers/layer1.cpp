@@ -364,6 +364,8 @@ void Layer1::DropCollectible(Enemy* enemy) {
 		return;
 	}
 
+	AudioManager::Get().PlaySound(m_sounds.at("itemdrop"));
+
 	c_type cType;
 	std::string type;
 
@@ -391,11 +393,12 @@ void Layer1::DropCollectible(Enemy* enemy) {
 void Layer1::InitialiazeCollectibles()
 {
 	CreateCollectible("Assets/Config/Collectibles/key_config.json", "key", C_KEY);
-//	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
-//	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
-//	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "extraLife", C_LINK);
-//	CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
-//	CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
+	
+	CreateCollectible("Assets/Config/Collectibles/blue_potion_config.json", "bluePotion", C_BLUEPOTION);
+	CreateCollectible("Assets/Config/Collectibles/red_potion_config.json", "redPotion", C_REDPOTION);
+	CreateCollectible("Assets/Config/Collectibles/extra_life_config.json", "extraLife", C_LINK);
+	//CreateCollectible("Assets/Config/Collectibles/basic_point_bag_config.json", "simplePointBag", C_BASICPOINTS);
+	//CreateCollectible("Assets/Config/Collectibles/stronger_point_bag_config.json", "strongerPointBag", C_STRONGERPOINTS);
 }
 
 void Layer1::InitializeDoors()
@@ -418,6 +421,10 @@ void Layer1::InitializeDoors()
 void Layer1::InitializeAudio()
 {	
 	m_sounds.emplace(std::make_pair("attacking", AudioManager::Get().LoadSound("Assets/Sounds/Link/attacking_sound.wav")));
+	m_sounds.emplace(std::make_pair("gameover", AudioManager::Get().LoadSound("Assets/Sounds/Link/dead.wav")));
+	m_sounds.emplace(std::make_pair("healing", AudioManager::Get().LoadSound("Assets/Sounds/Link/healing.wav")));
+	m_sounds.emplace(std::make_pair("shield", AudioManager::Get().LoadSound("Assets/Sounds/Link/shield.wav")));
+	m_sounds.emplace(std::make_pair("itemdrop", AudioManager::Get().LoadSound("Assets/Sounds/Link/item_drop.wav")));
 	m_sounds.emplace(std::make_pair("door", AudioManager::Get().LoadSound("Assets/Sounds/Misc/door_opening.wav")));
 	m_sounds.emplace(std::make_pair("enemy_damage", AudioManager::Get().LoadSound("Assets/Sounds/Enemies/enemy_damage.wav")));
 	m_sounds.emplace(std::make_pair("key", AudioManager::Get().LoadSound("Assets/Sounds/Misc/key_collected.wav")));
@@ -426,7 +433,7 @@ void Layer1::InitializeAudio()
 	m_sounds.emplace(std::make_pair("link_damage", AudioManager::Get().LoadSound("Assets/Sounds/Link/receive_damage.wav")));
 	m_sounds.emplace(std::make_pair("collect", AudioManager::Get().LoadSound("Assets/Sounds/Link/pickup_item.wav")));
 	m_sounds.emplace(std::make_pair("jump_spell", AudioManager::Get().LoadSound("Assets/Sounds/Link/level_up.wav")));
-	m_sounds.emplace(std::make_pair("lost_life", AudioManager::Get().LoadSound("Assets/Sounds/Link/lost_life.wav")));
+	m_sounds.emplace(std::make_pair("respawn", AudioManager::Get().LoadSound("Assets/Sounds/Link/lost_life.wav")));
 	m_sounds.emplace(std::make_pair("level_complete", AudioManager::Get().LoadSound("Assets/Sounds/Link/level_complete.wav")));
 	m_sounds.emplace(std::make_pair("ultimate", AudioManager::Get().LoadSound("Assets/Sounds/Link/ulti.wav")));
 }
@@ -598,6 +605,11 @@ void Layer1::CheckTimers(Time ts) {
 
 	for (auto e : m_enemies)
 	{
+		if (e.second->getDamageCoolDown() != 0)
+			e.second->setDamageCoolDown(e.second->getDamageCoolDown() - ts);
+		if (e.second->getDamageCoolDown() < 0)
+			e.second->setDamageCoolDown(0);
+
 		if (e.second->GetSprite()->GetTypeId() == "E_BOT")
 		{
 			Bot* tmp = (Bot*)e.second;
@@ -857,7 +869,7 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			link->heal(50);
 			link->lifespell.setDurationRemainingTime(link->lifespell.getDuration());
 			link->lifespell.setCooldownRemainingTime(link->lifespell.getCooldown());
-
+			AudioManager::Get().PlaySound(m_sounds.at("healing"));
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->lifespell.GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"), SystemClock::GetDeltaTime(),
 				((FrameRangeAnimation*)link->lifespell.GetAnimation("lifespell_animation"))->GetStartFrame());
@@ -894,6 +906,7 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			link->setMagicPoints(link->getMagicPoints() - link->shieldspell.getCost());
 			link->shieldspell.setDurationRemainingTime(link->shieldspell.getDuration());
 			link->shieldspell.setCooldownRemainingTime(link->shieldspell.getCooldown());
+			AudioManager::Get().PlaySound(m_sounds.at("shield"));
 
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->shieldspell.GetAnimator("frame_animator");
 			tmp->Start((FrameRangeAnimation*)link->shieldspell.GetAnimation("shieldspell_animation"), SystemClock::GetDeltaTime(),
@@ -990,7 +1003,6 @@ void Layer1::TeleportHandler()
 					waitTeleportCounter = 0;
 					tmp->Start((FrameRangeAnimation*)flash.GetAnimation("flash_animation"), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)flash.GetAnimation("flash_animation"))->GetStartFrame());
 				}
-				ENGINE_TRACE(waitTeleportCounter);
 
 				if (waitTeleportCounter == 12) {
 					link_sprite->SetPos(dest->GetPosX(), dest->GetPosY());
@@ -1199,7 +1211,7 @@ void Layer1::EnemyHandler()
 	for (auto i : m_enemies)
 	{
 		tmpBox = i.second->GetSprite()->GetBox();
-		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && link->getDamageCoolDown() == 0)
+		if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2) && link->getDamageCoolDown() == 0 && !link->isInvisible())
 		{
 			m_Scene->GetColider().Register(link_sprite, i.second->GetSprite(), [link_sprite, this, i](Sprite s1, Sprite s2) {
 				int32_t dx = (link->GetLookingAt() == "right") ? -16 : 16;
@@ -1260,32 +1272,41 @@ void Layer1::EnemyHandler()
 					if (mov->HasFinished())
 						mov->Start((MovingAnimation*)link->GetAnimation("mov_damage"), SystemClock::GetDeltaTime());
 
-
-					if (link->getHealth() <= 0) {
+					if (link->getHealth() <= 0) 
+					{
 						link->setHealth(link->getMaxHealth());
-						ResetElevators();
-						ENGINE_TRACE(m_currStage);
-						if (m_currStage == 3 || m_currStage == 4) {
-							link->GetSprite()->SetPos(262 * 16, 12 * 16);
-							int32_t dx = (262 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 2;
-						}
-						else if (m_currStage == 5 || m_currStage == 6 || m_currStage == 7 || m_currStage == 8) {
-							link->GetSprite()->SetPos(351 * 16, 12 * 16);
-							int32_t dx = (351 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 2;
 
+						if (link->getLives() == 0) {
+							AudioManager::Get().PlaySound(m_sounds.at("gameover"));
+							Application::Instance().Freeze();
 						}
-						else {
-							link->GetSprite()->SetPos(13 * 16, 10 * 16);
-							int32_t dx = (13 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
-							if (m_Scene->GetTiles()->CanScrollHoriz(dx))
-								m_Scene->GetTiles()->Scroll(dx, 0);
-							m_currStage = 1;
+						else 
+						{
+							AudioManager::Get().PlaySound(m_sounds.at("respawn"));
+							ResetElevators();
+							ENGINE_TRACE(m_currStage);
+							if (m_currStage == 3 || m_currStage == 4) {
+								link->GetSprite()->SetPos(262 * 16, 12 * 16);
+								int32_t dx = (262 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 2;
+							}
+							else if (m_currStage == 5 || m_currStage == 6 || m_currStage == 7 || m_currStage == 8) {
+								link->GetSprite()->SetPos(351 * 16, 12 * 16);
+								int32_t dx = (351 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 2;
+
+							}
+							else {
+								link->GetSprite()->SetPos(13 * 16, 10 * 16);
+								int32_t dx = (13 * 16) - m_Scene->GetTiles()->GetViewWindow().x - (m_Scene->GetTiles()->GetViewWindow().w / 2);
+								if (m_Scene->GetTiles()->CanScrollHoriz(dx))
+									m_Scene->GetTiles()->Scroll(dx, 0);
+								m_currStage = 1;
+							}
 						}
 						
 					}
@@ -1303,15 +1324,19 @@ void Layer1::EnemyHandler()
 				}
 				else
 				{
-					if (i.second->GetSprite()->GetTypeId() != "E_STAFLOS")
+					ENGINE_TRACE(i.second->GetHealth());
+
+					if (i.second->GetSprite()->GetTypeId() != "E_STAFLOS" && i.second->getDamageCoolDown() == 0)
 					{
-						i.second->TakeDamage(8);
+						i.second->TakeDamage(link->getDamage());
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
+						i.second->setDamageCoolDown(200);
 					}
-					else if (link->GetState() == "crouch_attack")
+					else if (link->GetState() == "crouch_attack" && i.second->getDamageCoolDown() == 0)
 					{
-						i.second->TakeDamage(8);
+						i.second->TakeDamage(link->getDamage());
 						AudioManager::Get().PlaySound(m_sounds.at("enemy_damage"));
+						i.second->setDamageCoolDown(200);
 					}
 
 				}
@@ -1495,14 +1520,12 @@ bool Layer1::ElevatorStart(KeyTapEvent& e)
 
 	if (e.GetKey() == InputKey::DOWN)
 	{
-		ENGINE_TRACE("KATWWW");
 		currElevator->SetLookingAt("down");
 		currElevator->SetState("moving");
 		((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
 	}
 	else if (e.GetKey() == InputKey::UP)
 	{
-		ENGINE_TRACE("PANWWW");
 		currElevator->SetLookingAt("up");
 		currElevator->SetState("moving");
 		((MovingAnimator*)currElevator->GetAnimator("mov_moving"))->Start((MovingAnimation*)currElevator->GetAnimation("mov_moving"), SystemClock::GetDeltaTime());
