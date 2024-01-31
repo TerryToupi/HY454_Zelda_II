@@ -9,7 +9,7 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     m_lookingAt = "right";
     m_state = "moving";
     m_scene = _scene;
-    m_keys = 1;
+    m_keys = 0;
     m_kritikos = false;
  
     setMaxHealth(configVars["Link"]["HP"]);

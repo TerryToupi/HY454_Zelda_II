@@ -336,7 +336,6 @@ void Layer1::InitializeEnemies(GridLayer *grid)
 		i++;
 	}
 
-	//SpawnArrow();
 
 }
 
@@ -459,10 +458,10 @@ void Layer1::InitializeBridge()
 		index++;
 	}
 
-	m_lava = m_Scene->CreateSprite("lava", 471, 8 * 16, NONPRINTABLE, "E_LAVA");
+	m_lava = m_Scene->CreateSprite("lava", 471 * 16, 15 * 16, NONPRINTABLE, "E_LAVA");
 	m_lava->SetColiderBox(35 * 16, 16);
 
-	m_end = m_Scene->CreateSprite("lava", 953, 12 * 16, NONPRINTABLE, "E_LAVA");
+	m_end = m_Scene->CreateSprite("end", 953 * 16, 12 * 16, NONPRINTABLE, "E_END");
 	m_end->SetColiderBox(16, 32);
 }
 
@@ -725,6 +724,7 @@ void Layer1::onUpdate(Time ts)
 
 	ElevatorHandler();
 	SpellFollowLink();
+	WaypointHandler();
 
 	CheckTimers(ts);
 
@@ -1648,17 +1648,18 @@ void Layer1::WaypointHandler()
 	Rect d1, d2;
 	Rect tmpBox = m_lava->GetBox();
 	Sprite link_sprite = link->GetSprite();
-	if (!clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+	if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 	{
 		m_Scene->GetColider().Register(link_sprite, m_lava, [this](Sprite s1, Sprite s2) {
-			link->setHealth(0);
+			link->takeDamage(20);
+			ENGINE_TRACE("KAIGOMAI");
 		});
 		m_Scene->GetColider().Check();
 		m_Scene->GetColider().Cancel(link_sprite, m_lava);
 	}
 	
 	tmpBox = m_end->GetBox();
-	if (!clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
+	if (clipper.Clip(tmpBox, m_Scene->GetTiles()->GetViewWindow(), &d1, &d2))
 	{
 		m_Scene->GetColider().Register(link_sprite, m_end, [this](Sprite s1, Sprite s2) {
 			AudioManager::Get().PlaySound(m_sounds.at("level_complete"));
