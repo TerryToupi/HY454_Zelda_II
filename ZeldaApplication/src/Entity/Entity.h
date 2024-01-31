@@ -13,8 +13,6 @@ public:
 	using Animators = std::unordered_map<std::string, Animator*>;
 
 	Entity() = default;
-	Entity(std::string type);
-	
 
 	Animation* GetAnimation(std::string name);
 	AnimationFilm* GetFilm();

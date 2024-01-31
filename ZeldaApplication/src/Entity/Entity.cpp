@@ -1,11 +1,5 @@
 #include "Entity.h"
 
-Entity::Entity(std::string type)
-{
-	m_sheet = new AnimationSheet("misc_sheet", "Assets/AnimationFilms/elevator.bmp");
-	m_singleFilm = new AnimationFilm(m_sheet, "Assets/Config/Animations/Misc/elevator.json");
-}
-
 AnimationFilm* Entity::GetFilm()
 {
 	if (m_singleFilm != nullptr)
@@ -87,7 +81,6 @@ void Entity::SetSheet(AnimationSheet* _sheet)
 void Entity::EntityDestroy()
 {
 	m_scene->RemoveSprite(m_Sprite);
-//	m_Sprite->Destroy();
 
 	for (auto i : m_animators)
 		i.second->Destroy();
@@ -270,12 +263,6 @@ void Entity::InitializeAnimators()
 			i.second->SetOnAction(
 				[this,i](Animator* animator, const Animation& anim) { return this->MovingAction(i.first, (MovingAnimator*)i.second);  }
 			);
-
-
-		}
-		else if (i.first.find("flash_") != std::string::npos)
-		{
-
 		}
 		
 	}

@@ -28,7 +28,8 @@ SpriteClass::Mover MakeSpriteGridLayerMoverLink(GridLayer* gridLayer, Sprite spr
 
 SpriteClass::Mover MakeSpriteGridLayerMover(GridLayer* gridLayer, Sprite sprite) {
 	return [gridLayer, sprite](Rect& r, int* dx, int* dy) {
-		gridLayer->FilterGridMotion(r, dx, dy);
+		if (sprite->GetTypeId() != "W_ARROW")
+			gridLayer->FilterGridMotion(r, dx, dy);
 		if (*dx || *dy)
 		{
 			sprite->SetHasDirectMotion(true).Move(*dx, *dy).SetHasDirectMotion(false);
@@ -630,9 +631,6 @@ void Layer1::onStart()
 	InitializeEnemies(grid);
 	InitializeElevators(grid);
 
-	//backgroundMusic = AudioManager::Get().InitMusicDevice("Assets/Sounds/Link/hitting.wav", true);
-	//AudioManager::Get().PauseMusicDevice(backgroundMusic, false);
-
 }
 
 void Layer1::onDelete()
@@ -1012,9 +1010,9 @@ void Layer1::EnemyMovement() {
 						if (tmp_staflos->GetAttackCooldown() == 0)
 						{
 							ENGINE_TRACE("STAFLOS_ATTACK");
-							e.second->SetState("attacking");
-							tmp_staflos->SetAttackCooldown(3000);
+							tmp_staflos->SetAttackCooldown(2000);
 							anim->Stop();
+							e.second->SetState("attacking");
 							anim->Start((FrameRangeAnimation*)e.second->GetAnimation("frame_attacking_" + e.second->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)e.second->GetAnimation("frame_attacking_" + e.second->GetLookingAt()))->GetStartFrame());
 						}
 
@@ -1080,7 +1078,7 @@ void Layer1::EnemyMovement() {
 					if (tmp_guma->GetAttackCooldown() == 0)
 					{
 						ENGINE_TRACE("GUMA ATTACK");
-						tmp_guma->SetAttackCooldown(1500);
+						tmp_guma->SetAttackCooldown(1000);
 						SpawnArrow(e.second->GetLookingAt(), e.second->GetSprite()->GetPosX(), e.second->GetSprite()->GetPosY());
 					}
 				}
@@ -1493,6 +1491,20 @@ void Layer1::SpawnArrow(std::string direction, uint32_t x, uint32_t y)
 	m_arrows.at(id)->GetSprite()->SetMover(MakeSpriteGridLayerMover(gridlayer, m_arrows.at(id)->GetSprite()));
 	m_arrows.at(id)->SetState("arrow");
 	m_arrows.at(id)->SetLookingAt(direction);
+
+	//MovingAnimator* anim = (MovingAnimator*)m_arrows.at(id)->GetAnimator("mov_gravity");
+	//MovingAnimation* down = (MovingAnimation*)m_arrows.at(id)->GetAnimation("mov_gravity");
+
+	//m_arrows.at(id)->GetSprite()->GetGravityHandler().SetOnStartFalling([anim, down]() {
+	//	anim->Start(down, SystemClock::GetDeltaTime());
+	//	});
+
+	//m_arrows.at(id)->GetSprite()->GetGravityHandler().SetOnStopFalling([anim, down]() {
+	//	anim->Stop();
+	//	});
+
+	//m_arrows.at(id)->GetSprite()->GetGravityHandler().SetGravityAddicted(true);
+
 }
 
 void Layer1::ArrowHandler()
@@ -1547,6 +1559,15 @@ void Layer1::ArrowHandler()
 
 		if (dead)
 		{
+			FrameRangeAnimator* anim = (FrameRangeAnimator*)dead->GetAnimator("frame_animator");
+			MovingAnimator* mov = (MovingAnimator*)dead->GetAnimator("mov_moving");
+
+			if (!mov->HasFinished())
+				mov->Stop();
+
+			if (!anim->HasFinished())
+				anim->Stop();
+
 			dead->EntityDestroy();
 			m_arrows.erase(m_arrows.find(dead->GetID()));
 		}
