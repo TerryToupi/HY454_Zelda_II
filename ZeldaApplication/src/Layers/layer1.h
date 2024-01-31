@@ -86,6 +86,7 @@ public:
     void DropCollectible(Enemy* enemy);
     void SpellFollowLink();
     void ArrowHandler();
+    void WaypointHandler();
 
 public:
     Link* link;                             // main character instance
@@ -101,6 +102,9 @@ public:
     Elevators m_elevators;
     Blocks m_blocks;
     Arrows m_arrows;
+
+    Sprite m_lava;
+    Sprite m_end;
 
     Flash flash;
     int waitTeleportCounter = 0;

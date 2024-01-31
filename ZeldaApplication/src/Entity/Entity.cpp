@@ -141,9 +141,17 @@ void Entity::FrameRangeFinish()
 	if (m_Sprite->GetTypeId() == "E_STAFLOS" && m_state == "attacking")
 		m_state = "moving";
 
-	if (m_state == "death")
+	if (m_state == "death" || m_Sprite->GetTypeId() == "W_ARROW")
 	{ 
 		ENGINE_TRACE("DEAD");
+
+		if (m_Sprite->GetTypeId() == "W_ARROW")
+		{	
+			MovingAnimator* mov = (MovingAnimator*)m_animators.at("mov_moving");
+			if (!mov->HasFinished())
+				mov->Stop();
+		}
+
 		EntityDestroy();
 	}
 
