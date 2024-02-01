@@ -43,11 +43,11 @@ Link::Link(AnimationSheet* _sheet, Ref<Scene> _scene)
     EmplaceFilm("kritiko_attacking_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_attacking_right.json"));
     EmplaceFilm("kritiko_crouch_attack_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_crouch_attack_left.json"));
     EmplaceFilm("kritiko_crouch_attack_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/kritiko_crouch_attack_right.json"));
-    EmplaceFilm("kritiko_voskos_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/voskos.json"));
-    EmplaceFilm("kritiko_voskos_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/voskos.json"));
+    EmplaceFilm("kritiko_voskos_right", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/voskos_left.json"));
+    EmplaceFilm("kritiko_voskos_left", new AnimationFilm(m_sheet, "Assets/Config/Animations/Link/voskos_right.json"));
 
-    EmplaceAnimation(new FrameRangeAnimation("frame_voskos_left", 0, m_films["kritiko_voskos_left"]->GetTotalFrames(), 1, 300, 12 * 16, 50));
-    EmplaceAnimation(new FrameRangeAnimation("frame_voskos_right", 0, m_films["kritiko_voskos_right"]->GetTotalFrames(), 1, 300, 12 * 16, 50));
+    EmplaceAnimation(new FrameRangeAnimation("frame_voskos_left", 0, m_films["kritiko_voskos_left"]->GetTotalFrames(), 1, 300, 12 * 16, 150));
+    EmplaceAnimation(new FrameRangeAnimation("frame_voskos_right", 0, m_films["kritiko_voskos_right"]->GetTotalFrames(), 1, 300, 12 * 16, 150));
     EmplaceAnimation(new FrameRangeAnimation("frame_moving_right", 0, m_films["moving_right"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
     EmplaceAnimation(new FrameRangeAnimation("frame_moving_left", 0, m_films["moving_left"]->GetTotalFrames(), 0, 300, 12 * 16, 50));
     EmplaceAnimation(new FrameRangeAnimation("frame_crouch_left", 0, m_films["crouch_left"]->GetTotalFrames(), 1, 0, 0, 50));
