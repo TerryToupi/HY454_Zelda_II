@@ -933,15 +933,16 @@ bool Layer1::LinkStartAnimations(KeyTapEvent& e)
 			link->thunderspell.setCooldownRemainingTime(link->thunderspell.getCooldown());
 
 			FrameRangeAnimator* tmp = (FrameRangeAnimator*)link->thunderspell.GetAnimator("frame_animator");
-			FrameRangeAnimator* anim = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
-			tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
+				tmp->Start((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"), SystemClock::GetDeltaTime(),
 				((FrameRangeAnimation*)link->thunderspell.GetAnimation("thunderspell_animation"))->GetStartFrame());
 			
 			link->SetKritikos(true);
-			//anim->Stop();
+			tmp = (FrameRangeAnimator*)link->GetAnimator("frame_animator");
+			if (!tmp->HasFinished())
+				tmp->Stop();
 			link->SetState("voskos");
-		//	anim->Start((FrameRangeAnimation*)link->GetAnimation("frame_voskos_" + link->GetLookingAt()), 
-		//		SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_voskos_" + link->GetLookingAt()))->GetStartFrame());
+			tmp->Start((FrameRangeAnimation*)link->GetAnimation("frame_voskos_" + link->GetLookingAt()), SystemClock::GetDeltaTime(), ((FrameRangeAnimation*)link->GetAnimation("frame_voskos_" + link->GetLookingAt()))->GetStartFrame());
+	
 			AudioManager::Get().PlaySound(m_sounds.at("ultimate"));
 			AudioManager::Get().PauseMusic();
 			pausedMusic = true;
